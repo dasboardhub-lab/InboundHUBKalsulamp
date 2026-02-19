@@ -96,6 +96,23 @@
             filter: brightness(1.1); 
         }
 
+        .btn-warning { 
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); 
+            color: white; 
+            padding: 8px 16px; 
+            border-radius: 12px; 
+            font-weight: 600; 
+            font-size: 12px; 
+            transition: all 0.3s; 
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25); 
+            border: 1px solid rgba(255,255,255,0.1); 
+        }
+        .btn-warning:hover { 
+            transform: translateY(-1px); 
+            box-shadow: 0 6px 16px rgba(245, 158, 11, 0.35); 
+            filter: brightness(1.1); 
+        }
+
         /* Toggles */
         .pill-toggle { 
             padding: 6px 14px; 
@@ -107,10 +124,10 @@
             border: 1px solid transparent; 
         }
         .pill-active { 
-            background: #EEF2FF; 
-            color: #4F46E5; 
-            border-color: #C7D2FE; 
-            box-shadow: 0 2px 4px rgba(79, 70, 229, 0.05); 
+            background: #0f172a; 
+            color: #ffffff; 
+            border-color: #0f172a; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
         }
         .pill-inactive { 
             background: #FFFFFF; 
@@ -137,11 +154,24 @@
             padding: 12px 16px; 
             border-bottom: 1px solid #F1F5F9; 
             color: #334155; 
-            vertical-align: top; 
+            vertical-align: top; /* Default top for unmerged */
         }
+        
+        /* Specific Styles for Merged Cells */
+        .valign-middle {
+            vertical-align: middle !important;
+        }
+
         .fresh-table tr:hover td { background-color: #F8FAFC; }
-        .group-col { background-color: #FFFFFF; border-right: 1px solid #F1F5F9; }
-        .thick-date-border { border-top: 2px solid #818CF8 !important; }
+        
+        /* Stronger Borders for Grouping */
+        .group-col { 
+            background-color: #FFFFFF; 
+            border-right: 1px solid #cbd5e1 !important; /* Lebih terang/jelas */
+        }
+        .thick-date-border { 
+            border-top: 2px solid #64748b !important; /* Pembatas tanggal lebih tebal/gelap */
+        }
 
         /* Animations */
         @keyframes slideDown { from { transform: translate(-50%, -150%); opacity: 0; } to { transform: translate(-50%, 20px); opacity: 1; } }
@@ -206,6 +236,25 @@
         </div>
     </div>
 
+    <!-- Duplicate Check Modal -->
+    <div id="duplicateModal" class="fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-md hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg p-8 transform scale-95 transition-all duration-300 border border-white/50" id="duplicateModalContent">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> Duplikat Ditemukan
+                </h3>
+                <span class="bg-amber-100 text-amber-700 font-bold px-2 py-1 rounded text-xs" id="duplicateCount">0</span>
+            </div>
+            <p class="text-xs text-slate-500 mb-4">Berikut adalah No Bagseals yang terdeteksi ganda di database:</p>
+            <div class="bg-slate-50 rounded-xl p-4 max-h-60 overflow-y-auto border border-slate-200">
+                <ul id="duplicateList" class="space-y-2 text-xs text-slate-600 font-mono"></ul>
+            </div>
+            <div class="mt-6 text-right">
+                <button onclick="closeDuplicateModal()" class="py-2 px-6 rounded-xl bg-slate-800 text-white text-xs font-bold hover:bg-slate-900">Tutup</button>
+            </div>
+        </div>
+    </div>
+
     <!-- HEADER -->
     <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-sm">
         <div class="max-w-[1600px] mx-auto px-6 h-18 py-3 flex justify-between items-center">
@@ -228,6 +277,11 @@
                 </div>
                 <div class="h-8 w-[1px] bg-slate-200 hidden md:block"></div>
                 
+                <button onclick="checkForDuplicates()" class="btn-warning flex items-center gap-2 group" title="Cek Duplikat Bagseals">
+                    <i class="fa-solid fa-clipboard-check group-hover:scale-110 transition-transform"></i>
+                    <span>Cek Duplikat</span>
+                </button>
+
                 <button onclick="openDeleteModal()" class="btn-danger flex items-center gap-2 group">
                     <i class="fa-solid fa-trash-can group-hover:rotate-12 transition-transform"></i>
                     <span>Hapus Data</span>
@@ -262,12 +316,12 @@
                     <!-- Left: Search & Services -->
                     <div class="w-full xl:flex-1 flex flex-col md:flex-row gap-4 items-end">
                         <div class="relative w-full md:w-64 group">
-                            <span class="input-label">Global Search</span>
+                            <span class="input-label">Pencarian Global (SMU, Flight, Vendor)</span>
                             <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-[34px] text-slate-400 text-xs group-focus-within:text-indigo-500 transition-colors"></i>
                             <input type="text" id="globalSearch" placeholder="Cari semua data..." class="fresh-input w-full pl-9 bg-white">
                         </div>
                         <div class="w-full">
-                            <span class="input-label">Service Type</span>
+                            <span class="input-label">Filter Layanan</span>
                             <div class="flex items-center gap-1 overflow-x-auto no-scrollbar max-w-full pb-1" id="serviceToggleContainer"></div>
                         </div>
                     </div>
@@ -345,10 +399,10 @@
             <!-- 3. VOLUME CHART -->
             <div class="fresh-card p-6">
                 <div class="flex justify-between items-center mb-6">
-                    <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600"><i class="fa-solid fa-chart-area"></i></div><h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Volume Trend</h3></div>
+                    <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600"><i class="fa-solid fa-chart-area"></i></div><h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Volume Trend (Total Pcs)</h3></div>
                     <div class="flex bg-slate-100 p-1 rounded-xl">
-                        <button id="btnDaily" onclick="setMainChartMode('daily')" class="px-4 py-1.5 rounded-lg text-[10px] font-bold bg-white text-indigo-600 shadow-sm transition-all">Daily</button>
-                        <button id="btnMonthly" onclick="setMainChartMode('monthly')" class="px-4 py-1.5 rounded-lg text-[10px] font-bold text-slate-400 hover:text-slate-600 transition-all">Monthly</button>
+                        <button id="btnDaily" onclick="setMainChartMode('daily')" class="px-6 py-2 rounded-lg text-[10px] font-bold transition-all bg-slate-900 text-white shadow-md">Daily</button>
+                        <button id="btnMonthly" onclick="setMainChartMode('monthly')" class="px-6 py-2 rounded-lg text-[10px] font-bold transition-all bg-white text-slate-600 hover:bg-slate-50">Monthly</button>
                     </div>
                 </div>
                 <div class="h-72 w-full relative"><canvas id="mainChart"></canvas></div>
@@ -359,10 +413,26 @@
                 <div class="fresh-card p-5 flex flex-col"><h4 class="text-[10px] font-bold text-slate-400 uppercase mb-4 flex items-center gap-2"><i class="fa-solid fa-building text-slate-300"></i> Top Vendor</h4><div class="flex-grow min-h-[180px]"><canvas id="chartVendor"></canvas></div></div>
                 <div class="fresh-card p-5 flex flex-col"><h4 class="text-[10px] font-bold text-slate-400 uppercase mb-4 flex items-center gap-2"><i class="fa-solid fa-plane-departure text-slate-300"></i> Origin Dist.</h4><div class="flex-grow min-h-[180px]"><canvas id="chartOrigin"></canvas></div></div>
                 <div class="fresh-card p-5 flex flex-col"><h4 class="text-[10px] font-bold text-slate-400 uppercase mb-4 flex items-center gap-2"><i class="fa-solid fa-location-dot text-slate-300"></i> Destinasi Dist.</h4><div class="flex-grow min-h-[180px]"><canvas id="chartDestinasi"></canvas></div></div>
-                <div class="fresh-card p-5 flex flex-col"><h4 class="text-[10px] font-bold text-slate-400 uppercase mb-4 flex items-center gap-2"><i class="fa-solid fa-chart-pie text-slate-300"></i> Service Share</h4><div class="flex-grow min-h-[180px] flex items-center justify-center"><canvas id="chartService"></canvas></div></div>
+                
+                <!-- SERVICE SHARE ENHANCED -->
+                <div class="fresh-card p-5 flex flex-col">
+                    <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-slate-300"></i> Service Share
+                    </h4>
+                    <!-- Chart Canvas -->
+                    <div class="h-[220px] flex items-center justify-center relative mb-4">
+                        <canvas id="chartService"></canvas>
+                    </div>
+                    <!-- Data Table -->
+                    <div class="overflow-x-auto mt-2">
+                        <table class="w-full text-[10px] text-slate-600" id="serviceTable">
+                            <!-- JS Generated -->
+                        </table>
+                    </div>
+                </div>
             </div>
             
-            <!-- 4b. REJECTED TABLE (NEW) -->
+            <!-- 4b. REJECTED TABLE -->
             <div class="fresh-card overflow-hidden border-l-4 border-red-500">
                 <div class="px-5 py-4 border-b border-slate-100 flex items-center gap-2 bg-red-50/20">
                     <div class="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center text-red-600"><i class="fa-solid fa-triangle-exclamation"></i></div>
@@ -386,9 +456,22 @@
             </div>
 
             <!-- 5. MATRIX SUMMARY -->
-            <div class="fresh-card overflow-hidden">
-                <div class="px-5 py-4 border-b border-slate-100 flex items-center gap-2"><i class="fa-solid fa-calendar-week text-slate-300"></i><h3 class="text-[11px] font-bold text-slate-600 uppercase">Daily Matrix Volume</h3></div>
-                <div class="overflow-x-auto custom-scrollbar"><table class="fresh-table w-full" id="matrixTable"></table></div>
+            <div class="fresh-card overflow-hidden mb-5">
+                <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-white">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-calendar-week text-slate-300"></i>
+                        <h3 class="text-[11px] font-bold text-slate-600 uppercase">Daily Matrix Volume (Total Pcs)</h3>
+                    </div>
+                    <!-- Pagination Controls -->
+                     <div class="flex items-center space-x-1 bg-slate-50 p-1 rounded-lg border border-slate-100" id="matrixPaginationContainer">
+                        <button onclick="changeMatrixPage(-1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-indigo-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
+                        <span id="matrixPageIndicator" class="px-3 text-[10px] font-mono font-bold text-slate-500">1</span>
+                        <button onclick="changeMatrixPage(1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-indigo-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="fresh-table w-full" id="matrixTable"></table>
+                </div>
             </div>
 
             <!-- 6. DETAIL DATA TABLE -->
@@ -409,14 +492,14 @@
                                 <th class="text-center group-col bg-indigo-50/50 text-indigo-700 w-24">Destinasi</th>
                                 <th class="text-left group-col w-16">Jam</th>
                                 <th class="text-left group-col w-20">Tgl PA</th>
-                                <th class="text-center group-col w-16">SLA (H)</th>
                                 <th class="text-left group-col w-16">Batch</th>
                                 <th class="text-left group-col">Origin</th>
                                 <th class="text-left">SMU</th>
                                 <th class="text-left">Flight</th>
                                 <th class="text-left w-20">Tgl Flight</th>
-                                <th class="text-center w-16">MB</th>
-                                <th class="text-right w-16">Pcs</th>
+                                <th class="text-center w-16">SLA (H)</th>
+                                <th class="text-center w-16">Total MB</th>
+                                <th class="text-right w-16">Total Pcs</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody"></tbody>
@@ -437,15 +520,53 @@
         window.rawData = [];
         window.filteredData = [];
         window.aggregatedData = [];
-        window.rejectedData = []; // NEW
+        window.rejectedData = []; 
         window.chartInstances = {};
         window.currentChartMode = 'daily';
+        
+        // Manifest Pagination
         window.currentPage = 1;
         window.rowsPerPage = 20;
+
+        // Matrix Pagination
+        window.matrixPage = 1;
+        window.matrixRowsPerPage = 7;
+
         window.selectedService = 'ALL';
-        let currentAction = ''; // 'upload' or 'delete'
+        let currentAction = ''; 
 
         document.getElementById('currentDateDisplay').textContent = new Date().toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+
+        // --- HELPERS ---
+        const parseNum = (str) => {
+            if (typeof str === 'number') return str;
+            if (!str) return 0;
+            let s = str.toString().trim();
+            let f = parseFloat(s.replace(',', '.'));
+            return isNaN(f) ? 0 : f;
+        };
+
+        const toLocalISOString = (d) => {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const dy = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${dy}`;
+        };
+        
+        const parseDate = (dateStr) => {
+            if (!dateStr) return null;
+            if (dateStr.includes('/')) { 
+                const p = dateStr.split('/'); 
+                if (p.length === 3) return new Date(parseInt(p[2]), parseInt(p[1])-1, parseInt(p[0])); 
+            }
+            const m = {'Jan':0,'Feb':1,'Mar':2,'Apr':3,'May':4,'Jun':5,'Jul':6,'Aug':7,'Sep':8,'Oct':9,'Nov':10,'Dec':11};
+            const p = dateStr.trim().split(' ');
+            if (p.length >= 3) { let y = parseInt(p[2]); if (y < 100) y += 2000; return new Date(y, m[p[1]], parseInt(p[0])); }
+            return null;
+        };
+        const formatDate = (d) => `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+        const formatInputDate = (d) => toLocalISOString(d);
+        const formatNumber = (num) => num ? num.toLocaleString('id-ID') : '0';
 
         // --- TOAST ---
         function showToast(message, type = 'info') {
@@ -508,6 +629,53 @@
              openPasswordModal('delete');
         }
 
+        window.checkForDuplicates = function() {
+            const counts = {};
+            const duplicates = [];
+
+            window.rawData.forEach(d => {
+                const bs = String(d._mb).trim();
+                if(bs && bs !== '-' && bs !== 'undefined') {
+                     if(counts[bs]) {
+                         counts[bs]++;
+                         if(counts[bs] === 2) duplicates.push(bs);
+                     } else {
+                         counts[bs] = 1;
+                     }
+                }
+            });
+
+            if(duplicates.length === 0) {
+                showToast("Data Bersih: Tidak ada duplikat Bagseal", "success");
+            } else {
+                const list = document.getElementById('duplicateList');
+                list.innerHTML = duplicates.map(d => 
+                    `<li class="py-2 border-b border-slate-100 flex justify-between items-center">
+                        <span class="font-bold text-slate-700">${d}</span> 
+                        <span class="bg-red-100 text-red-600 text-[10px] px-2 py-0.5 rounded-full font-bold">DOUBLE</span>
+                    </li>`
+                ).join('');
+                document.getElementById('duplicateCount').innerText = duplicates.length;
+                openDuplicateModal();
+            }
+        }
+
+        function openDuplicateModal() {
+            document.getElementById('duplicateModal').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('duplicateModal').classList.remove('opacity-0');
+                document.getElementById('duplicateModalContent').classList.remove('scale-95');
+                document.getElementById('duplicateModalContent').classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeDuplicateModal() {
+            document.getElementById('duplicateModal').classList.add('opacity-0');
+            document.getElementById('duplicateModalContent').classList.remove('scale-100');
+            document.getElementById('duplicateModalContent').classList.add('scale-95');
+            setTimeout(() => document.getElementById('duplicateModal').classList.add('hidden'), 300);
+        }
+
         function handleEnter(e) { if (e.key === 'Enter') submitPassword(); }
 
         function submitPassword() {
@@ -518,7 +686,6 @@
                     showToast("Authorized", "success");
                     setTimeout(() => document.getElementById('csvFile').click(), 500);
                 } else if(currentAction === 'delete') {
-                    // Trigger Module function
                     const date = document.getElementById('deleteDateInput').value;
                     if(window.deleteDataForDate) window.deleteDataForDate(date);
                     else showToast("Service Offline", "error");
@@ -539,38 +706,14 @@
             }
         }
 
-        // --- HELPERS ---
-        const parseNum = (str) => typeof str === 'number' ? str : (!str ? 0 : parseFloat(str.replace(',', '.').replace(/[^\d.-]/g, '')) || 0);
-        // FIX: toLocalISOString helper for handling Timezone Issues
-        const toLocalISOString = (d) => {
-            const y = d.getFullYear();
-            const m = String(d.getMonth() + 1).padStart(2, '0');
-            const dy = String(d.getDate()).padStart(2, '0');
-            return `${y}-${m}-${dy}`;
-        };
-        
-        const parseDate = (dateStr) => {
-            if (!dateStr) return null;
-            if (dateStr.includes('/')) { const p = dateStr.split('/'); if (p.length === 3) return new Date(`${p[2]}-${p[1]}-${p[0]}`); }
-            const m = {'Jan':0,'Feb':1,'Mar':2,'Apr':3,'May':4,'Jun':5,'Jul':6,'Aug':7,'Sep':8,'Oct':9,'Nov':10,'Dec':11};
-            const p = dateStr.trim().split(' ');
-            if (p.length >= 3) { let y = parseInt(p[2]); if (y < 100) y += 2000; return new Date(y, m[p[1]], parseInt(p[0])); }
-            return null;
-        };
-        const formatDate = (d) => `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
-        // FIX: Use local time for inputs
-        const formatInputDate = (d) => toLocalISOString(d);
-
         // --- PROCESSING (Global wrapper) ---
         window.processRawDataWrapper = function(data) {
             const validData = [];
             const rejectedData = [];
 
             data.forEach(row => {
-                // Pre-check for "Tolakan"
                 const tglTerimaStr = row['Tanggal DIterima'] || '';
                 
-                // DATA CLEANUP
                 let vendor = (row['VENDOR'] || 'N/A').toUpperCase();
                 let origin = (row['Origin'] || 'N/A').toUpperCase();
                 let dest = (row['Destinasi'] || 'Unknown').toUpperCase();
@@ -582,7 +725,6 @@
                 let cleanFlight = rawFlight.toUpperCase();
                 if (service === 'REGULER') cleanFlight = rawFlight.replace(/[\s-]/g, '').toUpperCase();
                 
-                // IF REJECTED
                 if (tglTerimaStr.toLowerCase().includes('tolakan')) {
                     rejectedData.push({
                         _tglPA: parseDate(row['Tanggal']),
@@ -594,12 +736,15 @@
                         _batch: batch,
                         _pcs: parseNum(row['Kuantitas Paket (Awb)']),
                         _weight: parseNum(row['Berat Total (kg)']),
-                        _note: row['Note'] || row['CATATAN'] || tglTerimaStr
+                        _note: row['Note'] || row['CATATAN'] || tglTerimaStr,
+                        _tglFlight: row['TANGGAL FLIGHT'],
+                        _etd: row['ETD'],
+                        _mb: row['No Bagseals'],
+                        _service: service
                     });
-                    return; // Skip normal processing
+                    return; 
                 }
 
-                // NORMAL PROCESSING
                 const tglTerima = parseDate(tglTerimaStr);
                 const tglOrigin = parseDate(row['Tanggal']); 
                 
@@ -615,7 +760,7 @@
                         _date: tglTerima,
                         _dateOrigin: tglOrigin,
                         _weight: parseNum(row['Berat Total (kg)']),
-                        _pcs: parseNum(row['Kuantitas Paket (Awb)']),
+                        _pcs: parseNum(row['Kuantitas Paket (Awb)']), 
                         _vendor: vendor,
                         _origin: origin,
                         _dest: dest,
@@ -627,7 +772,7 @@
                         _tglFlight: row['TANGGAL FLIGHT'] || '-',
                         _mb: row['No Bagseals'] || '-',
                         _sla: sla,
-                        _firestoreId: row._firestoreId // Keep ID
+                        _firestoreId: row._firestoreId 
                     });
                 }
             });
@@ -654,32 +799,39 @@
                 table.innerHTML = `<tr><td class="p-4 text-center text-slate-400 italic">Tidak ada data tolakan</td></tr>`;
                 return;
             }
-
             let html = `<thead class="bg-red-50"><tr>
                 <th class="text-left text-red-600">Tgl PA</th>
+                <th class="text-center text-red-600">Batch</th>
                 <th class="text-left text-red-600">Origin</th>
                 <th class="text-left text-red-600">Vendor</th>
+                <th class="text-left text-red-600">Service</th>
                 <th class="text-left text-red-600">Destinasi</th>
                 <th class="text-left text-red-600">SMU</th>
                 <th class="text-left text-red-600">Flight</th>
-                <th class="text-center text-red-600">Batch</th>
+                <th class="text-left text-red-600">Tgl Flight</th>
+                <th class="text-left text-red-600">ETD</th>
+                <th class="text-center text-red-600">No Bagseals</th>
+                <th class="text-right text-red-600">Berat (Kg)</th>
                 <th class="text-right text-red-600">Pcs</th>
-                <th class="text-right text-red-600">Kg</th>
-                <th class="text-left text-red-600">Keterangan</th>
+                <th class="text-left text-red-600">Note</th>
             </tr></thead><tbody>`;
 
             window.rejectedData.forEach(d => {
                 const datePa = d._tglPA ? formatDate(d._tglPA) : '-';
                 html += `<tr class="hover:bg-red-50/30">
                     <td class="font-medium text-slate-600">${datePa}</td>
+                    <td class="text-center">${d._batch}</td>
                     <td>${d._origin}</td>
                     <td>${d._vendor}</td>
+                    <td>${d._service}</td>
                     <td class="font-bold text-slate-700">${d._dest}</td>
                     <td class="font-mono text-xs">${d._smu}</td>
                     <td>${d._flight}</td>
-                    <td class="text-center">${d._batch}</td>
-                    <td class="text-right font-bold">${d._pcs}</td>
-                    <td class="text-right">${d._weight}</td>
+                    <td>${d._tglFlight}</td>
+                    <td>${d._etd}</td>
+                    <td class="text-center font-mono text-xs">${d._mb}</td>
+                    <td class="text-right">${formatNumber(d._weight)}</td>
+                    <td class="text-right font-bold">${formatNumber(d._pcs)}</td>
                     <td class="text-xs text-red-500 italic">${d._note}</td>
                 </tr>`;
             });
@@ -740,15 +892,30 @@
         }
 
         function applyFilters() {
-            const sDate = new Date(document.getElementById('filterStartDate').value);
-            const eDate = new Date(document.getElementById('filterEndDate').value);
-            eDate.setHours(23,59,59);
+            const startVal = document.getElementById('filterStartDate').value;
+            const endVal = document.getElementById('filterEndDate').value;
+
+            // Construct dates manually from components to ensure local midnight time
+            let sDate = null, eDate = null;
+            if(startVal) {
+                const p = startVal.split('-');
+                sDate = new Date(p[0], p[1]-1, p[2]); // Local midnight
+            }
+            if(endVal) {
+                const p = endVal.split('-');
+                eDate = new Date(p[0], p[1]-1, p[2]); // Local midnight
+                eDate.setHours(23,59,59,999); // End of day
+            }
+
             const fOrg = document.getElementById('filterOrigin').value;
             const fDst = document.getElementById('filterDestinasi').value;
             const search = document.getElementById('globalSearch').value.toUpperCase();
 
             window.filteredData = window.rawData.filter(d => {
-                const dateOk = d._date >= sDate && d._date <= eDate;
+                // Ensure d._date is also valid for comparison
+                if(!d._date) return false;
+                
+                const dateOk = (!sDate || d._date >= sDate) && (!eDate || d._date <= eDate);
                 const orgOk = fOrg === 'all' || d._origin === fOrg;
                 const dstOk = fDst === 'all' || d._dest === fDst;
                 const svcOk = window.selectedService === 'ALL' || d._service === window.selectedService;
@@ -758,6 +925,7 @@
             });
 
             window.currentPage = 1;
+            window.matrixPage = 1; // Reset Matrix Pagination
             updateDashboard();
         }
 
@@ -765,45 +933,56 @@
         function updateDashboard() {
             const fd = window.filteredData;
             const w = fd.reduce((a,b) => a+b._weight, 0);
-            const p = fd.reduce((a,b) => a+b._pcs, 0);
+            const p = fd.reduce((a,b) => a+b._pcs, 0); 
             const m = fd.length;
             
-            document.getElementById('kpiWeight').innerText = w.toLocaleString('id-ID', {maximumFractionDigits:1});
-            document.getElementById('kpiMB').innerText = m.toLocaleString('id-ID');
-            document.getElementById('kpiPcs').innerText = p.toLocaleString('id-ID');
+            document.getElementById('kpiWeight').innerText = formatNumber(w);
+            document.getElementById('kpiMB').innerText = formatNumber(m);
+            document.getElementById('kpiPcs').innerText = formatNumber(p);
 
-            if (window.filteredData.length > 0) {
-                const timestamps = window.filteredData.map(d => d._date.getTime());
-                const maxTs = Math.max(...timestamps);
-                const prevDateObj = new Date(maxTs);
-                prevDateObj.setDate(prevDateObj.getDate() - 1);
+            // NEW COMPARISON LOGIC
+            const startStr = document.getElementById('filterStartDate').value;
+            const endStr = document.getElementById('filterEndDate').value;
+            
+            // Default to full range comparison if no filter
+            let prevWeight = 0, prevPcs = 0, prevMB = 0;
 
-                const currentDayData = window.filteredData.filter(d => d._date.getTime() === maxTs);
-                const curWeight = currentDayData.reduce((s,d)=>s+d._weight,0);
-                const curPcs = currentDayData.reduce((s,d)=>s+d._pcs,0);
-                const curMB = currentDayData.length;
+            if(startStr && endStr) {
+                const sDate = new Date(startStr.split('-')[0], startStr.split('-')[1]-1, startStr.split('-')[2]);
+                const eDate = new Date(endStr.split('-')[0], endStr.split('-')[1]-1, endStr.split('-')[2]);
+                
+                // Duration in days
+                const oneDay = 24*60*60*1000;
+                const diffDays = Math.round(Math.abs((eDate - sDate) / oneDay)) + 1;
+                
+                // Previous Range
+                const prevEndDate = new Date(sDate);
+                prevEndDate.setDate(prevEndDate.getDate() - 1);
+                prevEndDate.setHours(23,59,59,999);
+                
+                const prevStartDate = new Date(prevEndDate);
+                prevStartDate.setDate(prevStartDate.getDate() - diffDays + 1); // Go back duration
+                prevStartDate.setHours(0,0,0,0);
+                
+                const fOrg = document.getElementById('filterOrigin').value;
+                const fDst = document.getElementById('filterDestinasi').value;
 
-                const fOrigin = document.getElementById('filterOrigin').value;
-                const fDest = document.getElementById('filterDestinasi').value;
-                const prevDayData = window.rawData.filter(d => {
-                    const isPrev = d._date.getTime() === prevDateObj.getTime();
-                    const orgOk = fOrigin === 'all' || d._origin == fOrigin;
-                    const destOk = fDest === 'all' || d._dest == fDest;
-                    return isPrev && orgOk && destOk;
+                const prevData = window.rawData.filter(d => {
+                     const dateOk = d._date >= prevStartDate && d._date <= prevEndDate;
+                     const orgOk = fOrg === 'all' || d._origin === fOrg;
+                     const dstOk = fDst === 'all' || d._dest === fDst;
+                     const svcOk = window.selectedService === 'ALL' || d._service === window.selectedService;
+                     return dateOk && orgOk && dstOk && svcOk;
                 });
-
-                const prevWeight = prevDayData.reduce((s,d)=>s+d._weight,0);
-                const prevPcs = prevDayData.reduce((s,d)=>s+d._pcs,0);
-                const prevMB = prevDayData.length;
-
-                updateDiff('kpiWeightDiff', curWeight, prevWeight);
-                updateDiff('kpiPcsDiff', curPcs, prevPcs);
-                updateDiff('kpiMBDiff', curMB, prevMB);
-            } else {
-                updateDiff('kpiWeightDiff', 0, 0);
-                updateDiff('kpiPcsDiff', 0, 0);
-                updateDiff('kpiMBDiff', 0, 0);
+                
+                prevWeight = prevData.reduce((s,d)=>s+d._weight,0);
+                prevPcs = prevData.reduce((s,d)=>s+d._pcs,0);
+                prevMB = prevData.length;
             }
+
+            updateDiff('kpiWeightDiff', w, prevWeight);
+            updateDiff('kpiPcsDiff', p, prevPcs);
+            updateDiff('kpiMBDiff', m, prevMB);
 
             renderMainChart();
             renderBottomCharts();
@@ -826,7 +1005,7 @@
             else el.className = "text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-50 text-rose-600";
         }
 
-        // --- AGGREGATED TABLE ---
+        // --- AGGREGATED TABLE (MANIFEST) ---
         function aggregateAndRenderTable() {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
@@ -837,12 +1016,12 @@
                 if (!aggMap.has(key)) aggMap.set(key, { ...d, _mbCount: 0, _pcsSum: 0 });
                 const e = aggMap.get(key);
                 e._mbCount++;
-                e._pcsSum += d._pcs;
+                e._pcsSum += d._pcs; // Summing Pcs (Kuantitas Paket)
             });
             
             window.aggregatedData = Array.from(aggMap.values());
             
-            // SORTING LOGIC: DATE -> DEST -> JAM
+            // SORTING: Date -> Dest -> Jam
             window.aggregatedData.sort((a,b) => {
                 if(a._date.getTime() !== b._date.getTime()) return a._date - b._date;
                 if(a._dest !== b._dest) return a._dest < b._dest ? -1 : 1; 
@@ -852,27 +1031,29 @@
             const start = (window.currentPage - 1) * window.rowsPerPage;
             const pageData = window.aggregatedData.slice(start, start + window.rowsPerPage);
             
-            // SPAN CALCULATIONS
+            // Span Calculation
             const spans = { date: [], dest: [], jam: [], pa: [], sla: [], batch: [], origin: [], flight: [], tglFlight: [] };
-            const fields = Object.keys(spans);
-            fields.forEach(f => spans[f] = new Array(pageData.length).fill(0));
+            for(let k in spans) spans[k] = new Array(pageData.length).fill(0);
 
-            const calcSpan = (field, parentMatch) => {
+            // Generic Calculator
+            const calcSpan = (field, parentMatch, selfMatchField) => {
                 for(let i=0; i<pageData.length; i++) {
                     if(spans[field][i] === -1) continue;
                     let c = 1;
                     for(let j=i+1; j<pageData.length; j++) {
                         const mParent = parentMatch(pageData[i], pageData[j]);
-                        const mSelf = pageData[i]['_'+field] === pageData[j]['_'+field];
+                        const fName = selfMatchField ? selfMatchField : '_'+field;
+                        const mSelf = pageData[i][fName] === pageData[j][fName];
                         if(mParent && mSelf) { c++; spans[field][j] = -1; } else break;
                     }
                     spans[field][i] = c;
                 }
             };
 
-            const pmDate = (a,b) => a._date.getTime()===b._date.getTime() && a._dest===b._dest;
+            // Hierarchy
+            const pmDate = (a,b) => a._date.getTime()===b._date.getTime() && a._dest===b._dest; // Date depends on Dest grouping
             
-            // Calculate Date Spans manually for grouping logic
+            // Date Span
             for(let i=0; i<pageData.length; i++) {
                 if(spans.date[i] === -1) continue;
                 let c = 1;
@@ -883,10 +1064,27 @@
             }
 
             calcSpan('dest', pmDate); 
-            calcSpan('jam', pmDate);
-            calcSpan('pa', (a,b) => pmDate(a,b) && a._jam===b._jam);
-            calcSpan('origin', (a,b) => pmDate(a,b) && a._jam===b._jam);
+            const pmDest = (a,b) => pmDate(a,b) && a._dest===b._dest;
             
+            // JAM is the key grouper for details
+            calcSpan('jam', pmDest);
+            const pmJam = (a,b) => pmDest(a,b) && a._jam===b._jam;
+            
+            // Fields dependent on Jam (Batch, Origin, PA, Flight, Tgl Flight, SLA, MB, Pcs)
+            // If Jam is same within same Date/Dest block, we merge these if identical
+            
+            calcSpan('pa', pmJam, '_dateOrigin');
+            calcSpan('batch', pmJam);
+            calcSpan('origin', pmJam);
+            calcSpan('flight', pmJam);
+            calcSpan('tglFlight', pmJam);
+            calcSpan('sla', pmJam);
+            
+            // Merge MB & PCS if identical within same block? No, usually these are per row group (flight).
+            // Let's assume if Flight/Time is same, MB/Pcs aggregate should be displayed once per that group.
+            // Since we aggregated by key including all these, identical lines are already 1 row.
+            // So no rowspan needed for MB/Pcs, just standard display.
+
             pageData.forEach((d, i) => {
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition border-b border-slate-100";
@@ -896,26 +1094,50 @@
                 const addTd = (f, txt, cls) => {
                     if(spans[f][i] > 0) {
                         const td = document.createElement('td');
-                        td.className = cls; td.rowSpan = spans[f][i]; td.textContent = txt; tr.appendChild(td);
+                        td.className = cls + " valign-middle"; // Force middle align
+                        td.rowSpan = spans[f][i];
+                        td.textContent = txt;
+                        tr.appendChild(td);
                     }
                 };
 
-                addTd('date', formatDate(d._date), "text-center font-bold text-slate-700 bg-white border-r border-slate-200 align-middle group-col");
-                addTd('dest', d._dest, "text-center font-bold text-indigo-700 bg-indigo-50 border-r border-slate-100 align-middle group-col");
-                addTd('jam', d._jam, "text-left text-slate-600 border-r border-slate-100 bg-white group-col align-middle");
-                addTd('pa', formatDate(d._dateOrigin), "text-left text-slate-500 border-r border-slate-100 bg-white group-col align-middle");
-                
-                const slaColor = d._sla > 3 ? 'text-rose-600 font-bold' : 'text-emerald-600 font-bold';
-                tr.innerHTML += `<td class="text-center border-r border-slate-100 group-col align-middle ${slaColor}">${d._sla}</td>`;
-                tr.innerHTML += `<td class="text-left text-slate-500 border-r border-slate-100 bg-white group-col align-middle">${d._batch}</td>`;
-                
-                addTd('origin', d._origin, "text-left text-slate-700 border-r border-slate-100 bg-white group-col align-middle");
+                addTd('date', formatDate(d._date), "text-center font-bold text-slate-700 bg-white border-r border-slate-200 group-col");
+                addTd('dest', d._dest, "text-center font-bold text-indigo-700 bg-indigo-50 border-r border-slate-100 group-col");
+                addTd('jam', d._jam, "text-left text-slate-600 border-r border-slate-100 bg-white group-col");
+                addTd('pa', formatDate(d._dateOrigin), "text-left text-slate-500 border-r border-slate-100 bg-white group-col");
+                addTd('batch', d._batch, "text-left text-slate-500 border-r border-slate-100 bg-white group-col");
+                addTd('origin', d._origin, "text-left text-slate-700 border-r border-slate-100 bg-white group-col");
 
-                tr.innerHTML += `<td class="text-slate-500 font-mono text-[11px] border-r border-slate-100 align-middle">${d._smu}</td>`;
-                tr.innerHTML += `<td class="text-left text-slate-800 font-medium border-r border-slate-100 bg-white align-middle">${d._flight}</td>`;
-                tr.innerHTML += `<td class="text-left text-slate-500 border-r border-slate-100 bg-white align-middle">${d._tglFlight}</td>`;
-                tr.innerHTML += `<td class="text-center font-mono font-bold text-slate-600 border-r border-slate-100 align-middle">${d._mbCount}</td>`;
-                tr.innerHTML += `<td class="text-right font-bold text-slate-800 align-middle">${d._pcsSum}</td>`;
+                const smuTd = document.createElement('td');
+                smuTd.className = "text-slate-500 font-mono text-[11px] border-r border-slate-100 valign-middle";
+                smuTd.textContent = d._smu;
+                tr.appendChild(smuTd);
+
+                addTd('flight', d._flight, "text-left text-slate-800 font-medium border-r border-slate-100 bg-white");
+                addTd('tglFlight', d._tglFlight, "text-left text-slate-500 border-r border-slate-100 bg-white");
+
+                // SLA Moved here
+                if (spans.sla[i] > 0) {
+                    const slaColor = d._sla > 3 ? 'text-rose-600 font-bold' : 'text-emerald-600 font-bold';
+                    const td = document.createElement('td');
+                    td.className = `text-center border-r border-slate-100 group-col valign-middle ${slaColor}`;
+                    td.rowSpan = spans.sla[i];
+                    td.textContent = d._sla;
+                    tr.appendChild(td);
+                }
+
+                // Metrics (No Merge, unique per row usually)
+                // If you want to merge them if identical for whole flight group, add to calcSpan above.
+                // Assuming unique per aggregated row.
+                const mbTd = document.createElement('td');
+                mbTd.className = "text-center font-mono font-bold text-slate-600 border-r border-slate-100 valign-middle";
+                mbTd.textContent = d._mbCount;
+                tr.appendChild(mbTd);
+
+                const pcsTd = document.createElement('td');
+                pcsTd.className = "text-right font-bold text-slate-800 valign-middle";
+                pcsTd.textContent = formatNumber(d._pcsSum);
+                tr.appendChild(pcsTd);
 
                 tbody.appendChild(tr);
             });
@@ -931,12 +1153,10 @@
             const ctx = document.getElementById('mainChart').getContext('2d');
             const agg = {};
             window.filteredData.forEach(d => {
-                // FIX: Use manual date formatting to avoid timezone shifts
                 const k = window.currentChartMode === 'daily' ? toLocalISOString(d._date) : d._date.toLocaleString('id-ID', {month:'short', year:'numeric'});
                 agg[k] = (agg[k]||0) + d._pcs;
             });
-            // FIX: Sort keys (Dates) properly for X axis
-            const lbls = Object.keys(agg).sort(); // YYYY-MM-DD sorts correctly
+            const lbls = Object.keys(agg).sort(); 
             window.chartInstances.main = new Chart(ctx, {
                 type: 'line',
                 data: { labels: lbls, datasets: [{ label: 'Total Pcs', data: lbls.map(k=>agg[k]), borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.1)', fill: true, tension: 0.3 }] },
@@ -944,31 +1164,98 @@
                     responsive: true, 
                     maintainAspectRatio: false, 
                     scales: { 
-                        y: { display: false }, // HIDE Y AXIS
+                        y: { display: false }, 
                         x: { grid: { display: false } } 
                     }, 
                     plugins: { legend: { display: false }, datalabels: { align: 'end', anchor: 'end', color: '#64748b', font: { weight: 'bold' } } } 
                 }
             });
         }
-        window.setMainChartMode = function(mode) { window.currentChartMode = mode; renderMainChart(); } // GLOBAL EXPOSED
+        window.setMainChartMode = function(mode) {
+            window.currentChartMode = mode;
+            
+            const btnDaily = document.getElementById('btnDaily');
+            const btnMonthly = document.getElementById('btnMonthly');
+            
+            const baseClasses = "px-6 py-2 rounded-lg text-[10px] font-bold transition-all";
+            const activeStyle = "bg-slate-900 text-white shadow-md";
+            const inactiveStyle = "bg-white text-slate-600 hover:bg-slate-50";
+
+            if (mode === 'daily') {
+                btnDaily.className = `${baseClasses} ${activeStyle}`;
+                btnMonthly.className = `${baseClasses} ${inactiveStyle}`;
+            } else {
+                btnDaily.className = `${baseClasses} ${inactiveStyle}`;
+                btnMonthly.className = `${baseClasses} ${activeStyle}`;
+            }
+
+            renderMainChart();
+        }
 
         function renderBottomCharts() {
+            const serviceColors = ['#10B981', '#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6'];
+
             const renderBar = (id, f, c) => {
                 if(window.chartInstances[id]) window.chartInstances[id].destroy();
                 const ctx = document.getElementById(id).getContext('2d');
-                const agg = {}; window.filteredData.forEach(d => agg[d[f]] = (agg[d[f]]||0) + d._pcs);
+                const agg = {}; window.filteredData.forEach(d => agg[d[f]] = (agg[d[f]]||0) + d._pcs); // Summing Pcs
                 const s = Object.entries(agg).sort((a,b)=>b[1]-a[1]).slice(0, 10);
-                window.chartInstances[id] = new Chart(ctx, { type: 'bar', data: { labels: s.map(e=>e[0]), datasets: [{ data: s.map(e=>e[1]), backgroundColor: c, borderRadius: 6 }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, scales: { x: { display: false }, y: { grid: { display: false } } }, plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'end', color: '#6b7280', font: { size: 9 } } } } });
+                window.chartInstances[id] = new Chart(ctx, { type: 'bar', data: { labels: s.map(e=>e[0]), datasets: [{ data: s.map(e=>e[1]), backgroundColor: c, borderRadius: 6 }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, scales: { x: { display: false }, y: { grid: { display: false } } }, plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'end', color: '#6b7280', font: { size: 9 }, formatter: (v) => formatNumber(v) } } } });
             };
             renderBar('chartVendor', '_vendor', '#6366f1');
             renderBar('chartOrigin', '_origin', '#8B5CF6');
             renderBar('chartDestinasi', '_dest', '#F59E0B');
+            
             if(window.chartInstances.chartService) window.chartInstances.chartService.destroy();
             const ctxS = document.getElementById('chartService').getContext('2d');
-            const aggS = {}; window.filteredData.forEach(d => aggS[d._service] = (aggS[d._service]||0) + d._pcs);
+            const aggS = {}; window.filteredData.forEach(d => aggS[d._service] = (aggS[d._service]||0) + d._pcs); 
             const sS = Object.entries(aggS).sort((a,b)=>b[1]-a[1]);
-            window.chartInstances.chartService = new Chart(ctxS, { type: 'doughnut', data: { labels: sS.map(e=>e[0]), datasets: [{ data: sS.map(e=>e[1]), backgroundColor: ['#10B981', '#3B82F6', '#F59E0B', '#EF4444'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10 } } } } } });
+            
+            window.chartInstances.chartService = new Chart(ctxS, {
+                type: 'doughnut',
+                data: {
+                    labels: sS.map(e => e[0]),
+                    datasets: [{
+                        data: sS.map(e => e[1]),
+                        backgroundColor: serviceColors,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',
+                    plugins: {
+                        legend: { display: false }, 
+                        tooltip: { enabled: true },
+                        datalabels: { display: false } 
+                    }
+                }
+            });
+
+            const tableEl = document.getElementById('serviceTable');
+            let tableHTML = '<tbody>';
+            const total = sS.reduce((sum, item) => sum + item[1], 0);
+
+            sS.forEach((item, index) => {
+                const serviceName = item[0];
+                const val = item[1];
+                const pct = total > 0 ? (val / total * 100).toFixed(1) + '%' : '0%';
+                const color = serviceColors[index % serviceColors.length];
+
+                tableHTML += `
+                    <tr class="border-b border-slate-50 last:border-0">
+                        <td class="py-1.5 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full" style="background-color: ${color}"></span>
+                            <span class="font-semibold">${serviceName}</span>
+                        </td>
+                        <td class="py-1.5 text-right font-mono">${formatNumber(val)}</td>
+                        <td class="py-1.5 text-right font-bold text-slate-400">${pct}</td>
+                    </tr>
+                `;
+            });
+            tableHTML += '</tbody>';
+            tableEl.innerHTML = tableHTML;
         }
 
         function renderSlaMatrices() {
@@ -976,63 +1263,54 @@
                 const t = document.getElementById(id); t.innerHTML = '';
                 const agg = {}; window.filteredData.forEach(d => { const k=d[f]; if(!agg[k]) agg[k]={u3:0,b35:0,o5:0,tot:0,sum:0}; agg[k].tot+=d._pcs; agg[k].sum+=(d._sla*d._pcs); if(d._sla<=2)agg[k].u3+=d._pcs; else if(d._sla<=5)agg[k].b35+=d._pcs; else agg[k].o5+=d._pcs; });
                 let h = `<thead class="sticky top-0 bg-white z-10"><tr><th class="text-left text-slate-500">${l}</th><th class="text-center text-emerald-600 bg-emerald-50">0-2H</th><th class="text-center text-amber-600 bg-amber-50">3-5H</th><th class="text-center text-rose-600 bg-rose-50">>5H</th><th class="text-center text-slate-800 bg-slate-100">Tot</th><th class="text-center text-indigo-600 bg-indigo-50">Avg</th></tr></thead><tbody>`;
-                Object.keys(agg).sort().forEach(k => { const d=agg[k]; h += `<tr class="hover:bg-slate-50"><td class="font-bold text-slate-700">${k}</td><td class="text-center text-emerald-600 font-mono">${d.u3}</td><td class="text-center text-amber-600 font-mono">${d.b35}</td><td class="text-center text-rose-600 font-bold font-mono">${d.o5}</td><td class="text-center font-bold bg-slate-50 font-mono">${d.tot}</td><td class="text-center font-bold text-indigo-600">${(d.tot>0?d.sum/d.tot:0).toFixed(1)}</td></tr>`; });
+                Object.keys(agg).sort().forEach(k => { const d=agg[k]; h += `<tr class="hover:bg-slate-50"><td class="font-bold text-slate-700">${k}</td><td class="text-center text-emerald-600 font-mono">${formatNumber(d.u3)}</td><td class="text-center text-amber-600 font-mono">${formatNumber(d.b35)}</td><td class="text-center text-rose-600 font-bold font-mono">${formatNumber(d.o5)}</td><td class="text-center font-bold bg-slate-50 font-mono">${formatNumber(d.tot)}</td><td class="text-center font-bold text-indigo-600">${(d.tot>0?d.sum/d.tot:0).toFixed(1)}</td></tr>`; });
                 t.innerHTML = h + '</tbody>';
             };
             render('slaOriginTable', '_origin', 'ORIGIN'); render('slaDestTable', '_dest', 'DESTINASI');
         }
 
+        // --- UPDATED MATRIX TABLE WITH PAGINATION ---
+        function changeMatrixPage(delta) {
+             const dates = [...new Set(window.filteredData.map(d => d._date.getTime()))].sort((a,b)=>a-b);
+             const totalPages = Math.ceil(dates.length / window.matrixRowsPerPage);
+             const nextPage = window.matrixPage + delta;
+             if(nextPage >= 1 && nextPage <= totalPages) {
+                 window.matrixPage = nextPage;
+                 renderMatrixTable();
+             }
+        }
+        window.changeMatrixPage = changeMatrixPage;
+
         function renderMatrixTable() {
-            const dates = [...new Set(window.filteredData.map(d => d._date.getTime()))].sort((a,b)=>a-b);
+            const allDates = [...new Set(window.filteredData.map(d => d._date.getTime()))].sort((a,b)=>a-b);
             const dests = [...new Set(window.filteredData.map(d => d._dest))].sort();
+            
+            // Pagination Logic
+            const totalPages = Math.ceil(allDates.length / window.matrixRowsPerPage) || 1;
+            // Ensure current page is valid
+            if (window.matrixPage > totalPages) window.matrixPage = 1;
+
+            const start = (window.matrixPage - 1) * window.matrixRowsPerPage;
+            const datesToRender = allDates.slice(start, start + window.matrixRowsPerPage);
+
+            document.getElementById('matrixPageIndicator').innerText = `${window.matrixPage} / ${totalPages}`;
+
             const table = document.getElementById('matrixTable');
             let h = `<thead><tr><th class="text-left sticky left-0 bg-white z-10">Tanggal</th>`;
             dests.forEach(d => h += `<th class="text-center border-l border-slate-100">${d}</th>`);
             h += `<th class="text-center font-bold bg-slate-50 border-l border-slate-100">TOTAL</th></tr></thead><tbody>`;
-            dates.forEach(t => {
+            
+            datesToRender.forEach(t => {
                 const date = new Date(t); let rt = 0;
                 let r = `<tr><td class="font-bold text-slate-700 sticky left-0 bg-white border-r border-slate-100 shadow-sm whitespace-nowrap">${formatDate(date)}</td>`;
                 dests.forEach(dst => {
-                    const v = window.filteredData.filter(d => d._date.getTime() === t && d._dest === dst).reduce((s,d) => s+d._pcs, 0);
-                    rt += v; r += `<td class="text-center border-r border-slate-50 ${v>0?'text-slate-800 font-medium':'text-slate-300'}">${v||'-'}</td>`;
+                    const v = window.filteredData.filter(d => d._date.getTime() === t && d._dest === dst).reduce((s,d) => s+d._pcs, 0); // Using Pcs
+                    rt += v; r += `<td class="text-center border-r border-slate-50 ${v>0?'text-slate-800 font-medium':'text-slate-300'}">${v>0?formatNumber(v):'-'}</td>`;
                 });
-                h += r + `<td class="text-center font-bold text-slate-900 bg-slate-50">${rt}</td></tr>`;
+                h += r + `<td class="text-center font-bold text-slate-900 bg-slate-50">${formatNumber(rt)}</td></tr>`;
             });
             table.innerHTML = h + '</tbody>';
         }
-
-        function changePage(d) {
-            const max = Math.ceil(aggregatedData.length / rowsPerPage);
-            const next = currentPage + d;
-            if (next >= 1 && next <= max) { currentPage = next; aggregateAndRenderTable(); }
-        }
-
-        // --- LOCAL FILE HANDLER (FALLBACK) ---
-        document.getElementById('csvFile').addEventListener('change', function(e) {
-            if(!e.target.files[0]) return;
-            // Use Firebase Module if available, else Fallback
-            if(window.uploadCSVToFirestore) {
-                window.uploadCSVToFirestore(e.target.files[0]);
-            } else {
-                showToast("Offline Mode: Processing Locally", "info");
-                Papa.parse(e.target.files[0], {
-                    header: true, skipEmptyLines: true,
-                    complete: function(res) { 
-                        window.processRawDataWrapper(res.data); 
-                        document.getElementById('initialState').classList.add('hidden');
-                        document.getElementById('dashboardContent').classList.remove('hidden');
-                        showToast("Local Data Loaded", "success");
-                    }
-                });
-            }
-        });
-
-        // Listeners
-        ['filterStartDate', 'filterEndDate', 'filterOrigin', 'filterDestinasi', 'globalSearch'].forEach(id => {
-            document.getElementById(id).addEventListener('change', applyFilters);
-        });
-        document.getElementById('globalSearch').addEventListener('keyup', applyFilters);
-
     </script>
 
     <!-- FIREBASE MODULE -->
@@ -1077,7 +1355,7 @@
                 const docs = [];
                 qs.forEach((doc) => {
                     const data = doc.data();
-                    data._firestoreId = doc.id; // STORE ID FOR DELETION
+                    data._firestoreId = doc.id; 
                     docs.push(data);
                 });
                 
@@ -1094,13 +1372,11 @@
             }
         }
 
-        // DELETE FUNCTION
         window.deleteDataForDate = async function(dateString) {
             showLoading(true, "Menghapus Data...");
             const targetDate = new Date(dateString);
             targetDate.setHours(0,0,0,0);
 
-            // Find matching docs in local data to get IDs
             const toDelete = window.rawData.filter(d => {
                 const dDate = new Date(d._date);
                 dDate.setHours(0,0,0,0);
@@ -1153,12 +1429,24 @@
                     let batches = [];
                     let currentBatch = writeBatch(db);
                     let count = 0;
+                    let skippedCount = 0;
+
+                    const existingBagseals = new Set(window.rawData.map(d => String(d._mb).trim()));
 
                     for (const row of data) {
+                        const bagseal = String(row['No Bagseals'] || '').trim();
+                        
+                        if (bagseal && existingBagseals.has(bagseal)) {
+                            skippedCount++;
+                            continue; 
+                        }
+
                         const smu = (row['SMU']||'').replace(/\s/g, '');
                         const dest = (row['Destinasi']||'').replace(/\s/g, '');
                         const date = (row['Tanggal DIterima']||'').replace(/[\/\s,]/g, ''); 
-                        const id = `${smu}_${dest}_${date}`.substring(0, 100) || doc(collection(db, "inbound_data")).id; 
+                        const id = bagseal || `${smu}_${dest}_${date}`.substring(0, 100) || doc(collection(db, "inbound_data")).id; 
+
+                        if (bagseal) existingBagseals.add(bagseal);
 
                         const docRef = doc(db, "inbound_data", id);
                         currentBatch.set(docRef, row);
@@ -1168,10 +1456,15 @@
                     if (count % batchSize !== 0) batches.push(currentBatch.commit());
 
                     try {
-                        await Promise.all(batches);
-                        showLoading(false);
-                        showToast("Upload Success", "success");
-                        loadDataFromFirestore();
+                        if (count > 0) {
+                            await Promise.all(batches);
+                            showLoading(false);
+                            showToast(`Uploaded ${count} new. Skipped ${skippedCount}.`, "success");
+                            loadDataFromFirestore();
+                        } else {
+                            showLoading(false);
+                            showToast(`No new data. Skipped ${skippedCount}.`, "info");
+                        }
                     } catch (e) {
                         console.error(e);
                         showLoading(false);
