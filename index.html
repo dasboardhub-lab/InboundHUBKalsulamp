@@ -148,13 +148,13 @@
             letter-spacing: 0.05em; 
             padding: 14px 16px; 
             background: #F8FAFC; 
-            border-bottom: 1px solid #E2E8F0; 
+            border-bottom: 2px solid #94a3b8; 
         }
         .fresh-table td { 
             padding: 12px 16px; 
-            border-bottom: 1px solid #F1F5F9; 
+            border-bottom: 1px solid #cbd5e1; /* Default Border */
             color: #334155; 
-            vertical-align: top; /* Default top for unmerged */
+            vertical-align: top; 
         }
         
         /* Specific Styles for Merged Cells */
@@ -162,16 +162,13 @@
             vertical-align: middle !important;
         }
 
-        .fresh-table tr:hover td { background-color: #F8FAFC; }
+        .fresh-table tr:hover td { background-color: #F1F5F9; }
+        .group-col { background-color: #FFFFFF; border-right: 1px solid #cbd5e1; }
         
-        /* Stronger Borders for Grouping */
-        .group-col { 
-            background-color: #FFFFFF; 
-            border-right: 1px solid #cbd5e1 !important; /* Lebih terang/jelas */
-        }
-        .thick-date-border { 
-            border-top: 2px solid #64748b !important; /* Pembatas tanggal lebih tebal/gelap */
-        }
+        /* BORDERS: Specific Thickness Logic */
+        .border-date-group { border-top: 3px solid #1e293b !important; } /* Hitam/Gelap Tebal untuk Tanggal */
+        .border-dest-group { border-top: 2px solid #64748b !important; } /* Abu Tebal untuk Destinasi */
+        .thick-date-border { border-top: 4px solid #334155 !important; }
 
         /* Animations */
         @keyframes slideDown { from { transform: translate(-50%, -150%); opacity: 0; } to { transform: translate(-50%, 20px); opacity: 1; } }
@@ -182,6 +179,22 @@
         .loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         
         .input-label { display: block; font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 4px; margin-left: 2px; }
+        
+        /* Sticky Filter Background Fix */
+        .sticky-filter-wrapper {
+            position: sticky;
+            top: 72px; /* Adjust based on header height */
+            z-index: 30;
+            background-color: #F0F4F8; /* Matches body background */
+            margin-left: -1rem; /* Counteract container padding */
+            margin-right: -1rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            padding-top: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.5);
+            backdrop-filter: blur(8px);
+        }
     </style>
 </head>
 <body class="flex flex-col min-h-screen selection:bg-indigo-100 selection:text-indigo-700">
@@ -236,28 +249,9 @@
         </div>
     </div>
 
-    <!-- Duplicate Check Modal -->
-    <div id="duplicateModal" class="fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-md hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg p-8 transform scale-95 transition-all duration-300 border border-white/50" id="duplicateModalContent">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                    <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> Duplikat Ditemukan
-                </h3>
-                <span class="bg-amber-100 text-amber-700 font-bold px-2 py-1 rounded text-xs" id="duplicateCount">0</span>
-            </div>
-            <p class="text-xs text-slate-500 mb-4">Berikut adalah No Bagseals yang terdeteksi ganda di database:</p>
-            <div class="bg-slate-50 rounded-xl p-4 max-h-60 overflow-y-auto border border-slate-200">
-                <ul id="duplicateList" class="space-y-2 text-xs text-slate-600 font-mono"></ul>
-            </div>
-            <div class="mt-6 text-right">
-                <button onclick="closeDuplicateModal()" class="py-2 px-6 rounded-xl bg-slate-800 text-white text-xs font-bold hover:bg-slate-900">Tutup</button>
-            </div>
-        </div>
-    </div>
-
     <!-- HEADER -->
-    <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-sm">
-        <div class="max-w-[1600px] mx-auto px-6 h-18 py-3 flex justify-between items-center">
+    <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-sm h-[72px]">
+        <div class="max-w-[1600px] mx-auto px-6 h-full flex justify-between items-center">
             <div class="flex items-center gap-4">
                 <div class="w-10 h-10 bg-gradient-to-tr from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
                     <i class="fa-solid fa-layer-group text-lg"></i>
@@ -277,11 +271,6 @@
                 </div>
                 <div class="h-8 w-[1px] bg-slate-200 hidden md:block"></div>
                 
-                <button onclick="checkForDuplicates()" class="btn-warning flex items-center gap-2 group" title="Cek Duplikat Bagseals">
-                    <i class="fa-solid fa-clipboard-check group-hover:scale-110 transition-transform"></i>
-                    <span>Cek Duplikat</span>
-                </button>
-
                 <button onclick="openDeleteModal()" class="btn-danger flex items-center gap-2 group">
                     <i class="fa-solid fa-trash-can group-hover:rotate-12 transition-transform"></i>
                     <span>Hapus Data</span>
@@ -297,7 +286,7 @@
     </header>
 
     <!-- MAIN CONTENT -->
-    <main class="flex-grow w-full max-w-[1600px] mx-auto px-4 py-8">
+    <main class="flex-grow w-full max-w-[1600px] mx-auto px-4 py-4">
         <!-- EMPTY STATE -->
         <div id="initialState" class="flex flex-col items-center justify-center min-h-[60vh] animate-fade-in-up">
             <div class="w-24 h-24 bg-white rounded-3xl flex items-center justify-center border-2 border-dashed border-indigo-200 shadow-xl shadow-indigo-100 mx-auto mb-6">
@@ -309,58 +298,56 @@
 
         <!-- DASHBOARD CONTENT -->
         <div id="dashboardContent" class="hidden space-y-6">
-            <!-- 1. FILTERS & CONTROLS -->
-            <div class="fresh-card p-5 sticky top-24 z-30">
-                <div class="flex flex-col xl:flex-row gap-5 justify-between items-start xl:items-center">
-                    
-                    <!-- Left: Search & Services -->
-                    <div class="w-full xl:flex-1 flex flex-col md:flex-row gap-4 items-end">
-                        <div class="relative w-full md:w-64 group">
-                            <span class="input-label">Pencarian Global (SMU, Flight, Vendor)</span>
-                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-[34px] text-slate-400 text-xs group-focus-within:text-indigo-500 transition-colors"></i>
-                            <input type="text" id="globalSearch" placeholder="Cari semua data..." class="fresh-input w-full pl-9 bg-white">
-                        </div>
-                        <div class="w-full">
-                            <span class="input-label">Filter Layanan</span>
-                            <div class="flex items-center gap-1 overflow-x-auto no-scrollbar max-w-full pb-1" id="serviceToggleContainer"></div>
-                        </div>
-                    </div>
-
-                    <!-- Right: Filters -->
-                    <div class="w-full xl:w-auto flex flex-wrap gap-3 justify-end items-end">
-                        <div>
-                            <span class="input-label">Rentang Tanggal</span>
-                            <div class="flex items-center bg-white rounded-xl border border-slate-200 p-1 shadow-sm h-[38px]">
-                                <input type="date" id="filterStartDate" class="text-xs font-semibold text-slate-600 px-2 py-1 outline-none w-28 bg-transparent">
-                                <span class="text-slate-300 text-[10px] mx-1 font-bold">SD</span>
-                                <input type="date" id="filterEndDate" class="text-xs font-semibold text-slate-600 px-2 py-1 outline-none w-28 bg-transparent">
+            
+            <!-- 1. FILTERS & CONTROLS (STICKY BOX) -->
+            <div class="sticky-filter-wrapper">
+                <div class="fresh-card p-5">
+                    <div class="flex flex-col xl:flex-row gap-5 justify-between items-start xl:items-center">
+                        <!-- Left: Search & Services -->
+                        <div class="w-full xl:flex-1 flex flex-col md:flex-row gap-4 items-end">
+                            <div class="relative w-full md:w-64 group">
+                                <span class="input-label">Pencarian Global (SMU, Flight, Vendor)</span>
+                                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-[34px] text-slate-400 text-xs group-focus-within:text-indigo-500 transition-colors"></i>
+                                <input type="text" id="globalSearch" placeholder="Cari semua data..." class="fresh-input w-full pl-9 bg-white">
+                            </div>
+                            <div class="w-full">
+                                <span class="input-label">Filter Layanan</span>
+                                <div class="flex items-center gap-1 overflow-x-auto no-scrollbar max-w-full pb-1" id="serviceToggleContainer"></div>
                             </div>
                         </div>
-                        
-                        <div>
-                            <span class="input-label">Filter Origin</span>
-                            <select id="filterOrigin" class="fresh-input w-32 cursor-pointer bg-white h-[38px]"><option value="all">Semua</option></select>
+    
+                        <!-- Right: Filters -->
+                        <div class="w-full xl:w-auto flex flex-wrap gap-3 justify-end items-end">
+                            <div>
+                                <span class="input-label">Rentang Tanggal</span>
+                                <div class="flex items-center bg-white rounded-xl border border-slate-200 p-1 shadow-sm h-[38px]">
+                                    <input type="date" id="filterStartDate" class="text-xs font-semibold text-slate-600 px-2 py-1 outline-none w-28 bg-transparent">
+                                    <span class="text-slate-300 text-[10px] mx-1 font-bold">SD</span>
+                                    <input type="date" id="filterEndDate" class="text-xs font-semibold text-slate-600 px-2 py-1 outline-none w-28 bg-transparent">
+                                </div>
+                            </div>
+                            <div>
+                                <span class="input-label">Filter Origin</span>
+                                <select id="filterOrigin" class="fresh-input w-32 cursor-pointer bg-white h-[38px]"><option value="all">Semua</option></select>
+                            </div>
+                            <div>
+                                <span class="input-label">Filter Destinasi</span>
+                                <select id="filterDestinasi" class="fresh-input w-32 cursor-pointer bg-white h-[38px]"><option value="all">Semua</option></select>
+                            </div>
+                            <div>
+                                <span class="input-label">&nbsp;</span>
+                                <button onclick="resetFilters()" class="w-[38px] h-[38px] flex items-center justify-center bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:text-indigo-600 text-slate-400 transition-all shadow-sm" title="Reset Filters"><i class="fa-solid fa-arrows-rotate text-xs"></i></button>
+                            </div>
+                            <!-- Hidden inputs -->
+                            <select id="filterVendor" class="hidden"><option value="all">All</option></select>
+                            <select id="filterBatch" class="hidden"><option value="all">All</option></select>
                         </div>
-                        
-                        <div>
-                            <span class="input-label">Filter Destinasi</span>
-                            <select id="filterDestinasi" class="fresh-input w-32 cursor-pointer bg-white h-[38px]"><option value="all">Semua</option></select>
-                        </div>
-                        
-                        <div>
-                            <span class="input-label">&nbsp;</span>
-                            <button onclick="resetFilters()" class="w-[38px] h-[38px] flex items-center justify-center bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:text-indigo-600 text-slate-400 transition-all shadow-sm" title="Reset Filters"><i class="fa-solid fa-arrows-rotate text-xs"></i></button>
-                        </div>
-
-                        <!-- Hidden inputs -->
-                        <select id="filterVendor" class="hidden"><option value="all">All</option></select>
-                        <select id="filterBatch" class="hidden"><option value="all">All</option></select>
                     </div>
                 </div>
             </div>
 
             <!-- 2. KPI -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-2">
                 <!-- Tonnage -->
                 <div class="fresh-card p-6 relative overflow-hidden group">
                     <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity transform group-hover:scale-110 duration-500"><i class="fa-solid fa-weight-hanging text-6xl text-indigo-600"></i></div>
@@ -406,6 +393,17 @@
                     </div>
                 </div>
                 <div class="h-72 w-full relative"><canvas id="mainChart"></canvas></div>
+            </div>
+
+            <!-- 3.5 TIME TREND CHART (NEW) -->
+            <div class="fresh-card p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600"><i class="fa-regular fa-clock"></i></div>
+                        <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Tren Jam Inbound (Qty Pcs)</h3>
+                    </div>
+                </div>
+                <div class="h-60 w-full relative"><canvas id="timeChart"></canvas></div>
             </div>
 
             <!-- 4. DISTRIBUTIONS -->
@@ -474,41 +472,66 @@
                 </div>
             </div>
 
-            <!-- 6. DETAIL DATA TABLE -->
-            <div class="fresh-card overflow-hidden mb-10">
-                <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-white">
-                    <h3 class="text-[11px] font-bold text-slate-700 uppercase flex items-center gap-2"><span class="bg-indigo-100 p-1.5 rounded-lg text-indigo-600"><i class="fa-solid fa-list-check"></i></span>Manifest Detail</h3>
-                    <div class="flex items-center space-x-1 bg-slate-50 p-1 rounded-lg border border-slate-100">
-                        <button onclick="changePage(-1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-indigo-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
-                        <span id="pageIndicator" class="px-3 text-[10px] font-mono font-bold text-slate-500">1</span>
-                        <button onclick="changePage(1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-indigo-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+            <!-- 6. DETAIL DATA TABLE (SPLIT LAYOUT) -->
+            <div class="grid grid-cols-12 gap-6 mb-10">
+                <!-- Left Column: Bagseals & Notes -->
+                <div class="col-span-12 lg:col-span-10 fresh-card overflow-hidden flex flex-col">
+                    <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-white">
+                        <h3 class="text-[11px] font-bold text-slate-700 uppercase flex items-center gap-2">
+                            <span class="bg-indigo-100 p-1.5 rounded-lg text-indigo-600"><i class="fa-solid fa-list-check"></i></span>
+                            Manifest Summary
+                        </h3>
+                        <div class="flex items-center space-x-1 bg-slate-50 p-1 rounded-lg border border-slate-100">
+                            <button onclick="changePage(-1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-indigo-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
+                            <span id="pageIndicator" class="px-3 text-[10px] font-mono font-bold text-slate-500">1</span>
+                            <button onclick="changePage(1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-indigo-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="fresh-table w-full">
+                            <thead>
+                                <tr>
+                                    <th class="text-center group-col w-24">Tgl Terima</th>
+                                    <th class="text-center group-col bg-indigo-50/50 text-indigo-700 w-24">Destinasi</th>
+                                    <th class="text-left group-col w-16">Jam</th>
+                                    <th class="text-left group-col w-20">Tgl PA</th>
+                                    <th class="text-left group-col w-16">Batch</th>
+                                    <th class="text-left group-col">Origin</th>
+                                    <th class="text-left">SMU</th>
+                                    <th class="text-left">Flight</th>
+                                    <th class="text-left w-20">Tgl Flight</th>
+                                    <th class="text-center w-16">SLA (H)</th>
+                                    <th class="text-center w-16">Total MB</th>
+                                    <th class="text-right w-16">Total Pcs</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="p-3 bg-slate-50 text-[10px] text-slate-400 text-center border-t border-slate-100 font-mono font-medium">
+                        Showing <span id="showingCount" class="text-slate-600">0</span> of <span id="totalCount" class="text-slate-600">0</span> records
                     </div>
                 </div>
-                <div class="overflow-x-auto custom-scrollbar">
-                    <table class="fresh-table w-full">
-                        <thead>
-                            <tr>
-                                <th class="text-center group-col w-20">Tgl Terima</th>
-                                <th class="text-center group-col bg-indigo-50/50 text-indigo-700 w-24">Destinasi</th>
-                                <th class="text-left group-col w-16">Jam</th>
-                                <th class="text-left group-col w-20">Tgl PA</th>
-                                <th class="text-left group-col w-16">Batch</th>
-                                <th class="text-left group-col">Origin</th>
-                                <th class="text-left">SMU</th>
-                                <th class="text-left">Flight</th>
-                                <th class="text-left w-20">Tgl Flight</th>
-                                <th class="text-center w-16">SLA (H)</th>
-                                <th class="text-center w-16">Total MB</th>
-                                <th class="text-right w-16">Total Pcs</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableBody"></tbody>
-                    </table>
-                </div>
-                <div class="p-3 bg-slate-50 text-[10px] text-slate-400 text-center border-t border-slate-100 font-mono font-medium">
-                    Showing <span id="showingCount" class="text-slate-600">0</span> of <span id="totalCount" class="text-slate-600">0</span> records
+
+                <!-- Right Column: Bagseals List -->
+                <div class="col-span-12 lg:col-span-2 fresh-card overflow-hidden flex flex-col max-h-[800px]">
+                    <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-white sticky top-0 z-10">
+                        <h3 class="text-[11px] font-bold text-slate-700 uppercase flex items-center gap-2">
+                            <span class="bg-indigo-100 p-1.5 rounded-lg text-indigo-600"><i class="fa-solid fa-tags"></i></span>
+                            Bagshield
+                        </h3>
+                        <button onclick="copyBagseals()" class="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-2 py-1 rounded border border-indigo-100 transition shadow-sm">
+                            <i class="fa-regular fa-copy mr-1"></i> Salin
+                        </button>
+                    </div>
+                    <div class="overflow-y-auto custom-scrollbar flex-grow p-0">
+                        <table class="w-full text-xs text-left" id="bagsealTable">
+                            <!-- JS Generated -->
+                        </table>
+                    </div>
                 </div>
             </div>
+
         </div>
     </main>
 
@@ -629,53 +652,6 @@
              openPasswordModal('delete');
         }
 
-        window.checkForDuplicates = function() {
-            const counts = {};
-            const duplicates = [];
-
-            window.rawData.forEach(d => {
-                const bs = String(d._mb).trim();
-                if(bs && bs !== '-' && bs !== 'undefined') {
-                     if(counts[bs]) {
-                         counts[bs]++;
-                         if(counts[bs] === 2) duplicates.push(bs);
-                     } else {
-                         counts[bs] = 1;
-                     }
-                }
-            });
-
-            if(duplicates.length === 0) {
-                showToast("Data Bersih: Tidak ada duplikat Bagseal", "success");
-            } else {
-                const list = document.getElementById('duplicateList');
-                list.innerHTML = duplicates.map(d => 
-                    `<li class="py-2 border-b border-slate-100 flex justify-between items-center">
-                        <span class="font-bold text-slate-700">${d}</span> 
-                        <span class="bg-red-100 text-red-600 text-[10px] px-2 py-0.5 rounded-full font-bold">DOUBLE</span>
-                    </li>`
-                ).join('');
-                document.getElementById('duplicateCount').innerText = duplicates.length;
-                openDuplicateModal();
-            }
-        }
-
-        function openDuplicateModal() {
-            document.getElementById('duplicateModal').classList.remove('hidden');
-            setTimeout(() => {
-                document.getElementById('duplicateModal').classList.remove('opacity-0');
-                document.getElementById('duplicateModalContent').classList.remove('scale-95');
-                document.getElementById('duplicateModalContent').classList.add('scale-100');
-            }, 10);
-        }
-
-        function closeDuplicateModal() {
-            document.getElementById('duplicateModal').classList.add('opacity-0');
-            document.getElementById('duplicateModalContent').classList.remove('scale-100');
-            document.getElementById('duplicateModalContent').classList.add('scale-95');
-            setTimeout(() => document.getElementById('duplicateModal').classList.add('hidden'), 300);
-        }
-
         function handleEnter(e) { if (e.key === 'Enter') submitPassword(); }
 
         function submitPassword() {
@@ -771,6 +747,7 @@
                         _flight: cleanFlight,
                         _tglFlight: row['TANGGAL FLIGHT'] || '-',
                         _mb: row['No Bagseals'] || '-',
+                        _note: row['Note'] || row['CATATAN'] || '',
                         _sla: sla,
                         _firestoreId: row._firestoreId 
                     });
@@ -925,7 +902,7 @@
             });
 
             window.currentPage = 1;
-            window.matrixPage = 1; // Reset Matrix Pagination
+            window.matrixPage = 1; 
             updateDashboard();
         }
 
@@ -940,30 +917,21 @@
             document.getElementById('kpiMB').innerText = formatNumber(m);
             document.getElementById('kpiPcs').innerText = formatNumber(p);
 
-            // NEW COMPARISON LOGIC
             const startStr = document.getElementById('filterStartDate').value;
             const endStr = document.getElementById('filterEndDate').value;
-            
-            // Default to full range comparison if no filter
             let prevWeight = 0, prevPcs = 0, prevMB = 0;
 
             if(startStr && endStr) {
                 const sDate = new Date(startStr.split('-')[0], startStr.split('-')[1]-1, startStr.split('-')[2]);
                 const eDate = new Date(endStr.split('-')[0], endStr.split('-')[1]-1, endStr.split('-')[2]);
-                
-                // Duration in days
                 const oneDay = 24*60*60*1000;
                 const diffDays = Math.round(Math.abs((eDate - sDate) / oneDay)) + 1;
-                
-                // Previous Range
                 const prevEndDate = new Date(sDate);
                 prevEndDate.setDate(prevEndDate.getDate() - 1);
                 prevEndDate.setHours(23,59,59,999);
-                
                 const prevStartDate = new Date(prevEndDate);
-                prevStartDate.setDate(prevStartDate.getDate() - diffDays + 1); // Go back duration
+                prevStartDate.setDate(prevStartDate.getDate() - diffDays + 1); 
                 prevStartDate.setHours(0,0,0,0);
-                
                 const fOrg = document.getElementById('filterOrigin').value;
                 const fDst = document.getElementById('filterDestinasi').value;
 
@@ -985,10 +953,12 @@
             updateDiff('kpiMBDiff', m, prevMB);
 
             renderMainChart();
+            renderTimeChart(); // NEW
             renderBottomCharts();
             renderSlaMatrices();
             renderMatrixTable();
             aggregateAndRenderTable();
+            renderBagsealTable(); // NEW
         }
 
         function updateDiff(id, current, previous) {
@@ -1005,34 +975,68 @@
             else el.className = "text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-50 text-rose-600";
         }
 
+        // --- NEW: BAGSEAL TABLE RENDERER ---
+        function renderBagsealTable() {
+            const tbody = document.getElementById('bagsealTable');
+            tbody.innerHTML = '';
+            
+            const limit = 200;
+            const dataToShow = window.filteredData.slice(0, limit);
+            
+            let html = `<thead class="bg-slate-50 sticky top-0 z-10 border-b border-slate-200">
+                <tr><th class="px-3 py-2 text-left font-bold text-slate-600">No Bagshield</th><th class="px-3 py-2 text-left font-bold text-slate-600">Note</th></tr>
+            </thead><tbody>`;
+
+            dataToShow.forEach(d => {
+                const note = d._note || '-';
+                html += `<tr class="border-b border-slate-50 last:border-0 hover:bg-slate-50">
+                    <td class="px-3 py-2 font-mono text-xs text-slate-700 select-all">${d._mb}</td>
+                    <td class="px-3 py-2 text-xs text-slate-500 italic">${note}</td>
+                </tr>`;
+            });
+            
+            if (window.filteredData.length > limit) {
+                html += `<tr><td colspan="2" class="text-center py-2 text-[10px] text-slate-400">...and ${window.filteredData.length - limit} more (use search/filter)</td></tr>`;
+            }
+            
+            html += '</tbody>';
+            tbody.innerHTML = html;
+        }
+
+        // --- NEW: COPY BAGSEALS FUNCTION ---
+        function copyBagseals() {
+            const bagseals = window.filteredData.map(d => d._mb).join('\n');
+            navigator.clipboard.writeText(bagseals).then(() => {
+                showToast("Bagseals copied to clipboard", "success");
+            }).catch(err => {
+                showToast("Failed to copy", "error");
+            });
+        }
+        window.copyBagseals = copyBagseals;
+
         // --- AGGREGATED TABLE (MANIFEST) ---
         function aggregateAndRenderTable() {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
 
-            const aggMap = new Map();
-            window.filteredData.forEach(d => {
-                const key = `${d._date.getTime()}|${d._dest}|${d._jam}|${d._dateOrigin?.getTime()}|${d._sla}|${d._batch}|${d._origin}|${d._smu}|${d._flight}|${d._tglFlight}`;
-                if (!aggMap.has(key)) aggMap.set(key, { ...d, _mbCount: 0, _pcsSum: 0 });
-                const e = aggMap.get(key);
-                e._mbCount++;
-                e._pcsSum += d._pcs; // Summing Pcs (Kuantitas Paket)
-            });
+            // Use filteredData directly (detail rows)
+            let displayData = [...window.filteredData];
             
-            window.aggregatedData = Array.from(aggMap.values());
-            
-            // SORTING: Date -> Dest -> Jam
-            window.aggregatedData.sort((a,b) => {
+            // SORTING: Date -> Dest -> Jam -> Flight
+            displayData.sort((a,b) => {
                 if(a._date.getTime() !== b._date.getTime()) return a._date - b._date;
                 if(a._dest !== b._dest) return a._dest < b._dest ? -1 : 1; 
-                return a._jam.localeCompare(b._jam);
+                if(a._jam !== b._jam) return a._jam.localeCompare(b._jam);
+                return a._flight.localeCompare(b._flight);
             });
 
             const start = (window.currentPage - 1) * window.rowsPerPage;
-            const pageData = window.aggregatedData.slice(start, start + window.rowsPerPage);
+            const pageData = displayData.slice(start, start + window.rowsPerPage);
             
             // Span Calculation
-            const spans = { date: [], dest: [], jam: [], pa: [], sla: [], batch: [], origin: [], flight: [], tglFlight: [] };
+            const spans = { 
+                date: [], dest: [], jam: [], pa: [], sla: [], batch: [], origin: [], flight: [], tglFlight: [], mb: [], pcs: [] 
+            };
             for(let k in spans) spans[k] = new Array(pageData.length).fill(0);
 
             // Generic Calculator
@@ -1051,9 +1055,8 @@
             };
 
             // Hierarchy
-            const pmDate = (a,b) => a._date.getTime()===b._date.getTime() && a._dest===b._dest; // Date depends on Dest grouping
+            const pmDate = (a,b) => a._date.getTime()===b._date.getTime() && a._dest===b._dest; 
             
-            // Date Span
             for(let i=0; i<pageData.length; i++) {
                 if(spans.date[i] === -1) continue;
                 let c = 1;
@@ -1065,13 +1068,8 @@
 
             calcSpan('dest', pmDate); 
             const pmDest = (a,b) => pmDate(a,b) && a._dest===b._dest;
-            
-            // JAM is the key grouper for details
             calcSpan('jam', pmDest);
             const pmJam = (a,b) => pmDest(a,b) && a._jam===b._jam;
-            
-            // Fields dependent on Jam (Batch, Origin, PA, Flight, Tgl Flight, SLA, MB, Pcs)
-            // If Jam is same within same Date/Dest block, we merge these if identical
             
             calcSpan('pa', pmJam, '_dateOrigin');
             calcSpan('batch', pmJam);
@@ -1079,64 +1077,101 @@
             calcSpan('flight', pmJam);
             calcSpan('tglFlight', pmJam);
             calcSpan('sla', pmJam);
-            
-            // Merge MB & PCS if identical within same block? No, usually these are per row group (flight).
-            // Let's assume if Flight/Time is same, MB/Pcs aggregate should be displayed once per that group.
-            // Since we aggregated by key including all these, identical lines are already 1 row.
-            // So no rowspan needed for MB/Pcs, just standard display.
+
+            // Helper to calculate sums for a range
+            const calcSum = (startIdx, span) => {
+                let mb = 0, pcs = 0;
+                for(let k=0; k<span; k++) {
+                    if (startIdx + k < pageData.length) {
+                        mb += 1; // Each row is 1 MB
+                        pcs += pageData[startIdx + k]._pcs;
+                    }
+                }
+                return { mb, pcs };
+            };
 
             pageData.forEach((d, i) => {
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 transition border-b border-slate-100";
+                tr.className = "hover:bg-slate-50 transition border-b border-slate-300"; 
                 
                 if(spans.date[i] > 0 && i > 0) tr.classList.add("thick-date-border");
 
-                const addTd = (f, txt, cls) => {
+                const addTd = (f, txt, cls, isHtml=false) => {
                     if(spans[f][i] > 0) {
                         const td = document.createElement('td');
-                        td.className = cls + " valign-middle"; // Force middle align
+                        td.className = cls + " valign-middle"; 
                         td.rowSpan = spans[f][i];
-                        td.textContent = txt;
+                        if(isHtml) td.innerHTML = txt;
+                        else td.textContent = txt;
                         tr.appendChild(td);
                     }
                 };
 
-                addTd('date', formatDate(d._date), "text-center font-bold text-slate-700 bg-white border-r border-slate-200 group-col");
-                addTd('dest', d._dest, "text-center font-bold text-indigo-700 bg-indigo-50 border-r border-slate-100 group-col");
-                addTd('jam', d._jam, "text-left text-slate-600 border-r border-slate-100 bg-white group-col");
-                addTd('pa', formatDate(d._dateOrigin), "text-left text-slate-500 border-r border-slate-100 bg-white group-col");
-                addTd('batch', d._batch, "text-left text-slate-500 border-r border-slate-100 bg-white group-col");
-                addTd('origin', d._origin, "text-left text-slate-700 border-r border-slate-100 bg-white group-col");
+                // DATE CELL with Summary
+                if (spans.date[i] > 0) {
+                    const totals = calcSum(i, spans.date[i]);
+                    const html = `
+                        <div class="flex flex-col items-center gap-1">
+                            <span class="text-sm">${formatDate(d._date)}</span>
+                            <div class="w-full bg-indigo-50 border border-indigo-100 rounded p-1 text-[9px] leading-tight">
+                                <div class="font-bold text-indigo-700 uppercase mb-0.5">Total Tgl</div>
+                                <div class="flex justify-between px-1">
+                                    <span class="text-slate-600 font-mono">${totals.mb} MB</span>
+                                    <span class="text-slate-800 font-bold font-mono">${formatNumber(totals.pcs)} Pcs</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    addTd('date', html, "text-center font-bold text-slate-800 bg-white border-r border-slate-300 group-col", true);
+                }
+
+                addTd('dest', d._dest, "text-center font-bold text-indigo-800 bg-indigo-50 border-r border-slate-300 group-col");
+                
+                // JAM CELL with Summary
+                if (spans.jam[i] > 0) {
+                    const totals = calcSum(i, spans.jam[i]);
+                    const html = `
+                        <div class="flex flex-col gap-0.5">
+                            <span class="text-sm font-bold text-slate-700">${d._jam}</span>
+                            <span class="text-[9px] font-medium text-slate-500 bg-slate-100 px-1 rounded border border-slate-200 inline-block text-center">
+                                ${totals.mb} MB | ${formatNumber(totals.pcs)} Pcs
+                            </span>
+                        </div>
+                    `;
+                    addTd('jam', html, "text-left text-slate-700 font-medium border-r border-slate-300 bg-white group-col", true);
+                }
+
+                addTd('pa', formatDate(d._dateOrigin), "text-left text-slate-500 border-r border-slate-300 bg-white group-col");
+                addTd('batch', d._batch, "text-left text-slate-500 border-r border-slate-300 bg-white group-col");
+                addTd('origin', d._origin, "text-left text-slate-700 border-r border-slate-300 bg-white group-col");
 
                 const smuTd = document.createElement('td');
-                smuTd.className = "text-slate-500 font-mono text-[11px] border-r border-slate-100 valign-middle";
+                smuTd.className = "text-slate-600 font-mono text-[11px] border-r border-slate-300 valign-middle font-medium";
                 smuTd.textContent = d._smu;
                 tr.appendChild(smuTd);
 
-                addTd('flight', d._flight, "text-left text-slate-800 font-medium border-r border-slate-100 bg-white");
-                addTd('tglFlight', d._tglFlight, "text-left text-slate-500 border-r border-slate-100 bg-white");
-
+                addTd('flight', d._flight, "text-left text-slate-900 font-bold border-r border-slate-300 bg-white");
+                addTd('tglFlight', d._tglFlight, "text-left text-slate-500 border-r border-slate-300 bg-white");
+                
                 // SLA Moved here
                 if (spans.sla[i] > 0) {
-                    const slaColor = d._sla > 3 ? 'text-rose-600 font-bold' : 'text-emerald-600 font-bold';
+                    const slaColor = d._sla > 3 ? 'text-rose-600 font-extrabold bg-rose-50' : 'text-emerald-600 font-extrabold bg-emerald-50';
                     const td = document.createElement('td');
-                    td.className = `text-center border-r border-slate-100 group-col valign-middle ${slaColor}`;
+                    td.className = `text-center border-r border-slate-300 group-col valign-middle ${slaColor}`;
                     td.rowSpan = spans.sla[i];
                     td.textContent = d._sla;
                     tr.appendChild(td);
                 }
 
-                // Metrics (No Merge, unique per row usually)
-                // If you want to merge them if identical for whole flight group, add to calcSpan above.
-                // Assuming unique per aggregated row.
+                // Individual Rows for MB & PCS (No Merge)
                 const mbTd = document.createElement('td');
-                mbTd.className = "text-center font-mono font-bold text-slate-600 border-r border-slate-100 valign-middle";
-                mbTd.textContent = d._mbCount;
+                mbTd.className = "text-center font-mono font-bold text-slate-600 border-r border-slate-300 valign-middle bg-white";
+                mbTd.textContent = "1"; 
                 tr.appendChild(mbTd);
 
                 const pcsTd = document.createElement('td');
-                pcsTd.className = "text-right font-bold text-slate-800 valign-middle";
-                pcsTd.textContent = formatNumber(d._pcsSum);
+                pcsTd.className = "text-right font-black text-slate-900 valign-middle bg-white";
+                pcsTd.textContent = formatNumber(d._pcs);
                 tr.appendChild(pcsTd);
 
                 tbody.appendChild(tr);
@@ -1153,10 +1188,12 @@
             const ctx = document.getElementById('mainChart').getContext('2d');
             const agg = {};
             window.filteredData.forEach(d => {
+                // FIX: Use manual date formatting to avoid timezone shifts
                 const k = window.currentChartMode === 'daily' ? toLocalISOString(d._date) : d._date.toLocaleString('id-ID', {month:'short', year:'numeric'});
                 agg[k] = (agg[k]||0) + d._pcs;
             });
-            const lbls = Object.keys(agg).sort(); 
+            // FIX: Sort keys (Dates) properly for X axis
+            const lbls = Object.keys(agg).sort(); // YYYY-MM-DD sorts correctly
             window.chartInstances.main = new Chart(ctx, {
                 type: 'line',
                 data: { labels: lbls, datasets: [{ label: 'Total Pcs', data: lbls.map(k=>agg[k]), borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.1)', fill: true, tension: 0.3 }] },
@@ -1171,12 +1208,50 @@
                 }
             });
         }
+        
+        // --- NEW: TIME TREND CHART ---
+        function renderTimeChart() {
+            if(window.chartInstances.time) window.chartInstances.time.destroy();
+            const ctx = document.getElementById('timeChart').getContext('2d');
+            const agg = {};
+            // Init 00-23
+            for(let i=0; i<24; i++) {
+                agg[String(i).padStart(2, '0')] = 0;
+            }
+            
+            window.filteredData.forEach(d => {
+                // Extract Hour from JAM (assuming format HH:mm)
+                if(d._jam && d._jam.includes(':')) {
+                    const hour = d._jam.split(':')[0];
+                    if(agg[hour] !== undefined) agg[hour] += d._pcs;
+                }
+            });
+            
+            const labels = Object.keys(agg).sort();
+            window.chartInstances.time = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Qty Pcs',
+                        data: labels.map(k => agg[k]),
+                        backgroundColor: '#10b981',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { display: false }, x: { grid: { display: false } } },
+                    plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'end', color: '#64748b', font: { size: 9 }, formatter: (v) => v > 0 ? formatNumber(v) : '' } }
+                }
+            });
+        }
+
         window.setMainChartMode = function(mode) {
             window.currentChartMode = mode;
-            
             const btnDaily = document.getElementById('btnDaily');
             const btnMonthly = document.getElementById('btnMonthly');
-            
             const baseClasses = "px-6 py-2 rounded-lg text-[10px] font-bold transition-all";
             const activeStyle = "bg-slate-900 text-white shadow-md";
             const inactiveStyle = "bg-white text-slate-600 hover:bg-slate-50";
@@ -1188,7 +1263,6 @@
                 btnDaily.className = `${baseClasses} ${inactiveStyle}`;
                 btnMonthly.className = `${baseClasses} ${activeStyle}`;
             }
-
             renderMainChart();
         }
 
@@ -1269,7 +1343,6 @@
             render('slaOriginTable', '_origin', 'ORIGIN'); render('slaDestTable', '_dest', 'DESTINASI');
         }
 
-        // --- UPDATED MATRIX TABLE WITH PAGINATION ---
         function changeMatrixPage(delta) {
              const dates = [...new Set(window.filteredData.map(d => d._date.getTime()))].sort((a,b)=>a-b);
              const totalPages = Math.ceil(dates.length / window.matrixRowsPerPage);
@@ -1311,6 +1384,17 @@
             });
             table.innerHTML = h + '</tbody>';
         }
+        
+        function changePage(delta) {
+            const totalPages = Math.ceil(window.aggregatedData.length / window.rowsPerPage) || 1;
+            const nextPage = window.currentPage + delta;
+            if (nextPage >= 1 && nextPage <= totalPages) {
+                window.currentPage = nextPage;
+                aggregateAndRenderTable();
+            }
+        }
+        window.changePage = changePage;
+
     </script>
 
     <!-- FIREBASE MODULE -->
