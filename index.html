@@ -113,23 +113,6 @@
             filter: brightness(1.1); 
         }
 
-        .btn-success { 
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%); 
-            color: white; 
-            padding: 8px 16px; 
-            border-radius: 12px; 
-            font-weight: 600; 
-            font-size: 12px; 
-            transition: all 0.3s; 
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); 
-            border: 1px solid rgba(255,255,255,0.1); 
-        }
-        .btn-success:hover { 
-            transform: translateY(-1px); 
-            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35); 
-            filter: brightness(1.1); 
-        }
-
         /* Toggles */
         .pill-toggle { 
             padding: 6px 14px; 
@@ -476,11 +459,6 @@
                 </div>
                 <div class="h-8 w-[1px] bg-slate-200 hidden md:block"></div>
                 
-                <button onclick="window.syncData()" class="btn-success flex items-center gap-2 group">
-                    <i class="fa-solid fa-rotate-right group-hover:rotate-180 transition-transform duration-500"></i>
-                    <span>Sinkronkan</span>
-                </button>
-
                 <button onclick="window.openDeleteModal()" class="btn-danger flex items-center gap-2 group">
                     <i class="fa-solid fa-trash-can group-hover:rotate-12 transition-transform"></i>
                     <span>Hapus Data</span>
@@ -740,6 +718,11 @@
                             <button onclick="window.downloadManifestCSV()" class="text-[10px] font-bold text-emerald-600 hover:text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-100 transition shadow-sm flex items-center gap-1.5">
                                 <i class="fa-solid fa-file-csv"></i> Download Detail CSV
                             </button>
+                            <div class="flex items-center space-x-1 bg-slate-50 p-1 rounded-lg border border-slate-100">
+                                <button onclick="window.changePage(-1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-indigo-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
+                                <span id="pageIndicator" class="px-3 text-[10px] font-mono font-bold text-slate-500">1</span>
+                                <button onclick="window.changePage(1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-indigo-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                            </div>
                         </div>
                     </div>
                     <!-- Max-h & overflow-auto agar tabel bisa di-scroll secara internal dan header-nya sticky -->
@@ -766,7 +749,7 @@
                         </table>
                     </div>
                     <div class="p-3 bg-slate-50 text-[10px] text-slate-400 text-center border-t border-slate-100 font-mono font-medium">
-                        Total <span id="totalCount" class="text-slate-600 font-bold">0</span> records
+                        Showing <span id="showingCount" class="text-slate-600">0</span> of <span id="totalCount" class="text-slate-600 font-bold">0</span> records
                     </div>
                 </div>
 
@@ -804,6 +787,10 @@
         window.chartInstances = {};
         window.currentChartMode = 'daily';
         
+        // Manifest Pagination - Reverted to 100 per page to save browser memory
+        window.currentPage = 1;
+        window.rowsPerPage = 100;
+
         // Matrix Pagination
         window.matrixPage = 1;
         window.matrixRowsPerPage = 7;
@@ -1029,7 +1016,7 @@
                         _etd: row['ETD'],
                         _mb: row['No Bagseals'],
                         _service: service,
-                        _firestoreId: row._firestoreId // Capture ID even for rejected
+                        _firestoreId: row._firestoreId 
                     });
                     return; 
                 }
@@ -1062,7 +1049,7 @@
                         _mb: row['No Bagseals'] || '-',
                         _note: row['Note'] || row['CATATAN'] || '',
                         _sla: sla,
-                        _firestoreId: row._firestoreId // Capture ID
+                        _firestoreId: row._firestoreId 
                     });
                 }
             });
@@ -1305,6 +1292,7 @@
                 return dateOk && orgOk && dstOk && svcOk && searchOk;
             });
 
+            window.currentPage = 1;
             window.matrixPage = 1; 
             window.updateDashboard();
         };
@@ -1519,8 +1507,9 @@
                 return a._flight.localeCompare(b._flight);
             });
 
-            // 3. NO PAGINATION (Menampilkan Semua Data)
-            const pageData = aggregatedList;
+            // 3. PAGINATION (Menampilkan 100 Data per halaman)
+            const start = (window.currentPage - 1) * window.rowsPerPage;
+            const pageData = aggregatedList.slice(start, start + window.rowsPerPage);
             
             // 4. MEMBUAT DAFTAR BARIS RENDER (Menyisipkan Baris Total)
             let renderRows = [];
@@ -1663,7 +1652,9 @@
                 tbody.appendChild(tr);
             });
             
+            document.getElementById('showingCount').textContent = `${Math.min(start+1, window.aggregatedData.length)} - ${Math.min(start+pageData.length, window.aggregatedData.length)}`;
             document.getElementById('totalCount').textContent = window.aggregatedData.length;
+            document.getElementById('pageIndicator').textContent = window.currentPage;
         };
 
         window.renderMainChart = function() { 
@@ -1972,12 +1963,21 @@
             table.innerHTML = h;
         };
 
+        window.changePage = function(delta) {
+            const totalPages = Math.ceil(window.aggregatedData.length / window.rowsPerPage) || 1;
+            const nextPage = window.currentPage + delta;
+            if (nextPage >= 1 && nextPage <= totalPages) {
+                window.currentPage = nextPage;
+                window.aggregateAndRenderTable();
+            }
+        };
+
     </script>
 
     <!-- FIREBASE MODULE -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-        import { getFirestore, collection, getDocs, setDoc, doc, writeBatch, deleteDoc, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, getDocsFromCache, getDocsFromServer } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+        import { getFirestore, collection, getDocs, setDoc, doc, writeBatch, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
         import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
         import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js';
 
@@ -1993,11 +1993,7 @@
 
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
-        
-        // Aktifkan Offline Persistence (IndexedDB Cache)
-        const db = initializeFirestore(app, {
-            localCache: persistentLocalCache({tabManager: persistentMultipleTabManager()})
-        });
+        const db = getFirestore(app);
         const auth = getAuth(app);
 
         onAuthStateChanged(auth, (user) => {
@@ -2014,21 +2010,9 @@
 
         window.loadDataFromFirestore = async function() {
             try {
-                if(window.showLoading) window.showLoading(true, "Memuat dari Cache...");
+                if(window.showLoading) window.showLoading(true, "Syncing...");
                 
-                let qs;
-                try {
-                    // Coba ambil data dari Cache lokal (IndexedDB) terlebih dahulu
-                    qs = await getDocsFromCache(collection(db, "inbound_data"));
-                } catch (e) {
-                    qs = null;
-                }
-
-                // Jika cache kosong atau belum pernah tersimpan, ambil dari server
-                if (!qs || qs.empty) {
-                    if(window.showLoading) window.showLoading(true, "Syncing dari Cloud...");
-                    qs = await getDocsFromServer(collection(db, "inbound_data"));
-                }
+                const qs = await getDocs(collection(db, "inbound_data"));
 
                 if (!qs || qs.empty) {
                     if(window.showLoading) window.showLoading(false);
@@ -2050,33 +2034,6 @@
             } catch (e) {
                 console.error(e);
                 if(window.showLoading) window.showLoading(false);
-            }
-        };
-
-        window.syncData = async function() {
-            try {
-                if(window.showLoading) window.showLoading(true, "Sinkronisasi Cloud...");
-                
-                // Memaksa mengambil data terbaru dari server dan otomatis memperbarui Cache
-                const qs = await getDocsFromServer(collection(db, "inbound_data"));
-                
-                const docs = [];
-                qs.forEach((doc) => {
-                    const data = doc.data();
-                    data._firestoreId = doc.id; 
-                    docs.push(data);
-                });
-                
-                if(window.processRawDataWrapper) {
-                    window.processRawDataWrapper(docs);
-                }
-                
-                if(window.showLoading) window.showLoading(false);
-                window.showToast("Sinkronisasi Selesai", "success");
-            } catch (e) {
-                console.error(e);
-                if(window.showLoading) window.showLoading(false);
-                window.showToast("Gagal Sinkronisasi", "error");
             }
         };
 
@@ -2122,7 +2079,7 @@
                 await Promise.all(batches);
                 if(window.showLoading) window.showLoading(false);
                 window.showToast(`Berhasil menghapus ${count} data`, "success");
-                window.syncData(); // Langsung sinkron ke server setelah dihapus
+                window.loadDataFromFirestore(); 
             } catch(e) {
                 console.error(e);
                 if(window.showLoading) window.showLoading(false);
@@ -2222,7 +2179,7 @@
                 if(window.showLoading) window.showLoading(false);
                 window.pendingUploadData = []; // Clear pending
                 window.openSuccessModal(count);
-                window.syncData(); // Langsung sinkron ke server setelah diupload
+                window.loadDataFromFirestore(); 
             } catch (e) {
                 console.error(e);
                 if(window.showLoading) window.showLoading(false);
