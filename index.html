@@ -1358,13 +1358,28 @@
             const ctx = document.getElementById('mainChart').getContext('2d');
             const agg = {};
             window.filteredData.forEach(d => {
-                const k = window.currentChartMode === 'daily' ? toLocalISOString(d._date) : d._date.toLocaleString('id-ID', {month:'short', year:'numeric'});
-                agg[k] = (agg[k]||0) + d._pcs;
+                let sortKey = '';
+                if (window.currentChartMode === 'daily') {
+                    sortKey = toLocalISOString(d._date);
+                } else {
+                    const y = d._date.getFullYear();
+                    const m = String(d._date.getMonth() + 1).padStart(2, '0');
+                    sortKey = `${y}-${m}`; 
+                }
+                agg[sortKey] = (agg[sortKey]||0) + d._pcs;
             });
-            const lbls = Object.keys(agg).sort(); 
+            
+            const sortedKeys = Object.keys(agg).sort();
+            const lbls = sortedKeys.map(k => {
+                if (window.currentChartMode === 'daily') return k;
+                const [y, m] = k.split('-');
+                return new Date(y, parseInt(m)-1, 1).toLocaleString('id-ID', {month:'short', year:'numeric'});
+            });
+            const dataVals = sortedKeys.map(k => agg[k]);
+
             window.chartInstances.main = new Chart(ctx, {
                 type: 'line',
-                data: { labels: lbls, datasets: [{ label: 'Total Pcs', data: lbls.map(k=>agg[k]), borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.1)', fill: true, tension: 0.3 }] },
+                data: { labels: lbls, datasets: [{ label: 'Total Pcs', data: dataVals, borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.1)', fill: true, tension: 0.3 }] },
                 options: { 
                     responsive: true, 
                     maintainAspectRatio: false, 
@@ -1372,7 +1387,16 @@
                         y: { display: false }, 
                         x: { grid: { display: false } } 
                     }, 
-                    plugins: { legend: { display: false }, datalabels: { align: 'end', anchor: 'end', color: '#64748b', font: { weight: 'bold' } } } 
+                    plugins: { 
+                        legend: { display: false }, 
+                        datalabels: { 
+                            align: 'end', 
+                            anchor: 'end', 
+                            color: '#64748b', 
+                            font: { weight: 'bold' },
+                            formatter: (value) => formatNumber(value)
+                        } 
+                    } 
                 }
             });
         }
