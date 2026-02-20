@@ -113,6 +113,23 @@
             filter: brightness(1.1); 
         }
 
+        .btn-success { 
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%); 
+            color: white; 
+            padding: 8px 16px; 
+            border-radius: 12px; 
+            font-weight: 600; 
+            font-size: 12px; 
+            transition: all 0.3s; 
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); 
+            border: 1px solid rgba(255,255,255,0.1); 
+        }
+        .btn-success:hover { 
+            transform: translateY(-1px); 
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35); 
+            filter: brightness(1.1); 
+        }
+
         /* Toggles */
         .pill-toggle { 
             padding: 6px 14px; 
@@ -358,7 +375,7 @@
                 <p class="text-xs text-slate-500 mt-1" id="modalDesc">Please enter access code</p>
             </div>
             <div class="relative mb-6">
-                <input type="password" id="passwordInput" class="w-full text-center py-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-indigo-500 outline-none transition-all text-sm font-mono tracking-[0.5em]" placeholder="••••••" onkeypress="handleEnter(event)">
+                <input type="password" id="passwordInput" class="w-full text-center py-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-indigo-500 outline-none transition-all text-sm font-mono tracking-[0.5em]" placeholder="••••••" onkeypress="window.handleEnter(event)">
             </div>
             <div class="grid grid-cols-2 gap-3">
                 <button onclick="window.closePasswordModal()" class="py-2.5 rounded-xl border border-slate-200 text-slate-500 text-xs font-bold hover:bg-slate-50">Cancel</button>
@@ -459,6 +476,11 @@
                 </div>
                 <div class="h-8 w-[1px] bg-slate-200 hidden md:block"></div>
                 
+                <button onclick="window.syncData()" class="btn-success flex items-center gap-2 group">
+                    <i class="fa-solid fa-rotate-right group-hover:rotate-180 transition-transform duration-500"></i>
+                    <span>Sinkronkan</span>
+                </button>
+
                 <button onclick="window.openDeleteModal()" class="btn-danger flex items-center gap-2 group">
                     <i class="fa-solid fa-trash-can group-hover:rotate-12 transition-transform"></i>
                     <span>Hapus Data</span>
@@ -669,7 +691,7 @@
                     <div class="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center text-red-600"><i class="fa-solid fa-triangle-exclamation"></i></div>
                     <h3 class="text-[11px] font-bold text-red-600 uppercase">Exception Monitoring: Tolakan Bandara</h3>
                 </div>
-                <div class="overflow-x-auto custom-scrollbar max-h-80">
+                <div class="overflow-auto custom-scrollbar max-h-80 relative">
                     <table class="fresh-table w-full" id="rejectedTable"></table>
                 </div>
             </div>
@@ -1067,21 +1089,21 @@
                 table.innerHTML = `<tr><td class="p-4 text-center text-slate-400 italic">Tidak ada data tolakan</td></tr>`;
                 return;
             }
-            let html = `<thead class="bg-red-50"><tr>
-                <th class="text-left text-red-600">Tgl PA</th>
-                <th class="text-center text-red-600">Batch</th>
-                <th class="text-left text-red-600">Origin</th>
-                <th class="text-left text-red-600">Vendor</th>
-                <th class="text-left text-red-600">Service</th>
-                <th class="text-left text-red-600">Destinasi</th>
-                <th class="text-left text-red-600">SMU</th>
-                <th class="text-left text-red-600">Flight</th>
-                <th class="text-left text-red-600">Tgl Flight</th>
-                <th class="text-left text-red-600">ETD</th>
-                <th class="text-center text-red-600">No Bagseals</th>
-                <th class="text-right text-red-600">Berat (Kg)</th>
-                <th class="text-right text-red-600">Pcs</th>
-                <th class="text-left text-red-600">Note</th>
+            let html = `<thead class="bg-red-50 sticky top-0 z-20 shadow-sm border-b border-red-200"><tr>
+                <th class="text-left text-red-600 bg-red-50">Tgl PA</th>
+                <th class="text-center text-red-600 bg-red-50">Batch</th>
+                <th class="text-left text-red-600 bg-red-50">Origin</th>
+                <th class="text-left text-red-600 bg-red-50">Vendor</th>
+                <th class="text-left text-red-600 bg-red-50">Service</th>
+                <th class="text-left text-red-600 bg-red-50">Destinasi</th>
+                <th class="text-left text-red-600 bg-red-50">SMU</th>
+                <th class="text-left text-red-600 bg-red-50">Flight</th>
+                <th class="text-left text-red-600 bg-red-50">Tgl Flight</th>
+                <th class="text-left text-red-600 bg-red-50">ETD</th>
+                <th class="text-center text-red-600 bg-red-50">No Bagseals</th>
+                <th class="text-right text-red-600 bg-red-50">Berat (Kg)</th>
+                <th class="text-right text-red-600 bg-red-50">Pcs</th>
+                <th class="text-left text-red-600 bg-red-50">Note</th>
             </tr></thead><tbody>`;
 
             window.rejectedData.forEach(d => {
@@ -1760,7 +1782,7 @@
             const renderBar = (id, f, c) => {
                 if(window.chartInstances[id]) window.chartInstances[id].destroy();
                 const ctx = document.getElementById(id).getContext('2d');
-                const agg = {}; window.filteredData.forEach(d => agg[d[f]] = (agg[d[f]]||0) + d._pcs); 
+                const agg = {}; window.filteredData.forEach(d => agg[d[f]] = (agg[d[f]]||0) + d._pcs); // Summing Pcs
                 const s = Object.entries(agg).sort((a,b)=>b[1]-a[1]).slice(0, 10);
                 window.chartInstances[id] = new Chart(ctx, { 
                     type: 'bar', 
@@ -1856,43 +1878,9 @@
         window.renderSlaMatrices = function() {
             const render = (id, f, l) => {
                 const t = document.getElementById(id); t.innerHTML = '';
-                const agg = {}; 
-                window.filteredData.forEach(d => { 
-                    const k=d[f]; 
-                    if(!agg[k]) agg[k]={u3:0, b35:0, b67:0, o7:0, tot:0, sum:0}; 
-                    agg[k].tot+=d._pcs; 
-                    agg[k].sum+=(d._sla*d._pcs); 
-                    
-                    if(d._sla<=2) agg[k].u3+=d._pcs; 
-                    else if(d._sla<=5) agg[k].b35+=d._pcs; 
-                    else if(d._sla<=7) agg[k].b67+=d._pcs; 
-                    else agg[k].o7+=d._pcs; 
-                });
-                
-                let h = `<thead class="sticky top-0 bg-white z-10">
-                            <tr>
-                                <th class="text-left text-slate-500">${l}</th>
-                                <th class="text-center text-emerald-600 bg-emerald-50">0-2H</th>
-                                <th class="text-center text-amber-600 bg-amber-50">3-5H</th>
-                                <th class="text-center text-orange-600 bg-orange-50">5-7H</th>
-                                <th class="text-center text-rose-600 bg-rose-50">>7H</th>
-                                <th class="text-center text-slate-800 bg-slate-100">Tot</th>
-                                <th class="text-center text-indigo-600 bg-indigo-50">Avg</th>
-                            </tr>
-                        </thead><tbody>`;
-                        
-                Object.keys(agg).sort().forEach(k => { 
-                    const d=agg[k]; 
-                    h += `<tr class="hover:bg-slate-50">
-                            <td class="font-bold text-slate-700">${k}</td>
-                            <td class="text-center text-emerald-600 font-mono">${window.formatNumber(d.u3)}</td>
-                            <td class="text-center text-amber-600 font-mono">${window.formatNumber(d.b35)}</td>
-                            <td class="text-center text-orange-600 font-bold font-mono">${window.formatNumber(d.b67)}</td>
-                            <td class="text-center text-rose-600 font-bold font-mono">${window.formatNumber(d.o7)}</td>
-                            <td class="text-center font-bold bg-slate-50 font-mono">${window.formatNumber(d.tot)}</td>
-                            <td class="text-center font-bold text-indigo-600">${(d.tot>0?d.sum/d.tot:0).toFixed(1)}</td>
-                          </tr>`; 
-                });
+                const agg = {}; window.filteredData.forEach(d => { const k=d[f]; if(!agg[k]) agg[k]={u3:0,b35:0,b67:0,o7:0,tot:0,sum:0}; agg[k].tot+=d._pcs; agg[k].sum+=(d._sla*d._pcs); if(d._sla<=2)agg[k].u3+=d._pcs; else if(d._sla<=5)agg[k].b35+=d._pcs; else if(d._sla<=7)agg[k].b67+=d._pcs; else agg[k].o7+=d._pcs; });
+                let h = `<thead class="sticky top-0 bg-white z-10"><tr><th class="text-left text-slate-500">${l}</th><th class="text-center text-emerald-600 bg-emerald-50">0-2H</th><th class="text-center text-amber-600 bg-amber-50">3-5H</th><th class="text-center text-orange-600 bg-orange-50">5-7H</th><th class="text-center text-rose-600 bg-rose-50">>7H</th><th class="text-center text-slate-800 bg-slate-100">Tot</th><th class="text-center text-indigo-600 bg-indigo-50">Avg</th></tr></thead><tbody>`;
+                Object.keys(agg).sort((a, b) => agg[b].tot - agg[a].tot).forEach(k => { const d=agg[k]; h += `<tr class="hover:bg-slate-50"><td class="font-bold text-slate-700">${k}</td><td class="text-center text-emerald-600 font-mono">${window.formatNumber(d.u3)}</td><td class="text-center text-amber-600 font-mono">${window.formatNumber(d.b35)}</td><td class="text-center text-orange-600 font-bold font-mono">${window.formatNumber(d.b67)}</td><td class="text-center text-rose-600 font-bold font-mono">${window.formatNumber(d.o7)}</td><td class="text-center font-bold bg-slate-50 font-mono">${window.formatNumber(d.tot)}</td><td class="text-center font-bold text-indigo-600">${(d.tot>0?d.sum/d.tot:0).toFixed(1)}</td></tr>`; });
                 t.innerHTML = h + '</tbody>';
             };
             render('slaOriginTable', '_origin', 'ORIGIN'); render('slaDestTable', '_dest', 'DESTINASI');
@@ -1989,7 +1977,7 @@
     <!-- FIREBASE MODULE -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-        import { getFirestore, collection, getDocs, setDoc, doc, writeBatch, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+        import { getFirestore, collection, getDocs, setDoc, doc, writeBatch, deleteDoc, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, getDocsFromCache, getDocsFromServer } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
         import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
         import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js';
 
@@ -2005,7 +1993,11 @@
 
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
-        const db = getFirestore(app);
+        
+        // Aktifkan Offline Persistence (IndexedDB Cache)
+        const db = initializeFirestore(app, {
+            localCache: persistentLocalCache({tabManager: persistentMultipleTabManager()})
+        });
         const auth = getAuth(app);
 
         onAuthStateChanged(auth, (user) => {
@@ -2022,9 +2014,23 @@
 
         window.loadDataFromFirestore = async function() {
             try {
-                if(window.showLoading) window.showLoading(true, "Syncing...");
-                const qs = await getDocs(collection(db, "inbound_data"));
-                if (qs.empty) {
+                if(window.showLoading) window.showLoading(true, "Memuat dari Cache...");
+                
+                let qs;
+                try {
+                    // Coba ambil data dari Cache lokal (IndexedDB) terlebih dahulu
+                    qs = await getDocsFromCache(collection(db, "inbound_data"));
+                } catch (e) {
+                    qs = null;
+                }
+
+                // Jika cache kosong atau belum pernah tersimpan, ambil dari server
+                if (!qs || qs.empty) {
+                    if(window.showLoading) window.showLoading(true, "Syncing dari Cloud...");
+                    qs = await getDocsFromServer(collection(db, "inbound_data"));
+                }
+
+                if (!qs || qs.empty) {
                     if(window.showLoading) window.showLoading(false);
                     return; 
                 }
@@ -2044,6 +2050,33 @@
             } catch (e) {
                 console.error(e);
                 if(window.showLoading) window.showLoading(false);
+            }
+        };
+
+        window.syncData = async function() {
+            try {
+                if(window.showLoading) window.showLoading(true, "Sinkronisasi Cloud...");
+                
+                // Memaksa mengambil data terbaru dari server dan otomatis memperbarui Cache
+                const qs = await getDocsFromServer(collection(db, "inbound_data"));
+                
+                const docs = [];
+                qs.forEach((doc) => {
+                    const data = doc.data();
+                    data._firestoreId = doc.id; 
+                    docs.push(data);
+                });
+                
+                if(window.processRawDataWrapper) {
+                    window.processRawDataWrapper(docs);
+                }
+                
+                if(window.showLoading) window.showLoading(false);
+                window.showToast("Sinkronisasi Selesai", "success");
+            } catch (e) {
+                console.error(e);
+                if(window.showLoading) window.showLoading(false);
+                window.showToast("Gagal Sinkronisasi", "error");
             }
         };
 
@@ -2089,7 +2122,7 @@
                 await Promise.all(batches);
                 if(window.showLoading) window.showLoading(false);
                 window.showToast(`Berhasil menghapus ${count} data`, "success");
-                window.loadDataFromFirestore();
+                window.syncData(); // Langsung sinkron ke server setelah dihapus
             } catch(e) {
                 console.error(e);
                 if(window.showLoading) window.showLoading(false);
@@ -2189,7 +2222,7 @@
                 if(window.showLoading) window.showLoading(false);
                 window.pendingUploadData = []; // Clear pending
                 window.openSuccessModal(count);
-                window.loadDataFromFirestore(); // Reload in background
+                window.syncData(); // Langsung sinkron ke server setelah diupload
             } catch (e) {
                 console.error(e);
                 if(window.showLoading) window.showLoading(false);
