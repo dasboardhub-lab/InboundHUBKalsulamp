@@ -308,7 +308,7 @@
                             <div class="relative w-full md:w-64 group">
                                 <span class="input-label">Pencarian Global (All Data)</span>
                                 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-[34px] text-slate-400 text-xs group-focus-within:text-indigo-500 transition-colors"></i>
-                                <input type="text" id="globalSearch" placeholder="Cari SMU, Flight, Bagseal, Note..." class="fresh-input w-full pl-9 bg-white">
+                                <input type="text" id="globalSearch" placeholder="Cari SMU, Flight, Bagseal, Note..." class="fresh-input w-full pl-9 bg-white" oninput="applyFilters()">
                             </div>
                             <div class="w-full">
                                 <span class="input-label">Filter Layanan</span>
@@ -321,12 +321,12 @@
                             <div>
                                 <span class="input-label">Rentang Tanggal</span>
                                 <div class="flex items-center bg-white rounded-xl border border-slate-200 p-1 shadow-sm h-[38px]">
-                                    <input type="date" id="filterStartDate" class="text-xs font-semibold text-slate-600 px-2 py-1 outline-none w-28 bg-transparent">
+                                    <input type="date" id="filterStartDate" class="text-xs font-semibold text-slate-600 px-2 py-1 outline-none w-28 bg-transparent" onchange="applyFilters()">
                                     <span class="text-slate-300 text-[10px] mx-1 font-bold">SD</span>
-                                    <input type="date" id="filterEndDate" class="text-xs font-semibold text-slate-600 px-2 py-1 outline-none w-28 bg-transparent">
+                                    <input type="date" id="filterEndDate" class="text-xs font-semibold text-slate-600 px-2 py-1 outline-none w-28 bg-transparent" onchange="applyFilters()">
                                 </div>
                             </div>
-                            <!-- CHANGED: Multi-Select for Origin -->
+                            <!-- Multi-Select for Origin -->
                             <div class="relative">
                                 <span class="input-label">Filter Origin</span>
                                 <button onclick="toggleMulti('originMenu')" class="fresh-input w-32 text-left flex justify-between items-center bg-white h-[38px] relative z-10 group focus:border-indigo-500">
@@ -337,7 +337,7 @@
                                     <!-- Checkboxes injected via JS -->
                                 </div>
                             </div>
-                            <!-- CHANGED: Multi-Select for Destinasi -->
+                            <!-- Multi-Select for Destinasi -->
                             <div class="relative">
                                 <span class="input-label">Filter Destinasi</span>
                                 <button onclick="toggleMulti('destMenu')" class="fresh-input w-32 text-left flex justify-between items-center bg-white h-[38px] relative z-10 group focus:border-indigo-500">
@@ -352,9 +352,6 @@
                                 <span class="input-label">&nbsp;</span>
                                 <button onclick="resetFilters()" class="w-[38px] h-[38px] flex items-center justify-center bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:text-indigo-600 text-slate-400 transition-all shadow-sm" title="Reset Filters"><i class="fa-solid fa-arrows-rotate text-xs"></i></button>
                             </div>
-                            <!-- Hidden inputs for compatibility -->
-                            <select id="filterVendor" class="hidden"><option value="all">All</option></select>
-                            <select id="filterBatch" class="hidden"><option value="all">All</option></select>
                         </div>
                     </div>
                 </div>
@@ -1528,20 +1525,17 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
         import { getFirestore, collection, getDocs, setDoc, doc, writeBatch, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
         import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
-        import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js';
 
         const firebaseConfig = {
-            apiKey: "AIzaSyDNB8muGuCvKuXVmQdJt8MkrAltKn2mtIY",
-            authDomain: "dasboardhub-ab72e.firebaseapp.com",
-            projectId: "dasboardhub-ab72e",
-            storageBucket: "dasboardhub-ab72e.firebasestorage.app",
-            messagingSenderId: "126699041682",
-            appId: "1:126699041682:web:3d96b34c074108697c474b",
-            measurementId: "G-CW183HEGQN"
+            apiKey: "AIzaSyAZFpX5OxSVIG7f58U60dVJHufHORFQuIg",
+            authDomain: "hub-dashboard-92428.firebaseapp.com",
+            projectId: "hub-dashboard-92428",
+            storageBucket: "hub-dashboard-92428.firebasestorage.app",
+            messagingSenderId: "827243064075",
+            appId: "1:827243064075:web:9d7c41560e3da99833d00e"
         };
 
         const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
         const db = getFirestore(app);
         const auth = getAuth(app);
 
@@ -1686,10 +1680,6 @@
                 }
             });
         };
-
-        document.getElementById('csvFile').addEventListener('change', function(e) {
-            if(e.target.files.length > 0) window.uploadCSVToFirestore(e.target.files[0]);
-        });
     </script>
 </body>
 </html>
