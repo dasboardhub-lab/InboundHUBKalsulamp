@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inbound Control Tower - Cloud Connected</title>
+    <title>Inbound Control Tower</title>
     
     <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -310,7 +310,7 @@
             <div class="flex items-center gap-4">
                 <div class="hidden md:flex flex-col items-end">
                     <span class="text-[11px] font-bold text-slate-700" id="currentDateDisplay">-</span>
-                    <span class="text-[9px] font-bold text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-full">ID-Kal-Sulamp</span>
+                    <span class="text-[9px] font-bold text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-full">ID - KalSulamp</span>
                 </div>
                 <div class="h-8 w-[1px] bg-slate-200 hidden md:block"></div>
                 
@@ -543,19 +543,26 @@
                             <span class="bg-indigo-100 p-1.5 rounded-lg text-indigo-600"><i class="fa-solid fa-list-check"></i></span>
                             Manifest Summary
                         </h3>
-                        <div class="flex items-center space-x-1 bg-slate-50 p-1 rounded-lg border border-slate-100">
-                            <button onclick="window.changePage(-1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-indigo-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
-                            <span id="pageIndicator" class="px-3 text-[10px] font-mono font-bold text-slate-500">1</span>
-                            <button onclick="window.changePage(1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-indigo-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                        <div class="flex items-center gap-3">
+                            <button onclick="window.downloadManifestCSV()" class="text-[10px] font-bold text-emerald-600 hover:text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-100 transition shadow-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-file-csv"></i> Download Detail CSV
+                            </button>
+                            <div class="flex items-center space-x-1 bg-slate-50 p-1 rounded-lg border border-slate-100">
+                                <button onclick="window.changePage(-1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-indigo-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
+                                <span id="pageIndicator" class="px-3 text-[10px] font-mono font-bold text-slate-500">1</span>
+                                <button onclick="window.changePage(1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-indigo-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                            </div>
                         </div>
                     </div>
-                    <div class="overflow-x-auto custom-scrollbar">
-                        <table class="fresh-table w-full">
-                            <thead>
+                    <!-- TAMBAHAN: Max-h & overflow-auto agar tabel bisa di-scroll secara internal dan header-nya sticky -->
+                    <div class="overflow-auto custom-scrollbar max-h-[800px]">
+                        <table class="fresh-table w-full relative">
+                            <!-- TAMBAHAN: class sticky top-0 z-30 shadow-sm -->
+                            <thead class="sticky top-0 z-30 shadow-sm">
                                 <tr>
                                     <th class="text-center group-col w-24">Tgl Terima</th>
                                     <th class="text-left group-col w-16">Jam</th>
-                                    <th class="text-center group-col bg-indigo-50/50 text-indigo-700 w-24">Destinasi</th>
+                                    <th class="text-center bg-indigo-50 text-indigo-700 w-24 border-r border-slate-300">Destinasi</th>
                                     <th class="text-left group-col w-20">Tgl PA</th>
                                     <th class="text-left group-col w-16">Batch</th>
                                     <th class="text-left group-col">Origin</th>
@@ -1203,6 +1210,55 @@
             }).catch(err => {
                 window.showToast("Failed to copy", "error");
             });
+        };
+
+        // --- NEW: DOWNLOAD CSV FUNCTION ---
+        window.downloadManifestCSV = function() {
+            if (!window.filteredData || window.filteredData.length === 0) {
+                window.showToast("Tidak ada data untuk diunduh", "info");
+                return;
+            }
+
+            const headers = [
+                "Tanggal Diterima", "Jam", "Destinasi", "Tanggal PA", "Batch",
+                "Origin", "SMU", "Flight", "Tanggal Flight", "SLA (Hari)",
+                "No Bagseals", "Berat (Kg)", "Pcs", "Vendor", "Service", "Note"
+            ];
+
+            // Mapping raw filtered data (which is strictly 1 row per Bagseal)
+            const csvRows = window.filteredData.map(d => {
+                return [
+                    window.formatDate(d._date),
+                    d._jam || '-',
+                    d._dest || '-',
+                    d._dateOrigin ? window.formatDate(d._dateOrigin) : '-',
+                    d._batch || '-',
+                    d._origin || '-',
+                    d._smu || '-',
+                    d._flight || '-',
+                    d._tglFlight || '-',
+                    d._sla || 0,
+                    d._mb || '-',
+                    d._weight || 0,
+                    d._pcs || 0,
+                    d._vendor || '-',
+                    d._service || '-',
+                    (d._note || '').replace(/"/g, '""') 
+                ].map(val => `"${val}"`).join(','); 
+            });
+
+            const csvContent = [headers.join(','), ...csvRows].join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Manifest_Detail_${window.formatInputDate(new Date())}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            window.showToast("Mendownload CSV...", "success");
         };
 
         window.aggregateAndRenderTable = function() {
