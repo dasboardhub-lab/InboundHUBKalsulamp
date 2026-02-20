@@ -306,9 +306,9 @@
                         <!-- Left: Search & Services -->
                         <div class="w-full xl:flex-1 flex flex-col md:flex-row gap-4 items-end">
                             <div class="relative w-full md:w-64 group">
-                                <span class="input-label">Pencarian Global (SMU, Flight, Vendor)</span>
+                                <span class="input-label">Pencarian Global (All Data)</span>
                                 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-[34px] text-slate-400 text-xs group-focus-within:text-indigo-500 transition-colors"></i>
-                                <input type="text" id="globalSearch" placeholder="Cari semua data..." class="fresh-input w-full pl-9 bg-white">
+                                <input type="text" id="globalSearch" placeholder="Cari SMU, Flight, Bagseal, Note..." class="fresh-input w-full pl-9 bg-white">
                             </div>
                             <div class="w-full">
                                 <span class="input-label">Filter Layanan</span>
@@ -352,7 +352,7 @@
                                 <span class="input-label">&nbsp;</span>
                                 <button onclick="resetFilters()" class="w-[38px] h-[38px] flex items-center justify-center bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:text-indigo-600 text-slate-400 transition-all shadow-sm" title="Reset Filters"><i class="fa-solid fa-arrows-rotate text-xs"></i></button>
                             </div>
-                            <!-- Hidden inputs -->
+                            <!-- Hidden inputs for compatibility -->
                             <select id="filterVendor" class="hidden"><option value="all">All</option></select>
                             <select id="filterBatch" class="hidden"><option value="all">All</option></select>
                         </div>
@@ -866,17 +866,6 @@
 
             populateMulti('originMenu', 'originLabel', '_origin');
             populateMulti('destMenu', 'destLabel', '_dest');
-            
-            // Legacy single selects (hidden but logical)
-            const populate = (id, f) => {
-                const select = document.getElementById(id);
-                const current = select.value;
-                const opts = [...new Set(window.rawData.map(d => d[f]))].sort();
-                select.innerHTML = '<option value="all">Semua</option>' + opts.map(o => `<option value="${o}">${o}</option>`).join('');
-                if (opts.includes(current)) select.value = current;
-            };
-            populate('filterVendor', '_vendor');
-            populate('filterBatch', '_batch');
 
             const services = [...new Set(window.rawData.map(d => d._service))].sort();
             const container = document.getElementById('serviceToggleContainer');
@@ -970,7 +959,7 @@
                 const labelId = id === 'originMenu' ? 'originLabel' : 'destLabel';
                 updateMultiLabel(id, labelId);
             });
-
+            
             document.getElementById('globalSearch').value = '';
             window.selectedService = 'ALL';
             updateToggleVisuals();
@@ -991,15 +980,15 @@
             let sDate = null, eDate = null;
             if(startVal) {
                 const p = startVal.split('-');
-                sDate = new Date(p[0], p[1]-1, p[2]); // Local midnight
+                sDate = new Date(p[0], p[1]-1, p[2]); 
             }
             if(endVal) {
                 const p = endVal.split('-');
-                eDate = new Date(p[0], p[1]-1, p[2]); // Local midnight
-                eDate.setHours(23,59,59,999); // End of day
+                eDate = new Date(p[0], p[1]-1, p[2]); 
+                eDate.setHours(23,59,59,999); 
             }
 
-            // CHANGED: Get Multi Select Values
+            // Get Multi Select Values
             const fOrg = window.getSelectedValues('originMenu');
             const fDst = window.getSelectedValues('destMenu');
             
@@ -1010,13 +999,29 @@
                 if(!d._date) return false;
                 
                 const dateOk = (!sDate || d._date >= sDate) && (!eDate || d._date <= eDate);
-                // CHANGED: Array inclusion check
+                // Array inclusion check for multi-select
                 const orgOk = fOrg.includes('ALL') || fOrg.includes(d._origin);
                 const dstOk = fDst.includes('ALL') || fDst.includes(d._dest);
                 
                 const svcOk = window.selectedService === 'ALL' || d._service === window.selectedService;
+                
+                // IMPROVED: Global Search across ALL relevant fields
                 let searchOk = true;
-                if(search) searchOk = (d._smu && d._smu.includes(search)) || (d._flight && d._flight.includes(search)) || (d._vendor && d._vendor.includes(search)) || (d._origin && d._origin.includes(search)) || (d._dest && d._dest.includes(search));
+                if(search) {
+                    const haystack = [
+                        d._smu, 
+                        d._flight, 
+                        d._vendor, 
+                        d._origin, 
+                        d._dest,
+                        d._batch,
+                        d._mb,      // Bagseals
+                        d._note,    // Notes
+                        d._service
+                    ].join(' ').toUpperCase();
+                    searchOk = haystack.includes(search);
+                }
+                
                 return dateOk && orgOk && dstOk && svcOk && searchOk;
             });
 
@@ -1523,17 +1528,20 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
         import { getFirestore, collection, getDocs, setDoc, doc, writeBatch, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
         import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+        import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js';
 
         const firebaseConfig = {
-            apiKey: "AIzaSyAZFpX5OxSVIG7f58U60dVJHufHORFQuIg",
-            authDomain: "hub-dashboard-92428.firebaseapp.com",
-            projectId: "hub-dashboard-92428",
-            storageBucket: "hub-dashboard-92428.firebasestorage.app",
-            messagingSenderId: "827243064075",
-            appId: "1:827243064075:web:9d7c41560e3da99833d00e"
+            apiKey: "AIzaSyDNB8muGuCvKuXVmQdJt8MkrAltKn2mtIY",
+            authDomain: "dasboardhub-ab72e.firebaseapp.com",
+            projectId: "dasboardhub-ab72e",
+            storageBucket: "dasboardhub-ab72e.firebasestorage.app",
+            messagingSenderId: "126699041682",
+            appId: "1:126699041682:web:3d96b34c074108697c474b",
+            measurementId: "G-CW183HEGQN"
         };
 
         const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
         const db = getFirestore(app);
         const auth = getAuth(app);
 
@@ -1678,6 +1686,10 @@
                 }
             });
         };
+
+        document.getElementById('csvFile').addEventListener('change', function(e) {
+            if(e.target.files.length > 0) window.uploadCSVToFirestore(e.target.files[0]);
+        });
     </script>
 </body>
 </html>
