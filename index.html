@@ -297,14 +297,55 @@
             transform: translateX(-350px);
           }
         }
+
+        /* --- NEW: Upload Loader (Chip) --- */
+        .chip-main-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+        }
+
+        .chip-loader {
+          width: 120px;
+        }
+
+        .trace-bg {
+          stroke: #CBD5E1;
+          stroke-width: 1.8;
+          fill: none;
+        }
+
+        .trace-flow {
+          stroke-width: 1.8;
+          fill: none;
+          stroke-dasharray: 40 400;
+          stroke-dashoffset: 438;
+          filter: drop-shadow(0 0 6px currentColor);
+          animation: flow 3s cubic-bezier(0.5, 0, 0.9, 1) infinite;
+        }
+
+        .yellow { stroke: #ffea00; color: #ffea00; }
+        .blue { stroke: #00ccff; color: #00ccff; }
+        .green { stroke: #00ff15; color: #00ff15; }
+        .purple { stroke: #9900ff; color: #9900ff; }
+        .red { stroke: #ff3300; color: #ff3300; }
+
+        @keyframes flow {
+          to { stroke-dashoffset: 0; }
+        }
+
+        .chip-body { rx: 12; ry: 12; }
+        .chip-text { font-weight: bold; letter-spacing: 1px; }
+        .chip-pin { stroke: #94A3B8; stroke-width: 1.5; filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.2)); }
     </style>
 </head>
 <body class="flex flex-col min-h-screen selection:bg-indigo-100 selection:text-indigo-700">
 
     <!-- LOADING OVERLAY -->
     <div id="loadingOverlay" class="loading-overlay hidden">
-        <!-- From Uiverse.io by vinodjangid07 --> 
-        <div class="loader">
+        <!-- TRUCK LOADER (SYNCING) -->
+        <div id="truckLoader" class="loader">
           <div class="truckWrapper">
             <div class="truckBody">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 198 93" class="trucksvg">
@@ -341,7 +382,51 @@
             </svg>
           </div>
         </div>
-        <h3 class="text-slate-800 font-bold text-lg mt-2 tracking-wide" id="loadingText">Processing...</h3>
+
+        <!-- CHIP LOADER (UPLOADING) -->
+        <div id="uploadLoader" class="hidden w-full">
+            <div class="chip-main-container">
+              <svg class="chip-loader" viewBox="0 0 256 256" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+                <!-- Paths BG -->
+                <path class="trace-bg" d="M30,30 L80,80 L80,100" />
+                <path class="trace-bg" d="M226,30 L176,80 L176,100" />
+                <path class="trace-bg" d="M30,226 L80,176 L80,156" />
+                <path class="trace-bg" d="M226,226 L176,176 L176,156" />
+                <path class="trace-bg" d="M128,10 L128,100" />
+                <path class="trace-bg" d="M128,246 L128,156" />
+                <path class="trace-bg" d="M10,128 L100,128" />
+                <path class="trace-bg" d="M246,128 L156,128" />
+
+                <!-- Paths Flow -->
+                <path class="trace-flow blue" d="M30,30 L80,80 L80,100" />
+                <path class="trace-flow yellow" d="M226,30 L176,80 L176,100" />
+                <path class="trace-flow green" d="M30,226 L80,176 L80,156" />
+                <path class="trace-flow red" d="M226,226 L176,176 L176,156" />
+                <path class="trace-flow purple" d="M128,10 L128,100" />
+                <path class="trace-flow blue" d="M128,246 L128,156" />
+                <path class="trace-flow red" d="M10,128 L100,128" />
+                <path class="trace-flow green" d="M246,128 L156,128" />
+
+                <!-- Pins -->
+                <line x1="110" y1="100" x2="110" y2="85" class="chip-pin" />
+                <line x1="146" y1="100" x2="146" y2="85" class="chip-pin" />
+                <line x1="110" y1="156" x2="110" y2="171" class="chip-pin" />
+                <line x1="146" y1="156" x2="146" y2="171" class="chip-pin" />
+                <line x1="100" y1="110" x2="85" y2="110" class="chip-pin" />
+                <line x1="100" y1="146" x2="85" y2="146" class="chip-pin" />
+                <line x1="156" y1="110" x2="171" y2="110" class="chip-pin" />
+                <line x1="156" y1="146" x2="171" y2="146" class="chip-pin" />
+
+                <!-- Chip Body -->
+                <rect x="96" y="96" width="64" height="64" fill="#0f172a" class="chip-body" />
+                
+                <!-- Text -->
+                <text x="128" y="133" fill="#ffffff" font-size="16" text-anchor="middle" font-family="monospace" class="chip-text">UP</text>
+              </svg>
+            </div>
+        </div>
+
+        <h3 class="text-slate-800 font-bold text-lg mt-4 tracking-wide" id="loadingText">Processing...</h3>
     </div>
 
     <!-- OVERLAYS -->
@@ -611,7 +696,7 @@
             <!-- 3. VOLUME CHART -->
             <div class="fresh-card p-6">
                 <div class="flex justify-between items-center mb-6">
-                    <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600"><i class="fa-solid fa-chart-area"></i></div><h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Volume Trend (Total Pcs)</h3></div>
+                    <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600"><i class="fa-solid fa-chart-area"></i></div><h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Volume Trend</h3></div>
                     <div class="flex bg-slate-100 p-1 rounded-xl">
                         <button id="btnDaily" onclick="window.setMainChartMode('daily')" class="px-6 py-2 rounded-lg text-[10px] font-bold transition-all bg-slate-900 text-white shadow-md">Daily</button>
                         <button id="btnMonthly" onclick="window.setMainChartMode('monthly')" class="px-6 py-2 rounded-lg text-[10px] font-bold transition-all bg-white text-slate-600 hover:bg-slate-50">Monthly</button>
@@ -627,7 +712,7 @@
                     <div class="flex justify-between items-center mb-6">
                         <div class="flex items-center gap-3">
                             <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600"><i class="fa-regular fa-clock"></i></div>
-                            <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Tren Jam Inbound (Qty Pcs)</h3>
+                            <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Tren Jam Inbound</h3>
                         </div>
                     </div>
                     <div class="h-60 w-full relative"><canvas id="timeChart"></canvas></div>
@@ -651,15 +736,21 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="fresh-card p-5 flex flex-col">
                     <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-4 flex items-center gap-2"><i class="fa-solid fa-building text-slate-300"></i> Top Vendor</h4>
-                    <div class="flex-grow relative h-[300px] w-full"><canvas id="chartVendor"></canvas></div>
+                    <div class="w-full relative transition-all duration-300"><canvas id="chartVendor"></canvas></div>
                 </div>
                 <div class="fresh-card p-5 flex flex-col">
-                    <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-4 flex items-center gap-2"><i class="fa-solid fa-plane-departure text-slate-300"></i> Origin Dist.</h4>
-                    <div class="flex-grow relative h-[300px] w-full"><canvas id="chartOrigin"></canvas></div>
+                    <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-4 flex items-center gap-2">
+                        <span id="originDistIconContainer" class="flex items-center gap-1">
+                            <i class="fa-solid fa-plane-departure text-slate-300"></i>
+                            <i class="fa-solid fa-ship text-slate-300"></i>
+                        </span> 
+                        Origin Dist.
+                    </h4>
+                    <div class="w-full relative transition-all duration-300"><canvas id="chartOrigin"></canvas></div>
                 </div>
                 <div class="fresh-card p-5 flex flex-col">
                     <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-4 flex items-center gap-2"><i class="fa-solid fa-location-dot text-slate-300"></i> Destinasi Dist.</h4>
-                    <div class="flex-grow relative h-[300px] w-full"><canvas id="chartDestinasi"></canvas></div>
+                    <div class="w-full relative transition-all duration-300"><canvas id="chartDestinasi"></canvas></div>
                 </div>
             </div>
             
@@ -691,7 +782,7 @@
                 <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-white">
                     <div class="flex items-center gap-2">
                         <i class="fa-solid fa-calendar-week text-slate-300"></i>
-                        <h3 class="text-[11px] font-bold text-slate-600 uppercase">Daily Matrix Volume (Total Pcs)</h3>
+                        <h3 class="text-[11px] font-bold text-slate-600 uppercase">Daily Matrix Volume</h3>
                     </div>
                     <!-- Pagination Controls -->
                      <div class="flex items-center space-x-1 bg-slate-50 p-1 rounded-lg border border-slate-100" id="matrixPaginationContainer">
@@ -942,7 +1033,7 @@
                 document.getElementById('successModal').classList.add('hidden');
             }, 300);
         };
-        
+
         window.confirmDelete = function() {
              const date = document.getElementById('deleteDateInput').value;
              if(!date) return window.showToast("Pilih tanggal dulu!", "error");
@@ -971,11 +1062,22 @@
             }
         };
 
-        window.showLoading = function(show, text) {
+        window.showLoading = function(show, text, type = 'sync') {
             const el = document.getElementById('loadingOverlay');
+            const truckLoader = document.getElementById('truckLoader');
+            const uploadLoader = document.getElementById('uploadLoader');
+
             if(show) {
                 el.classList.remove('hidden');
                 document.getElementById('loadingText').textContent = text;
+                
+                if (type === 'upload') {
+                    if (truckLoader) truckLoader.classList.add('hidden');
+                    if (uploadLoader) uploadLoader.classList.remove('hidden');
+                } else {
+                    if (truckLoader) truckLoader.classList.remove('hidden');
+                    if (uploadLoader) uploadLoader.classList.add('hidden');
+                }
             } else {
                 el.classList.add('hidden');
             }
@@ -1294,34 +1396,31 @@
 
             window.currentPage = 1;
             window.matrixPage = 1; 
-            window.updateDashboard();
-        };
+            updateDashboard();
+        }
 
         // --- DASHBOARD UPDATER ---
-        window.updateDashboard = function() {
+        function updateDashboard() {
             const fd = window.filteredData;
             const w = fd.reduce((a,b) => a+b._weight, 0);
             const p = fd.reduce((a,b) => a+b._pcs, 0); 
             const m = fd.length;
             
-            let avgSLA = 0;
-            let minSLA = 0;
-            let maxSLA = 0;
-            if(fd.length > 0) {
-                const slas = fd.map(d => d._sla || 0);
-                minSLA = Math.min(...slas);
-                maxSLA = Math.max(...slas);
-                const totalSla = slas.reduce((acc, val) => acc + val, 0);
-                avgSLA = totalSla / fd.length;
+            // Dynamic Icon for Origin Dist based on selected Service
+            const originIconContainer = document.getElementById('originDistIconContainer');
+            if (originIconContainer) {
+                if (window.selectedService === 'REGULER') {
+                    originIconContainer.innerHTML = '<i class="fa-solid fa-plane-departure text-slate-300"></i>';
+                } else if (window.selectedService === 'ECO') {
+                    originIconContainer.innerHTML = '<i class="fa-solid fa-ship text-slate-300"></i>';
+                } else {
+                    originIconContainer.innerHTML = '<i class="fa-solid fa-plane-departure text-slate-300"></i> <i class="fa-solid fa-ship text-slate-300"></i>';
+                }
             }
             
-            document.getElementById('kpiWeight').innerText = window.formatNumber(w);
-            document.getElementById('kpiMB').innerText = window.formatNumber(m);
-            document.getElementById('kpiPcs').innerText = window.formatNumber(p);
-            
-            document.getElementById('kpiAvgSLA').innerText = avgSLA.toFixed(1).replace('.', ',');
-            document.getElementById('kpiMinSLA').innerText = window.formatNumber(minSLA);
-            document.getElementById('kpiMaxSLA').innerText = window.formatNumber(maxSLA);
+            document.getElementById('kpiWeight').innerText = formatNumber(w);
+            document.getElementById('kpiMB').innerText = formatNumber(m);
+            document.getElementById('kpiPcs').innerText = formatNumber(p);
 
             const startStr = document.getElementById('filterStartDate').value;
             const endStr = document.getElementById('filterEndDate').value;
@@ -1804,26 +1903,42 @@
                 btnDaily.className = `${baseClasses} ${inactiveStyle}`;
                 btnMonthly.className = `${baseClasses} ${activeStyle}`;
             }
-            window.renderMainChart();
-        };
+            renderMainChart();
+        }
 
-        window.renderBottomCharts = function() {
+        function renderBottomCharts() {
             const serviceColors = ['#10B981', '#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6'];
 
-            const renderBar = (id, f, c) => {
+            // 1. Ekstrak data dan cari yang terpanjang agar tinggi ketiganya seragam (Maksimal 15 Data)
+            const aggVendor = {}; window.filteredData.forEach(d => aggVendor[d._vendor] = (aggVendor[d._vendor]||0) + d._pcs);
+            const sVendor = Object.entries(aggVendor).sort((a,b)=>b[1]-a[1]).slice(0, 15);
+
+            const aggOrigin = {}; window.filteredData.forEach(d => aggOrigin[d._origin] = (aggOrigin[d._origin]||0) + d._pcs);
+            const sOrigin = Object.entries(aggOrigin).sort((a,b)=>b[1]-a[1]).slice(0, 15);
+
+            const aggDest = {}; window.filteredData.forEach(d => aggDest[d._dest] = (aggDest[d._dest]||0) + d._pcs);
+            const sDest = Object.entries(aggDest).sort((a,b)=>b[1]-a[1]).slice(0, 15);
+
+            // 2. Tentukan tinggi wadah berdasarkan jumlah data terbanyak dari ketiga grafik
+            const maxRows = Math.max(sVendor.length, sOrigin.length, sDest.length);
+            const dynamicHeight = Math.max(250, maxRows * 30); // Minimal 250px, selebihnya memanjang proporsional
+
+            const renderBar = (id, dataArr, c) => {
                 if(window.chartInstances[id]) window.chartInstances[id].destroy();
                 const ctx = document.getElementById(id).getContext('2d');
-                const agg = {}; window.filteredData.forEach(d => agg[d[f]] = (agg[d[f]]||0) + d._pcs); // Summing Pcs
-                const s = Object.entries(agg).sort((a,b)=>b[1]-a[1]).slice(0, 10);
+                
+                // Tinggi disamakan untuk semua agar saling menyesuaikan grid
+                ctx.canvas.parentNode.style.height = `${dynamicHeight}px`;
+
                 window.chartInstances[id] = new Chart(ctx, { 
                     type: 'bar', 
                     data: { 
-                        labels: s.map(e=>e[0]), 
+                        labels: dataArr.map(e=>e[0]), 
                         datasets: [{ 
-                            data: s.map(e=>e[1]), 
+                            data: dataArr.map(e=>e[1]), 
                             backgroundColor: c, 
-                            borderRadius: 4,
-                            maxBarThickness: 24 
+                            borderRadius: 6,
+                            maxBarThickness: 60 // Melebar ke atas/bawah jika datanya sedikit (Misal cuma 3 vendor)
                         }] 
                     }, 
                     options: { 
@@ -1844,15 +1959,17 @@
                                 align: 'end', 
                                 color: '#64748b', 
                                 font: { size: 10, weight: 'bold' }, 
-                                formatter: (v) => window.formatNumber(v) 
+                                formatter: (v) => formatNumber(v),
+                                clip: false
                             } 
                         } 
                     } 
                 });
             };
-            renderBar('chartVendor', '_vendor', '#6366f1');
-            renderBar('chartOrigin', '_origin', '#8B5CF6');
-            renderBar('chartDestinasi', '_dest', '#F59E0B');
+            
+            renderBar('chartVendor', sVendor, '#6366f1');
+            renderBar('chartOrigin', sOrigin, '#8B5CF6');
+            renderBar('chartDestinasi', sDest, '#F59E0B');
             
             if(window.chartInstances.chartService) window.chartInstances.chartService.destroy();
             const ctxS = document.getElementById('chartService').getContext('2d');
@@ -1866,7 +1983,11 @@
                     datasets: [{
                         data: sS.map(e => e[1]),
                         backgroundColor: serviceColors,
-                        borderWidth: 0
+                        // --- KODE PENGATURAN SERVICE SHARE ---
+                        borderWidth: 3,           // Mengatur ketebalan garis pembatas antar pilihan
+                        borderColor: '#ffffff',   // Warna garis pembatas (putih, menyatu dengan background)
+                        borderRadius: 15           // Mengatur seberapa melengkung sudut grafiknya
+                        // -------------------------------------
                     }]
                 },
                 options: {
@@ -2003,15 +2124,6 @@
             table.innerHTML = h;
         };
 
-        window.changePage = function(delta) {
-            const totalPages = Math.ceil(window.aggregatedData.length / window.rowsPerPage) || 1;
-            const nextPage = window.currentPage + delta;
-            if (nextPage >= 1 && nextPage <= totalPages) {
-                window.currentPage = nextPage;
-                window.aggregateAndRenderTable();
-            }
-        };
-
     </script>
 
     <!-- FIREBASE MODULE -->
@@ -2122,19 +2234,16 @@
                 window.loadDataFromFirestore(); 
             } catch(e) {
                 console.error(e);
-                if(window.showLoading) window.showLoading(false);
+                window.showLoading(false);
                 window.showToast("Gagal menghapus data", "error");
             }
         };
 
-        // --- NEW DATA UPLOAD FLOW ---
-        window.pendingUploadData = [];
-
         window.uploadCSVToFirestore = function(file) {
-            if(window.showLoading) window.showLoading(true, "Menganalisis file...");
+            window.showLoading(true, "Uploading...", "upload");
             Papa.parse(file, {
                 header: true, skipEmptyLines: true,
-                complete: function(results) {
+                complete: async function(results) {
                     const data = results.data;
                     
                     // GET EXISTING IDs (Tolak duplicate secara absolut menggunakan _firestoreId)
@@ -2194,7 +2303,7 @@
                 return;
             }
 
-            if(window.showLoading) window.showLoading(true, "Menyimpan ke Cloud...");
+            if(window.showLoading) window.showLoading(true, "Menyimpan ke Cloud...", "upload");
             const batchSize = 450; 
             let batches = [];
             let currentBatch = writeBatch(db);
