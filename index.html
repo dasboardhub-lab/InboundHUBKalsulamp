@@ -249,7 +249,7 @@
         </div>
     </div>
 
-    <!-- Preview Upload Modal (New) -->
+    <!-- Preview Upload Modal -->
     <div id="previewModal" class="fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-md hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-[360px] p-8 transform scale-95 transition-all duration-300 border border-white/50" id="previewModalContent">
             <div class="text-center mb-6">
@@ -257,7 +257,7 @@
                     <i class="fa-solid fa-magnifying-glass-chart text-2xl"></i>
                 </div>
                 <h3 class="text-lg font-bold text-slate-800">Analisis Data</h3>
-                <p class="text-xs text-slate-500 mt-1">Laporan pra-unggah (Pengecekan Bagseals)</p>
+                <p class="text-xs text-slate-500 mt-1">Laporan pra-unggah (Pengecekan Duplikat)</p>
             </div>
             <div class="bg-slate-50 rounded-xl p-4 mb-6 border border-slate-100">
                 <div class="flex justify-between items-center mb-3">
@@ -276,7 +276,7 @@
         </div>
     </div>
 
-    <!-- Success Upload Modal (New) -->
+    <!-- Success Upload Modal -->
     <div id="successModal" class="fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-md hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-[320px] p-8 transform scale-95 transition-all duration-300 border border-white/50" id="successModalContent">
             <div class="text-center mb-6">
@@ -815,7 +815,8 @@
                         _tglFlight: row['TANGGAL FLIGHT'],
                         _etd: row['ETD'],
                         _mb: row['No Bagseals'],
-                        _service: service
+                        _service: service,
+                        _firestoreId: row._firestoreId // Capture ID even for rejected
                     });
                     return; 
                 }
@@ -830,7 +831,6 @@
                         sla = Math.ceil(diff / (1000 * 60 * 60 * 24));
                     }
 
-                    // KEY CHANGE: _pcs comes from 'Kuantitas Paket (Awb)'
                     validData.push({
                         ...row,
                         _date: tglTerima,
@@ -849,7 +849,7 @@
                         _mb: row['No Bagseals'] || '-',
                         _note: row['Note'] || row['CATATAN'] || '',
                         _sla: sla,
-                        _firestoreId: row._firestoreId 
+                        _firestoreId: row._firestoreId // Capture ID
                     });
                 }
             });
@@ -1703,20 +1703,41 @@
                 header: true, skipEmptyLines: true,
                 complete: function(results) {
                     const data = results.data;
-                    const existingBagseals = new Set(window.rawData.map(d => String(d._mb).trim()));
+                    
+                    // GET EXISTING IDs (Tolak duplicate secara absolut menggunakan _firestoreId)
+                    const existingIds = new Set();
+                    if(window.rawData) {
+                        window.rawData.forEach(d => { if(d._firestoreId) existingIds.add(String(d._firestoreId)); });
+                    }
+                    if(window.rejectedData) {
+                        window.rejectedData.forEach(d => { if(d._firestoreId) existingIds.add(String(d._firestoreId)); });
+                    }
                     
                     window.pendingUploadData = [];
                     let duplicateCount = 0;
 
                     for (const row of data) {
                         const bagseal = String(row['No Bagseals'] || '').trim();
+                        const smu = (row['SMU']||'').replace(/\s/g, '');
+                        const dest = (row['Destinasi']||'').replace(/\s/g, '');
+                        const date = (row['Tanggal DIterima']||'').replace(/[\/\s,]/g, ''); 
                         
-                        // Check Duplicate
-                        if (bagseal && existingBagseals.has(bagseal)) {
+                        // ID yang dihasilkan ini adalah ID pasti yang digunakan di Firestore
+                        const fallbackId = `${smu}_${dest}_${date}`.substring(0, 100);
+                        const id = bagseal || fallbackId;
+
+                        if (!id) continue; // Skip jika datanya benar-benar blank/kosong
+
+                        // Check Duplicate menggunakan ID pasti
+                        if (existingIds.has(id)) {
                             duplicateCount++;
                             continue; 
                         }
                         
+                        // Tambahkan id ini ke Set() agar jika ada data duplikat di DALAM file CSV yang sama,
+                        // sistem juga akan langsung melewatinya.
+                        existingIds.add(id);
+
                         // Add to pending
                         window.pendingUploadData.push(row);
                     }
