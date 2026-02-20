@@ -653,6 +653,15 @@
         const formatInputDate = (d) => toLocalISOString(d);
         const formatNumber = (num) => num ? num.toLocaleString('id-ID') : '0';
 
+        // NEW HELPER: Get Monday of a given date (for Weekly Matrix)
+        const getMondayTime = (d) => {
+            const dt = new Date(d);
+            const day = dt.getDay() || 7; // Make Sunday (0) = 7
+            dt.setHours(0,0,0,0);
+            dt.setDate(dt.getDate() - day + 1);
+            return dt.getTime();
+        };
+
         // --- TOAST ---
         function showToast(message, type = 'info') {
             const container = document.getElementById('toast-container');
@@ -1533,8 +1542,8 @@
         }
 
         function changeMatrixPage(delta) {
-             const dates = [...new Set(window.filteredData.map(d => d._date.getTime()))].sort((a,b)=>a-b);
-             const totalPages = Math.ceil(dates.length / window.matrixRowsPerPage);
+             const uniqueMondays = [...new Set(window.filteredData.map(d => getMondayTime(d._date)))].sort((a,b)=>a-b);
+             const totalPages = uniqueMondays.length || 1;
              const nextPage = window.matrixPage + delta;
              if(nextPage >= 1 && nextPage <= totalPages) {
                  window.matrixPage = nextPage;
@@ -1544,32 +1553,79 @@
         window.changeMatrixPage = changeMatrixPage;
 
         function renderMatrixTable() {
-            const allDates = [...new Set(window.filteredData.map(d => d._date.getTime()))].sort((a,b)=>a-b);
-            const dests = [...new Set(window.filteredData.map(d => d._dest))].sort();
+            const uniqueMondays = [...new Set(window.filteredData.map(d => getMondayTime(d._date)))].sort((a,b)=>a-b);
+            const totalPages = uniqueMondays.length || 1;
             
-            const totalPages = Math.ceil(allDates.length / window.matrixRowsPerPage) || 1;
             if (window.matrixPage > totalPages) window.matrixPage = 1;
 
-            const start = (window.matrixPage - 1) * window.matrixRowsPerPage;
-            const datesToRender = allDates.slice(start, start + window.matrixRowsPerPage);
+            document.getElementById('matrixPageIndicator').innerText = `Minggu ${window.matrixPage} / ${totalPages}`;
 
-            document.getElementById('matrixPageIndicator').innerText = `${window.matrixPage} / ${totalPages}`;
+            let currentMonday = uniqueMondays.length > 0 ? uniqueMondays[window.matrixPage - 1] : getMondayTime(new Date());
+            
+            const weekDates = [];
+            for(let i=0; i<7; i++) {
+                const d = new Date(currentMonday);
+                d.setDate(d.getDate() + i);
+                weekDates.push(d);
+            }
+
+            const daysName = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+
+            // Get Data only for this week
+            const weekStart = weekDates[0].getTime();
+            const weekEnd = weekDates[6].getTime() + 24*60*60*1000 - 1; 
+            const weekData = window.filteredData.filter(d => d._date.getTime() >= weekStart && d._date.getTime() <= weekEnd);
+            
+            // Rows are Destinations that have data in this week
+            const dests = [...new Set(weekData.map(d => d._dest))].sort();
 
             const table = document.getElementById('matrixTable');
-            let h = `<thead><tr><th class="text-left sticky left-0 bg-white z-10">Tanggal</th>`;
-            dests.forEach(d => h += `<th class="text-center border-l border-slate-100">${d}</th>`);
-            h += `<th class="text-center font-bold bg-slate-50 border-l border-slate-100">TOTAL</th></tr></thead><tbody>`;
             
-            datesToRender.forEach(t => {
-                const date = new Date(t); let rt = 0;
-                let r = `<tr><td class="font-bold text-slate-700 sticky left-0 bg-white border-r border-slate-100 shadow-sm whitespace-nowrap">${formatDate(date)}</td>`;
-                dests.forEach(dst => {
-                    const v = window.filteredData.filter(d => d._date.getTime() === t && d._dest === dst).reduce((s,d) => s+d._pcs, 0); 
-                    rt += v; r += `<td class="text-center border-r border-slate-50 ${v>0?'text-slate-800 font-medium':'text-slate-300'}">${v>0?formatNumber(v):'-'}</td>`;
-                });
-                h += r + `<td class="text-center font-bold text-slate-900 bg-slate-50">${formatNumber(rt)}</td></tr>`;
+            // --- HEADER ---
+            let h = `<thead><tr><th class="text-left sticky left-0 bg-white z-10 w-32 border-r border-slate-200 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">Destinasi</th>`;
+            weekDates.forEach((d, i) => {
+                h += `<th class="text-center border-r border-slate-200 min-w-[80px]">
+                        <div class="text-[11px] font-bold text-slate-700">${daysName[i]}</div>
+                        <div class="text-[9px] font-normal text-slate-400 mt-0.5 tracking-wider">${formatDate(d)}</div>
+                      </th>`;
             });
-            table.innerHTML = h + '</tbody>';
+            h += `<th class="text-center font-extrabold bg-slate-100 border-l border-slate-300 text-slate-800">TOTAL</th></tr></thead><tbody>`;
+            
+            if (dests.length === 0) {
+                 h += `<tr><td colspan="9" class="text-center py-6 text-slate-400 font-medium">Tidak ada data di rentang minggu ini</td></tr></tbody>`;
+                 table.innerHTML = h;
+                 return;
+            }
+
+            // --- BODY (Destinations) ---
+            let grandTotals = [0,0,0,0,0,0,0];
+            let grandTotalAll = 0;
+
+            dests.forEach(dst => {
+                let r = `<tr><td class="font-bold text-slate-700 sticky left-0 bg-white border-r border-slate-200 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] whitespace-nowrap">${dst}</td>`;
+                let rowTotal = 0;
+                
+                weekDates.forEach((date, i) => {
+                    const t = date.getTime();
+                    const v = weekData.filter(d => d._date.getTime() === t && d._dest === dst).reduce((s,d) => s+d._pcs, 0); 
+                    rowTotal += v;
+                    grandTotals[i] += v;
+                    r += `<td class="text-center border-r border-slate-100 ${v>0?'text-slate-800 font-bold bg-indigo-50/20':'text-slate-300'}">${v>0?formatNumber(v):'-'}</td>`;
+                });
+                
+                grandTotalAll += rowTotal;
+                h += r + `<td class="text-center font-black text-slate-900 bg-slate-50 border-l border-slate-200">${formatNumber(rowTotal)}</td></tr>`;
+            });
+
+            // --- FOOTER (Grand Totals) ---
+            let gRow = `<tr><td class="font-black text-slate-900 sticky left-0 bg-slate-100 border-r border-slate-300 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] whitespace-nowrap uppercase text-[10px]">TOTAL HARIAN</td>`;
+            grandTotals.forEach(gt => {
+                gRow += `<td class="text-center font-black text-indigo-700 bg-indigo-50/50 border-r border-indigo-100/50">${gt>0?formatNumber(gt):'-'}</td>`;
+            });
+            gRow += `<td class="text-center font-black text-indigo-900 bg-indigo-100 border-l border-indigo-200">${formatNumber(grandTotalAll)}</td></tr>`;
+
+            h += gRow + '</tbody>';
+            table.innerHTML = h;
         }
         
         function changePage(delta) {
