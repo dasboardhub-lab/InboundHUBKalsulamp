@@ -1677,8 +1677,12 @@
             
             window.filteredData.forEach(d => {
                 if(d._jam && d._jam.includes(':')) {
-                    const hour = d._jam.split(':')[0];
-                    if(agg[hour] !== undefined) agg[hour] += d._pcs;
+                    const rawHour = d._jam.split(':')[0].trim();
+                    const hourNum = parseInt(rawHour, 10);
+                    if (!isNaN(hourNum)) {
+                        const hour = String(hourNum).padStart(2, '0');
+                        if(agg[hour] !== undefined) agg[hour] += d._pcs;
+                    }
                 }
             });
             
