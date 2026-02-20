@@ -310,7 +310,7 @@
             <div class="flex items-center gap-4">
                 <div class="hidden md:flex flex-col items-end">
                     <span class="text-[11px] font-bold text-slate-700" id="currentDateDisplay">-</span>
-                    <span class="text-[9px] font-bold text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-full">ID - KalSulamp</span>
+                    <span class="text-[9px] font-bold text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-full">ID-KalSulamp</span>
                 </div>
                 <div class="h-8 w-[1px] bg-slate-200 hidden md:block"></div>
                 
@@ -1622,9 +1622,43 @@
         window.renderSlaMatrices = function() {
             const render = (id, f, l) => {
                 const t = document.getElementById(id); t.innerHTML = '';
-                const agg = {}; window.filteredData.forEach(d => { const k=d[f]; if(!agg[k]) agg[k]={u3:0,b35:0,o5:0,tot:0,sum:0}; agg[k].tot+=d._pcs; agg[k].sum+=(d._sla*d._pcs); if(d._sla<=2)agg[k].u3+=d._pcs; else if(d._sla<=5)agg[k].b35+=d._pcs; else agg[k].o5+=d._pcs; });
-                let h = `<thead class="sticky top-0 bg-white z-10"><tr><th class="text-left text-slate-500">${l}</th><th class="text-center text-emerald-600 bg-emerald-50">0-2H</th><th class="text-center text-amber-600 bg-amber-50">3-5H</th><th class="text-center text-rose-600 bg-rose-50">>5H</th><th class="text-center text-slate-800 bg-slate-100">Tot</th><th class="text-center text-indigo-600 bg-indigo-50">Avg</th></tr></thead><tbody>`;
-                Object.keys(agg).sort().forEach(k => { const d=agg[k]; h += `<tr class="hover:bg-slate-50"><td class="font-bold text-slate-700">${k}</td><td class="text-center text-emerald-600 font-mono">${window.formatNumber(d.u3)}</td><td class="text-center text-amber-600 font-mono">${window.formatNumber(d.b35)}</td><td class="text-center text-rose-600 font-bold font-mono">${window.formatNumber(d.o5)}</td><td class="text-center font-bold bg-slate-50 font-mono">${window.formatNumber(d.tot)}</td><td class="text-center font-bold text-indigo-600">${(d.tot>0?d.sum/d.tot:0).toFixed(1)}</td></tr>`; });
+                const agg = {}; 
+                window.filteredData.forEach(d => { 
+                    const k=d[f]; 
+                    if(!agg[k]) agg[k]={u3:0, b35:0, b67:0, o7:0, tot:0, sum:0}; 
+                    agg[k].tot+=d._pcs; 
+                    agg[k].sum+=(d._sla*d._pcs); 
+                    
+                    if(d._sla<=2) agg[k].u3+=d._pcs; 
+                    else if(d._sla<=5) agg[k].b35+=d._pcs; 
+                    else if(d._sla<=7) agg[k].b67+=d._pcs; 
+                    else agg[k].o7+=d._pcs; 
+                });
+                
+                let h = `<thead class="sticky top-0 bg-white z-10">
+                            <tr>
+                                <th class="text-left text-slate-500">${l}</th>
+                                <th class="text-center text-emerald-600 bg-emerald-50">0-2H</th>
+                                <th class="text-center text-amber-600 bg-amber-50">3-5H</th>
+                                <th class="text-center text-orange-600 bg-orange-50">5-7H</th>
+                                <th class="text-center text-rose-600 bg-rose-50">>7H</th>
+                                <th class="text-center text-slate-800 bg-slate-100">Tot</th>
+                                <th class="text-center text-indigo-600 bg-indigo-50">Avg</th>
+                            </tr>
+                        </thead><tbody>`;
+                        
+                Object.keys(agg).sort().forEach(k => { 
+                    const d=agg[k]; 
+                    h += `<tr class="hover:bg-slate-50">
+                            <td class="font-bold text-slate-700">${k}</td>
+                            <td class="text-center text-emerald-600 font-mono">${window.formatNumber(d.u3)}</td>
+                            <td class="text-center text-amber-600 font-mono">${window.formatNumber(d.b35)}</td>
+                            <td class="text-center text-orange-600 font-bold font-mono">${window.formatNumber(d.b67)}</td>
+                            <td class="text-center text-rose-600 font-bold font-mono">${window.formatNumber(d.o7)}</td>
+                            <td class="text-center font-bold bg-slate-50 font-mono">${window.formatNumber(d.tot)}</td>
+                            <td class="text-center font-bold text-indigo-600">${(d.tot>0?d.sum/d.tot:0).toFixed(1)}</td>
+                          </tr>`; 
+                });
                 t.innerHTML = h + '</tbody>';
             };
             render('slaOriginTable', '_origin', 'ORIGIN'); render('slaDestTable', '_dest', 'DESTINASI');
