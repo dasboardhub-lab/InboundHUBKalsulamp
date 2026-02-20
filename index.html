@@ -1661,7 +1661,38 @@
             if(window.chartInstances.main) window.chartInstances.main.destroy();
             const ctx = document.getElementById('mainChart').getContext('2d');
             const agg = {};
-            window.filteredData.forEach(d => {
+            
+            let dataToUse = window.filteredData;
+
+            // Jika mode monthly, abaikan filter rentang tanggal dan tampilkan 1 tahun berjalan
+            if (window.currentChartMode === 'monthly') {
+                const fOrg = window.getSelectedValues('originMenu');
+                const fDst = window.getSelectedValues('destMenu');
+                const search = document.getElementById('globalSearch').value.toUpperCase();
+                const currentYear = new Date().getFullYear();
+
+                dataToUse = window.rawData.filter(d => {
+                    if(!d._date) return false;
+                    
+                    const yearOk = d._date.getFullYear() === currentYear;
+                    const orgOk = fOrg.includes('ALL') || fOrg.includes(d._origin);
+                    const dstOk = fDst.includes('ALL') || fDst.includes(d._dest);
+                    const svcOk = window.selectedService === 'ALL' || d._service === window.selectedService;
+                    
+                    let searchOk = true;
+                    if(search) {
+                        const haystack = [
+                            d._smu, d._flight, d._vendor, d._origin, d._dest,
+                            d._batch, d._mb, d._note, d._service
+                        ].join(' ').toUpperCase();
+                        searchOk = haystack.includes(search);
+                    }
+                    
+                    return yearOk && orgOk && dstOk && svcOk && searchOk;
+                });
+            }
+
+            dataToUse.forEach(d => {
                 let sortKey = '';
                 if (window.currentChartMode === 'daily') {
                     sortKey = window.toLocalISOString(d._date);
@@ -1673,6 +1704,15 @@
                 agg[sortKey] = (agg[sortKey]||0) + d._pcs;
             });
             
+            // Memastikan 12 bulan selalu tampil di mode monthly untuk tahun berjalan
+            if (window.currentChartMode === 'monthly') {
+                const currentYear = new Date().getFullYear();
+                for (let i = 1; i <= 12; i++) {
+                    const mk = `${currentYear}-${String(i).padStart(2, '0')}`;
+                    if (agg[mk] === undefined) agg[mk] = 0;
+                }
+            }
+
             const sortedKeys = Object.keys(agg).sort();
             const lbls = sortedKeys.map(k => {
                 if (window.currentChartMode === 'daily') return k;
