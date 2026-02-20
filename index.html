@@ -222,8 +222,8 @@
                 <input type="password" id="passwordInput" class="w-full text-center py-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-indigo-500 outline-none transition-all text-sm font-mono tracking-[0.5em]" placeholder="••••••" onkeypress="handleEnter(event)">
             </div>
             <div class="grid grid-cols-2 gap-3">
-                <button onclick="closePasswordModal()" class="py-2.5 rounded-xl border border-slate-200 text-slate-500 text-xs font-bold hover:bg-slate-50">Cancel</button>
-                <button onclick="submitPassword()" class="py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 shadow-lg">Verify</button>
+                <button onclick="window.closePasswordModal()" class="py-2.5 rounded-xl border border-slate-200 text-slate-500 text-xs font-bold hover:bg-slate-50">Cancel</button>
+                <button onclick="window.submitPassword()" class="py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 shadow-lg">Verify</button>
             </div>
         </div>
     </div>
@@ -243,8 +243,8 @@
                 <input type="date" id="deleteDateInput" class="w-full text-center py-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-red-500 outline-none transition-all text-sm font-bold text-slate-700">
             </div>
             <div class="grid grid-cols-2 gap-3">
-                <button onclick="closeDeleteModal()" class="py-2.5 rounded-xl border border-slate-200 text-slate-500 text-xs font-bold hover:bg-slate-50">Batal</button>
-                <button onclick="confirmDelete()" class="py-2.5 rounded-xl bg-red-600 text-white text-xs font-bold hover:bg-red-700 shadow-lg">Hapus</button>
+                <button onclick="window.closeDeleteModal()" class="py-2.5 rounded-xl border border-slate-200 text-slate-500 text-xs font-bold hover:bg-slate-50">Batal</button>
+                <button onclick="window.confirmDelete()" class="py-2.5 rounded-xl bg-red-600 text-white text-xs font-bold hover:bg-red-700 shadow-lg">Hapus</button>
             </div>
         </div>
     </div>
@@ -270,7 +270,7 @@
                 </div>
             </div>
             <div class="grid grid-cols-2 gap-3">
-                <button onclick="closePreviewModal()" class="py-2.5 rounded-xl border border-slate-200 text-slate-500 text-xs font-bold hover:bg-slate-50">Batal</button>
+                <button onclick="window.closePreviewModal()" class="py-2.5 rounded-xl border border-slate-200 text-slate-500 text-xs font-bold hover:bg-slate-50">Batal</button>
                 <button onclick="window.confirmUpload()" class="py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 shadow-lg">Lanjutkan</button>
             </div>
         </div>
@@ -288,7 +288,7 @@
                     <span id="successCount" class="font-bold text-emerald-600 text-base">0</span> data baru telah berhasil disimpan ke dalam database.
                 </p>
             </div>
-            <button onclick="closeSuccessModal()" class="w-full py-3 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 shadow-lg transition">Selesai</button>
+            <button onclick="window.closeSuccessModal()" class="w-full py-3 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 shadow-lg transition">Selesai</button>
         </div>
     </div>
 
@@ -314,12 +314,12 @@
                 </div>
                 <div class="h-8 w-[1px] bg-slate-200 hidden md:block"></div>
                 
-                <button onclick="openDeleteModal()" class="btn-danger flex items-center gap-2 group">
+                <button onclick="window.openDeleteModal()" class="btn-danger flex items-center gap-2 group">
                     <i class="fa-solid fa-trash-can group-hover:rotate-12 transition-transform"></i>
                     <span>Hapus Data</span>
                 </button>
 
-                <button onclick="openPasswordModal('upload')" class="btn-gradient flex items-center gap-2 group">
+                <button onclick="window.openPasswordModal('upload')" class="btn-gradient flex items-center gap-2 group">
                     <i class="fa-solid fa-database group-hover:rotate-12 transition-transform"></i>
                     <span>Update Data</span>
                 </button>
@@ -351,7 +351,7 @@
                             <div class="relative w-full md:w-64 group">
                                 <span class="input-label">Pencarian Global (All Data)</span>
                                 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-[34px] text-slate-400 text-xs group-focus-within:text-indigo-500 transition-colors"></i>
-                                <input type="text" id="globalSearch" placeholder="Cari SMU, Flight, Bagseal, Note..." class="fresh-input w-full pl-9 bg-white" oninput="applyFilters()">
+                                <input type="text" id="globalSearch" placeholder="Cari SMU, Flight, Bagseal, Note..." class="fresh-input w-full pl-9 bg-white" oninput="window.applyFilters()">
                             </div>
                             <div class="w-full">
                                 <span class="input-label">Filter Layanan</span>
@@ -364,15 +364,15 @@
                             <div>
                                 <span class="input-label">Rentang Tanggal</span>
                                 <div class="flex items-center bg-white rounded-xl border border-slate-200 p-1 shadow-sm h-[38px]">
-                                    <input type="date" id="filterStartDate" class="text-xs font-semibold text-slate-600 px-2 py-1 outline-none w-28 bg-transparent" onchange="applyFilters()">
+                                    <input type="date" id="filterStartDate" class="text-xs font-semibold text-slate-600 px-2 py-1 outline-none w-28 bg-transparent" onchange="window.applyFilters()">
                                     <span class="text-slate-300 text-[10px] mx-1 font-bold">SD</span>
-                                    <input type="date" id="filterEndDate" class="text-xs font-semibold text-slate-600 px-2 py-1 outline-none w-28 bg-transparent" onchange="applyFilters()">
+                                    <input type="date" id="filterEndDate" class="text-xs font-semibold text-slate-600 px-2 py-1 outline-none w-28 bg-transparent" onchange="window.applyFilters()">
                                 </div>
                             </div>
                             <!-- Multi-Select for Origin -->
                             <div class="relative">
                                 <span class="input-label">Filter Origin</span>
-                                <button onclick="toggleMulti('originMenu')" class="fresh-input w-32 text-left flex justify-between items-center bg-white h-[38px] relative z-10 group focus:border-indigo-500">
+                                <button onclick="window.toggleMulti('originMenu')" class="fresh-input w-32 text-left flex justify-between items-center bg-white h-[38px] relative z-10 group focus:border-indigo-500">
                                     <span id="originLabel" class="truncate text-xs text-slate-600">Semua</span>
                                     <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 group-hover:text-indigo-500 transition-colors"></i>
                                 </button>
@@ -383,7 +383,7 @@
                             <!-- Multi-Select for Destinasi -->
                             <div class="relative">
                                 <span class="input-label">Filter Destinasi</span>
-                                <button onclick="toggleMulti('destMenu')" class="fresh-input w-32 text-left flex justify-between items-center bg-white h-[38px] relative z-10 group focus:border-indigo-500">
+                                <button onclick="window.toggleMulti('destMenu')" class="fresh-input w-32 text-left flex justify-between items-center bg-white h-[38px] relative z-10 group focus:border-indigo-500">
                                     <span id="destLabel" class="truncate text-xs text-slate-600">Semua</span>
                                     <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 group-hover:text-indigo-500 transition-colors"></i>
                                 </button>
@@ -393,7 +393,7 @@
                             </div>
                             <div>
                                 <span class="input-label">&nbsp;</span>
-                                <button onclick="resetFilters()" class="w-[38px] h-[38px] flex items-center justify-center bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:text-indigo-600 text-slate-400 transition-all shadow-sm" title="Reset Filters"><i class="fa-solid fa-arrows-rotate text-xs"></i></button>
+                                <button onclick="window.resetFilters()" class="w-[38px] h-[38px] flex items-center justify-center bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:text-indigo-600 text-slate-400 transition-all shadow-sm" title="Reset Filters"><i class="fa-solid fa-arrows-rotate text-xs"></i></button>
                             </div>
                         </div>
                     </div>
@@ -442,8 +442,8 @@
                 <div class="flex justify-between items-center mb-6">
                     <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600"><i class="fa-solid fa-chart-area"></i></div><h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Volume Trend (Total Pcs)</h3></div>
                     <div class="flex bg-slate-100 p-1 rounded-xl">
-                        <button id="btnDaily" onclick="setMainChartMode('daily')" class="px-6 py-2 rounded-lg text-[10px] font-bold transition-all bg-slate-900 text-white shadow-md">Daily</button>
-                        <button id="btnMonthly" onclick="setMainChartMode('monthly')" class="px-6 py-2 rounded-lg text-[10px] font-bold transition-all bg-white text-slate-600 hover:bg-slate-50">Monthly</button>
+                        <button id="btnDaily" onclick="window.setMainChartMode('daily')" class="px-6 py-2 rounded-lg text-[10px] font-bold transition-all bg-slate-900 text-white shadow-md">Daily</button>
+                        <button id="btnMonthly" onclick="window.setMainChartMode('monthly')" class="px-6 py-2 rounded-lg text-[10px] font-bold transition-all bg-white text-slate-600 hover:bg-slate-50">Monthly</button>
                     </div>
                 </div>
                 <div class="h-72 w-full relative"><canvas id="mainChart"></canvas></div>
@@ -524,9 +524,9 @@
                     </div>
                     <!-- Pagination Controls -->
                      <div class="flex items-center space-x-1 bg-slate-50 p-1 rounded-lg border border-slate-100" id="matrixPaginationContainer">
-                        <button onclick="changeMatrixPage(-1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-indigo-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
+                        <button onclick="window.changeMatrixPage(-1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-indigo-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
                         <span id="matrixPageIndicator" class="px-3 text-[10px] font-mono font-bold text-slate-500">1</span>
-                        <button onclick="changeMatrixPage(1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-indigo-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                        <button onclick="window.changeMatrixPage(1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-indigo-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
                     </div>
                 </div>
                 <div class="overflow-x-auto custom-scrollbar">
@@ -544,9 +544,9 @@
                             Manifest Summary
                         </h3>
                         <div class="flex items-center space-x-1 bg-slate-50 p-1 rounded-lg border border-slate-100">
-                            <button onclick="changePage(-1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-indigo-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
+                            <button onclick="window.changePage(-1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-indigo-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
                             <span id="pageIndicator" class="px-3 text-[10px] font-mono font-bold text-slate-500">1</span>
-                            <button onclick="changePage(1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-indigo-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                            <button onclick="window.changePage(1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-indigo-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
                         </div>
                     </div>
                     <div class="overflow-x-auto custom-scrollbar">
@@ -582,7 +582,7 @@
                             <span class="bg-indigo-100 p-1.5 rounded-lg text-indigo-600"><i class="fa-solid fa-tags"></i></span>
                             Bagshield
                         </h3>
-                        <button onclick="copyBagseals()" class="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-2 py-1 rounded border border-indigo-100 transition shadow-sm">
+                        <button onclick="window.copyBagseals()" class="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-2 py-1 rounded border border-indigo-100 transition shadow-sm">
                             <i class="fa-regular fa-copy mr-1"></i> Salin
                         </button>
                     </div>
@@ -609,21 +609,21 @@
         window.chartInstances = {};
         window.currentChartMode = 'daily';
         
-        // Manifest Pagination
+        // Manifest Pagination - DIBUAT LEBIH BESAR (PIVOT STYLE)
         window.currentPage = 1;
-        window.rowsPerPage = 20;
+        window.rowsPerPage = 100; 
 
         // Matrix Pagination
         window.matrixPage = 1;
         window.matrixRowsPerPage = 7;
 
         window.selectedService = 'ALL';
-        let currentAction = ''; 
+        window.currentAction = ''; 
 
         document.getElementById('currentDateDisplay').textContent = new Date().toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
 
         // --- HELPERS ---
-        const parseNum = (str) => {
+        window.parseNum = (str) => {
             if (typeof str === 'number') return str;
             if (!str) return 0;
             let s = str.toString().trim();
@@ -631,14 +631,14 @@
             return isNaN(f) ? 0 : f;
         };
 
-        const toLocalISOString = (d) => {
+        window.toLocalISOString = (d) => {
             const y = d.getFullYear();
             const m = String(d.getMonth() + 1).padStart(2, '0');
             const dy = String(d.getDate()).padStart(2, '0');
             return `${y}-${m}-${dy}`;
         };
         
-        const parseDate = (dateStr) => {
+        window.parseDate = (dateStr) => {
             if (!dateStr) return null;
             if (dateStr.includes('/')) { 
                 const p = dateStr.split('/'); 
@@ -649,12 +649,13 @@
             if (p.length >= 3) { let y = parseInt(p[2]); if (y < 100) y += 2000; return new Date(y, m[p[1]], parseInt(p[0])); }
             return null;
         };
-        const formatDate = (d) => `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
-        const formatInputDate = (d) => toLocalISOString(d);
-        const formatNumber = (num) => num ? num.toLocaleString('id-ID') : '0';
+        
+        window.formatDate = (d) => `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+        window.formatInputDate = (d) => window.toLocalISOString(d);
+        window.formatNumber = (num) => num ? num.toLocaleString('id-ID') : '0';
 
         // NEW HELPER: Get Monday of a given date (for Weekly Matrix)
-        const getMondayTime = (d) => {
+        window.getMondayTime = (d) => {
             const dt = new Date(d);
             const day = dt.getDay() || 7; // Make Sunday (0) = 7
             dt.setHours(0,0,0,0);
@@ -663,8 +664,9 @@
         };
 
         // --- TOAST ---
-        function showToast(message, type = 'info') {
+        window.showToast = function(message, type = 'info') {
             const container = document.getElementById('toast-container');
+            if(!container) return;
             const toast = document.createElement('div');
             let icon = '';
             if(type === 'success') icon = '<i class="fa-solid fa-circle-check text-emerald-500 text-lg"></i>';
@@ -676,11 +678,11 @@
             
             container.appendChild(toast);
             setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translate(-50%, -20px)'; setTimeout(() => toast.remove(), 300); }, 3000);
-        }
+        };
 
         // --- MODAL CONTROLS ---
-        function openPasswordModal(action) {
-            currentAction = action;
+        window.openPasswordModal = function(action) {
+            window.currentAction = action;
             document.getElementById('passwordModal').classList.remove('hidden');
             document.getElementById('modalTitle').textContent = action === 'delete' ? 'Konfirmasi Hapus' : 'Admin Access';
             document.getElementById('modalDesc').textContent = action === 'delete' ? 'Masukkan kode untuk konfirmasi' : 'Please enter access code';
@@ -691,96 +693,96 @@
             }, 10);
             document.getElementById('passwordInput').value = '';
             document.getElementById('passwordInput').focus();
-        }
+        };
 
-        function closePasswordModal() {
+        window.closePasswordModal = function() {
             document.getElementById('passwordModal').classList.add('opacity-0');
             document.getElementById('passwordModalContent').classList.remove('scale-100');
             document.getElementById('passwordModalContent').classList.add('scale-95');
             setTimeout(() => document.getElementById('passwordModal').classList.add('hidden'), 300);
-        }
+        };
         
-        function openDeleteModal() {
+        window.openDeleteModal = function() {
             document.getElementById('deleteModal').classList.remove('hidden');
             setTimeout(() => {
                 document.getElementById('deleteModal').classList.remove('opacity-0');
                 document.getElementById('deleteModalContent').classList.remove('scale-95');
                 document.getElementById('deleteModalContent').classList.add('scale-100');
             }, 10);
-        }
+        };
         
-        function closeDeleteModal() {
+        window.closeDeleteModal = function() {
             document.getElementById('deleteModal').classList.add('opacity-0');
             document.getElementById('deleteModalContent').classList.remove('scale-100');
             document.getElementById('deleteModalContent').classList.add('scale-95');
             setTimeout(() => document.getElementById('deleteModal').classList.add('hidden'), 300);
-        }
+        };
 
-        function openPreviewModal(newCount, dupCount) {
+        window.openPreviewModal = function(newCount, dupCount) {
             document.getElementById('previewModal').classList.remove('hidden');
-            document.getElementById('previewNewCount').textContent = formatNumber(newCount);
-            document.getElementById('previewDupCount').textContent = formatNumber(dupCount);
+            document.getElementById('previewNewCount').textContent = window.formatNumber(newCount);
+            document.getElementById('previewDupCount').textContent = window.formatNumber(dupCount);
             setTimeout(() => {
                 document.getElementById('previewModal').classList.remove('opacity-0');
                 document.getElementById('previewModalContent').classList.remove('scale-95');
                 document.getElementById('previewModalContent').classList.add('scale-100');
             }, 10);
-        }
+        };
 
-        function closePreviewModal() {
+        window.closePreviewModal = function() {
             document.getElementById('previewModal').classList.add('opacity-0');
             document.getElementById('previewModalContent').classList.remove('scale-100');
             document.getElementById('previewModalContent').classList.add('scale-95');
             setTimeout(() => document.getElementById('previewModal').classList.add('hidden'), 300);
-        }
+        };
 
-        function openSuccessModal(count) {
+        window.openSuccessModal = function(count) {
             document.getElementById('successModal').classList.remove('hidden');
-            document.getElementById('successCount').textContent = formatNumber(count);
+            document.getElementById('successCount').textContent = window.formatNumber(count);
             setTimeout(() => {
                 document.getElementById('successModal').classList.remove('opacity-0');
                 document.getElementById('successModalContent').classList.remove('scale-95');
                 document.getElementById('successModalContent').classList.add('scale-100');
             }, 10);
-        }
+        };
 
-        function closeSuccessModal() {
+        window.closeSuccessModal = function() {
             document.getElementById('successModal').classList.add('opacity-0');
             document.getElementById('successModalContent').classList.remove('scale-100');
             document.getElementById('successModalContent').classList.add('scale-95');
             setTimeout(() => {
                 document.getElementById('successModal').classList.add('hidden');
             }, 300);
-        }
+        };
         
-        function confirmDelete() {
+        window.confirmDelete = function() {
              const date = document.getElementById('deleteDateInput').value;
-             if(!date) return showToast("Pilih tanggal dulu!", "error");
-             closeDeleteModal();
-             openPasswordModal('delete');
-        }
+             if(!date) return window.showToast("Pilih tanggal dulu!", "error");
+             window.closeDeleteModal();
+             window.openPasswordModal('delete');
+        };
 
-        function handleEnter(e) { if (e.key === 'Enter') submitPassword(); }
+        window.handleEnter = function(e) { if (e.key === 'Enter') window.submitPassword(); };
 
-        function submitPassword() {
+        window.submitPassword = function() {
             const pwd = document.getElementById('passwordInput').value;
             if (pwd === "TAB123") {
-                closePasswordModal();
-                if(currentAction === 'upload') {
-                    showToast("Authorized", "success");
+                window.closePasswordModal();
+                if(window.currentAction === 'upload') {
+                    window.showToast("Authorized", "success");
                     setTimeout(() => document.getElementById('csvFile').click(), 500);
-                } else if(currentAction === 'delete') {
+                } else if(window.currentAction === 'delete') {
                     const date = document.getElementById('deleteDateInput').value;
                     if(window.deleteDataForDate) window.deleteDataForDate(date);
-                    else showToast("Service Offline", "error");
+                    else window.showToast("Service Offline", "error");
                 }
             } else {
-                showToast("Invalid Passcode", "error");
+                window.showToast("Invalid Passcode", "error");
                 document.getElementById('passwordInput').value = '';
             }
-        }
+        };
 
-        function showLoading(show, text) {
+        window.showLoading = function(show, text) {
             const el = document.getElementById('loadingOverlay');
             if(show) {
                 el.classList.remove('hidden');
@@ -788,7 +790,7 @@
             } else {
                 el.classList.add('hidden');
             }
-        }
+        };
 
         // --- PROCESSING (Global wrapper) ---
         window.processRawDataWrapper = function(data) {
@@ -811,15 +813,15 @@
                 
                 if (tglTerimaStr.toLowerCase().includes('tolakan')) {
                     rejectedData.push({
-                        _tglPA: parseDate(row['Tanggal']),
+                        _tglPA: window.parseDate(row['Tanggal']),
                         _origin: origin,
                         _vendor: vendor,
                         _dest: dest,
                         _smu: row['SMU'] || '-',
                         _flight: cleanFlight,
                         _batch: batch,
-                        _pcs: parseNum(row['Kuantitas Paket (Awb)']),
-                        _weight: parseNum(row['Berat Total (kg)']),
+                        _pcs: window.parseNum(row['Kuantitas Paket (Awb)']),
+                        _weight: window.parseNum(row['Berat Total (kg)']),
                         _note: row['Note'] || row['CATATAN'] || tglTerimaStr,
                         _tglFlight: row['TANGGAL FLIGHT'],
                         _etd: row['ETD'],
@@ -830,8 +832,8 @@
                     return; 
                 }
 
-                const tglTerima = parseDate(tglTerimaStr);
-                const tglOrigin = parseDate(row['Tanggal']); 
+                const tglTerima = window.parseDate(tglTerimaStr);
+                const tglOrigin = window.parseDate(row['Tanggal']); 
                 
                 if (tglTerima) {
                     let sla = 0;
@@ -844,8 +846,8 @@
                         ...row,
                         _date: tglTerima,
                         _dateOrigin: tglOrigin,
-                        _weight: parseNum(row['Berat Total (kg)']),
-                        _pcs: parseNum(row['Kuantitas Paket (Awb)']), 
+                        _weight: window.parseNum(row['Berat Total (kg)']),
+                        _pcs: window.parseNum(row['Kuantitas Paket (Awb)']), 
                         _vendor: vendor,
                         _origin: origin,
                         _dest: dest,
@@ -866,20 +868,20 @@
             window.rawData = validData;
             window.rejectedData = rejectedData;
 
-            populateFilters();
-            renderRejectedTable();
+            window.populateFilters();
+            window.renderRejectedTable();
             
             const dates = window.rawData.map(d => d._date).sort((a,b) => a-b);
             if (dates.length > 0) {
-                document.getElementById('filterStartDate').value = formatInputDate(dates[0]);
-                document.getElementById('filterEndDate').value = formatInputDate(dates[dates.length-1]);
+                document.getElementById('filterStartDate').value = window.formatInputDate(dates[0]);
+                document.getElementById('filterEndDate').value = window.formatInputDate(dates[dates.length-1]);
             }
 
-            applyFilters();
+            window.applyFilters();
         };
 
         // --- NEW REJECTED TABLE RENDERER ---
-        function renderRejectedTable() {
+        window.renderRejectedTable = function() {
             const table = document.getElementById('rejectedTable');
             if (window.rejectedData.length === 0) {
                 table.innerHTML = `<tr><td class="p-4 text-center text-slate-400 italic">Tidak ada data tolakan</td></tr>`;
@@ -903,7 +905,7 @@
             </tr></thead><tbody>`;
 
             window.rejectedData.forEach(d => {
-                const datePa = d._tglPA ? formatDate(d._tglPA) : '-';
+                const datePa = d._tglPA ? window.formatDate(d._tglPA) : '-';
                 html += `<tr class="hover:bg-red-50/30">
                     <td class="font-medium text-slate-600">${datePa}</td>
                     <td class="text-center">${d._batch}</td>
@@ -916,25 +918,24 @@
                     <td>${d._tglFlight}</td>
                     <td>${d._etd}</td>
                     <td class="text-center font-mono text-xs">${d._mb}</td>
-                    <td class="text-right">${formatNumber(d._weight)}</td>
-                    <td class="text-right font-bold">${formatNumber(d._pcs)}</td>
+                    <td class="text-right">${window.formatNumber(d._weight)}</td>
+                    <td class="text-right font-bold">${window.formatNumber(d._pcs)}</td>
                     <td class="text-xs text-red-500 italic">${d._note}</td>
                 </tr>`;
             });
             html += '</tbody>';
             table.innerHTML = html;
-        }
+        };
 
         // --- FILTERS ---
-        function populateFilters() {
-            // Helper for Multi-Select
+        window.populateFilters = function() {
             const populateMulti = (menuId, labelId, field) => {
                 const menu = document.getElementById(menuId);
                 const opts = [...new Set(window.rawData.map(d => d[field]))].sort();
                 
                 let html = `
                     <label class="flex items-center gap-2 px-2 py-1.5 hover:bg-indigo-50 rounded cursor-pointer transition-colors border-b border-slate-100 mb-1">
-                        <input type="checkbox" value="ALL" class="accent-indigo-600 w-3.5 h-3.5" onchange="handleMultiChange('${menuId}', '${labelId}', this)" checked>
+                        <input type="checkbox" value="ALL" class="accent-indigo-600 w-3.5 h-3.5" onchange="window.handleMultiChange('${menuId}', '${labelId}', this)" checked>
                         <span class="text-xs font-bold text-slate-700">Pilih Semua</span>
                     </label>
                 `;
@@ -942,12 +943,12 @@
                 opts.forEach(o => {
                     html += `
                     <label class="flex items-center gap-2 px-2 py-1.5 hover:bg-slate-50 rounded cursor-pointer transition-colors">
-                        <input type="checkbox" value="${o}" class="accent-indigo-600 w-3.5 h-3.5 item-checkbox" onchange="handleMultiChange('${menuId}', '${labelId}', this)" checked>
+                        <input type="checkbox" value="${o}" class="accent-indigo-600 w-3.5 h-3.5 item-checkbox" onchange="window.handleMultiChange('${menuId}', '${labelId}', this)" checked>
                         <span class="text-xs text-slate-600">${o}</span>
                     </label>`;
                 });
                 menu.innerHTML = html;
-                updateMultiLabel(menuId, labelId);
+                window.updateMultiLabel(menuId, labelId);
             };
 
             populateMulti('originMenu', 'originLabel', '_origin');
@@ -956,10 +957,10 @@
             const services = [...new Set(window.rawData.map(d => d._service))].sort();
             const container = document.getElementById('serviceToggleContainer');
             container.innerHTML = '';
-            container.appendChild(createToggleBtn('ALL', 'ALL'));
-            services.forEach(s => container.appendChild(createToggleBtn(s, s)));
-            updateToggleVisuals();
-        }
+            container.appendChild(window.createToggleBtn('ALL', 'ALL'));
+            services.forEach(s => container.appendChild(window.createToggleBtn(s, s)));
+            window.updateToggleVisuals();
+        };
 
         window.toggleMulti = (id) => {
             const el = document.getElementById(id);
@@ -988,8 +989,8 @@
                 allChk.checked = allChecked;
                 if (!checkbox.checked) allChk.checked = false;
             }
-            updateMultiLabel(menuId, labelId);
-            applyFilters();
+            window.updateMultiLabel(menuId, labelId);
+            window.applyFilters();
         };
 
         window.updateMultiLabel = (menuId, labelId) => {
@@ -1019,42 +1020,42 @@
             return [...menu.querySelectorAll('input.item-checkbox:checked')].map(i => i.value);
         };
 
-        function createToggleBtn(l, v) {
+        window.createToggleBtn = function(l, v) {
             const btn = document.createElement('button');
             btn.textContent = l; btn.dataset.value = v;
             btn.className = "pill-toggle mr-1 mb-1";
-            btn.onclick = () => { window.selectedService = v; updateToggleVisuals(); applyFilters(); };
+            btn.onclick = () => { window.selectedService = v; window.updateToggleVisuals(); window.applyFilters(); };
             return btn;
-        }
+        };
 
-        function updateToggleVisuals() {
+        window.updateToggleVisuals = function() {
             document.querySelectorAll('#serviceToggleContainer button').forEach(b => {
                 if (b.dataset.value === window.selectedService) b.className = "pill-toggle mr-1 mb-1 pill-active";
                 else b.className = "pill-toggle mr-1 mb-1 pill-inactive";
             });
-        }
+        };
 
-        function resetFilters() {
+        window.resetFilters = function() {
             ['originMenu', 'destMenu'].forEach(id => {
                 const inputs = document.querySelectorAll(`#${id} input`);
                 inputs.forEach(i => i.checked = true);
                 const labelId = id === 'originMenu' ? 'originLabel' : 'destLabel';
-                updateMultiLabel(id, labelId);
+                window.updateMultiLabel(id, labelId);
             });
             
             document.getElementById('globalSearch').value = '';
             window.selectedService = 'ALL';
-            updateToggleVisuals();
+            window.updateToggleVisuals();
             const dates = window.rawData.map(d => d._date).sort((a,b) => a-b);
             if(dates.length) {
-                document.getElementById('filterStartDate').value = formatInputDate(dates[0]);
-                document.getElementById('filterEndDate').value = formatInputDate(dates[dates.length-1]);
+                document.getElementById('filterStartDate').value = window.formatInputDate(dates[0]);
+                document.getElementById('filterEndDate').value = window.formatInputDate(dates[dates.length-1]);
             }
-            applyFilters();
-            showToast("Reset Complete", "info");
-        }
+            window.applyFilters();
+            window.showToast("Reset Complete", "info");
+        };
 
-        function applyFilters() {
+        window.applyFilters = function() {
             const startVal = document.getElementById('filterStartDate').value;
             const endVal = document.getElementById('filterEndDate').value;
 
@@ -1095,19 +1096,19 @@
 
             window.currentPage = 1;
             window.matrixPage = 1; 
-            updateDashboard();
-        }
+            window.updateDashboard();
+        };
 
         // --- DASHBOARD UPDATER ---
-        function updateDashboard() {
+        window.updateDashboard = function() {
             const fd = window.filteredData;
             const w = fd.reduce((a,b) => a+b._weight, 0);
             const p = fd.reduce((a,b) => a+b._pcs, 0); 
             const m = fd.length;
             
-            document.getElementById('kpiWeight').innerText = formatNumber(w);
-            document.getElementById('kpiMB').innerText = formatNumber(m);
-            document.getElementById('kpiPcs').innerText = formatNumber(p);
+            document.getElementById('kpiWeight').innerText = window.formatNumber(w);
+            document.getElementById('kpiMB').innerText = window.formatNumber(m);
+            document.getElementById('kpiPcs').innerText = window.formatNumber(p);
 
             const startStr = document.getElementById('filterStartDate').value;
             const endStr = document.getElementById('filterEndDate').value;
@@ -1141,20 +1142,20 @@
                 prevMB = prevData.length;
             }
 
-            updateDiff('kpiWeightDiff', w, prevWeight);
-            updateDiff('kpiPcsDiff', p, prevPcs);
-            updateDiff('kpiMBDiff', m, prevMB);
+            window.updateDiff('kpiWeightDiff', w, prevWeight);
+            window.updateDiff('kpiPcsDiff', p, prevPcs);
+            window.updateDiff('kpiMBDiff', m, prevMB);
 
-            renderMainChart();
-            renderTimeChart(); 
-            renderBottomCharts();
-            renderSlaMatrices();
-            renderMatrixTable();
-            aggregateAndRenderTable();
-            renderBagsealTable(); 
-        }
+            window.renderMainChart();
+            window.renderTimeChart(); 
+            window.renderBottomCharts();
+            window.renderSlaMatrices();
+            window.renderMatrixTable();
+            window.aggregateAndRenderTable();
+            window.renderBagsealTable(); 
+        };
 
-        function updateDiff(id, current, previous) {
+        window.updateDiff = function(id, current, previous) {
             const el = document.getElementById(id);
             if (previous === 0) {
                 el.innerText = "-";
@@ -1166,9 +1167,9 @@
             el.innerText = `${sign}${diff.toFixed(1)}%`;
             if (diff >= 0) el.className = "text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-600";
             else el.className = "text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-50 text-rose-600";
-        }
+        };
 
-        function renderBagsealTable() {
+        window.renderBagsealTable = function() {
             const tbody = document.getElementById('bagsealTable');
             tbody.innerHTML = '';
             
@@ -1193,183 +1194,146 @@
             
             html += '</tbody>';
             tbody.innerHTML = html;
-        }
+        };
 
-        function copyBagseals() {
+        window.copyBagseals = function() {
             const bagseals = window.filteredData.map(d => d._mb).join('\n');
             navigator.clipboard.writeText(bagseals).then(() => {
-                showToast("Bagseals copied to clipboard", "success");
+                window.showToast("Bagseals copied to clipboard", "success");
             }).catch(err => {
-                showToast("Failed to copy", "error");
+                window.showToast("Failed to copy", "error");
             });
-        }
-        window.copyBagseals = copyBagseals;
+        };
 
-        function aggregateAndRenderTable() {
+        window.aggregateAndRenderTable = function() {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
 
             let displayData = [...window.filteredData];
             
+            // PIVOT SORTING: Pengurutan hierarkis ketat
             displayData.sort((a,b) => {
                 if(a._date.getTime() !== b._date.getTime()) return a._date - b._date;
-                if(a._dest !== b._dest) return a._dest < b._dest ? -1 : 1; 
+                if(a._dest !== b._dest) return a._dest.localeCompare(b._dest);
                 if(a._jam !== b._jam) return a._jam.localeCompare(b._jam);
+                if((a._dateOrigin?.getTime()||0) !== (b._dateOrigin?.getTime()||0)) return (a._dateOrigin?.getTime()||0) - (b._dateOrigin?.getTime()||0);
+                if(a._batch !== b._batch) return a._batch.localeCompare(b._batch);
+                if(a._origin !== b._origin) return a._origin.localeCompare(b._origin);
+                if(a._smu !== b._smu) return a._smu.localeCompare(b._smu);
                 return a._flight.localeCompare(b._flight);
             });
 
             const start = (window.currentPage - 1) * window.rowsPerPage;
             const pageData = displayData.slice(start, start + window.rowsPerPage);
             
-            const spans = { 
-                date: [], dest: [], jam: [], pa: [], sla: [], batch: [], origin: [], flight: [], tglFlight: [], mb: [], pcs: [] 
-            };
+            // SPAN CALCULATIONS UNTUK PIVOT MERGE
+            const spans = { date: [], dest: [], jam: [], pa: [], batch: [], origin: [], smu: [], flight: [], tglFlight: [], sla: [], totals: [] };
             for(let k in spans) spans[k] = new Array(pageData.length).fill(0);
 
-            const calcSpan = (field, parentMatch, selfMatchField) => {
+            const pmGroup = (fields, a, b) => fields.every(f => {
+                if(f === '_date' || f === '_dateOrigin') return a[f]?.getTime() === b[f]?.getTime();
+                return a[f] === b[f];
+            });
+
+            // Tingkatan Grouping
+            const fDate = ['_date'];
+            const fDest = ['_date', '_dest'];
+            const fJam = ['_date', '_dest', '_jam'];
+            const fPa = [...fJam, '_dateOrigin'];
+            const fBatch = [...fPa, '_batch'];
+            const fOrigin = [...fBatch, '_origin'];
+            const fSmu = [...fOrigin, '_smu'];
+            const fFlight = [...fSmu, '_flight'];
+            const fTglFlight = [...fFlight, '_tglFlight'];
+            const fTotals = [...fTglFlight]; // Kriteria akhir untuk menggabungkan Pcs & MB
+
+            const calcSpan = (field, fieldsArray) => {
                 for(let i=0; i<pageData.length; i++) {
                     if(spans[field][i] === -1) continue;
                     let c = 1;
                     for(let j=i+1; j<pageData.length; j++) {
-                        const mParent = parentMatch(pageData[i], pageData[j]);
-                        const fName = selfMatchField ? selfMatchField : '_'+field;
-                        const mSelf = pageData[i][fName] === pageData[j][fName];
-                        if(mParent && mSelf) { c++; spans[field][j] = -1; } else break;
+                        if(pmGroup(fieldsArray, pageData[i], pageData[j])) {
+                            c++; spans[field][j] = -1;
+                        } else break;
                     }
                     spans[field][i] = c;
                 }
             };
 
-            const pmDate = (a,b) => a._date.getTime()===b._date.getTime() && a._dest===b._dest; 
-            
-            for(let i=0; i<pageData.length; i++) {
-                if(spans.date[i] === -1) continue;
-                let c = 1;
-                for(let j=i+1; j<pageData.length; j++) {
-                    if(pmDate(pageData[i], pageData[j])) { c++; spans.date[j] = -1; } else break;
-                }
-                spans.date[i] = c;
-            }
-
-            calcSpan('dest', pmDate); 
-            const pmDest = (a,b) => pmDate(a,b) && a._dest===b._dest;
-            calcSpan('jam', pmDest);
-            const pmJam = (a,b) => pmDest(a,b) && a._jam===b._jam;
-            
-            calcSpan('pa', pmJam, '_dateOrigin');
-            calcSpan('batch', pmJam);
-            calcSpan('origin', pmJam);
-            calcSpan('flight', pmJam);
-            calcSpan('tglFlight', pmJam);
-            calcSpan('sla', pmJam);
-
-            const calcSum = (startIdx, span) => {
-                let mb = 0, pcs = 0;
-                for(let k=0; k<span; k++) {
-                    if (startIdx + k < pageData.length) {
-                        mb += 1; 
-                        pcs += pageData[startIdx + k]._pcs;
-                    }
-                }
-                return { mb, pcs };
-            };
+            calcSpan('date', fDate);
+            calcSpan('dest', fDest);
+            calcSpan('jam', fJam);
+            calcSpan('pa', fPa);
+            calcSpan('batch', fBatch);
+            calcSpan('origin', fOrigin);
+            calcSpan('smu', fSmu);
+            calcSpan('flight', fFlight);
+            calcSpan('tglFlight', fTglFlight);
+            calcSpan('sla', fSmu); 
+            calcSpan('totals', fTotals);
 
             pageData.forEach((d, i) => {
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition border-b border-slate-300"; 
-                
                 if(spans.date[i] > 0 && i > 0) tr.classList.add("thick-date-border");
 
-                const addTd = (f, txt, cls, isHtml=false) => {
+                const addTd = (f, txt, cls) => {
                     if(spans[f][i] > 0) {
                         const td = document.createElement('td');
                         td.className = cls + " valign-middle"; 
                         td.rowSpan = spans[f][i];
-                        if(isHtml) td.innerHTML = txt;
-                        else td.textContent = txt;
+                        td.innerHTML = txt;
                         tr.appendChild(td);
                     }
                 };
 
-                if (spans.date[i] > 0) {
-                    const totals = calcSum(i, spans.date[i]);
-                    const html = `
-                        <div class="flex flex-col items-center gap-1">
-                            <span class="text-sm">${formatDate(d._date)}</span>
-                            <div class="w-full bg-indigo-50 border border-indigo-100 rounded p-1 text-[9px] leading-tight">
-                                <div class="font-bold text-indigo-700 uppercase mb-0.5">Total Tgl</div>
-                                <div class="flex justify-between px-1">
-                                    <span class="text-slate-600 font-mono">${totals.mb} MB</span>
-                                    <span class="text-slate-800 font-bold font-mono">${formatNumber(totals.pcs)} Pcs</span>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    addTd('date', html, "text-center font-bold text-slate-800 bg-white border-r border-slate-300 group-col", true);
-                }
-
-                addTd('dest', d._dest, "text-center font-bold text-indigo-800 bg-indigo-50 border-r border-slate-300 group-col");
-                
-                if (spans.jam[i] > 0) {
-                    const totals = calcSum(i, spans.jam[i]);
-                    const html = `
-                        <div class="flex flex-col gap-0.5">
-                            <span class="text-sm font-bold text-slate-700">${d._jam}</span>
-                            <span class="text-[9px] font-medium text-slate-500 bg-slate-100 px-1 rounded border border-slate-200 inline-block text-center">
-                                ${totals.mb} MB | ${formatNumber(totals.pcs)} Pcs
-                            </span>
-                        </div>
-                    `;
-                    addTd('jam', html, "text-left text-slate-700 font-medium border-r border-slate-300 bg-white group-col", true);
-                }
-
-                addTd('pa', formatDate(d._dateOrigin), "text-left text-slate-500 border-r border-slate-300 bg-white group-col");
+                addTd('date', window.formatDate(d._date), "text-center font-bold text-slate-800 bg-white border-r border-slate-300 group-col whitespace-nowrap");
+                addTd('dest', d._dest, "text-center font-bold text-indigo-800 bg-indigo-50/50 border-r border-slate-300 group-col whitespace-nowrap");
+                addTd('jam', d._jam, "text-center text-slate-700 font-bold border-r border-slate-300 bg-white group-col whitespace-nowrap");
+                addTd('pa', window.formatDate(d._dateOrigin), "text-left text-slate-500 border-r border-slate-300 bg-white group-col whitespace-nowrap");
                 addTd('batch', d._batch, "text-left text-slate-500 border-r border-slate-300 bg-white group-col");
-                addTd('origin', d._origin, "text-left text-slate-700 border-r border-slate-300 bg-white group-col");
-
-                const smuTd = document.createElement('td');
-                smuTd.className = "text-slate-600 font-mono text-[11px] border-r border-slate-300 valign-middle font-medium";
-                smuTd.textContent = d._smu;
-                tr.appendChild(smuTd);
-
-                addTd('flight', d._flight, "text-left text-slate-900 font-bold border-r border-slate-300 bg-white");
-                addTd('tglFlight', d._tglFlight, "text-left text-slate-500 border-r border-slate-300 bg-white");
+                addTd('origin', d._origin, "text-left text-slate-700 border-r border-slate-300 bg-white group-col whitespace-nowrap");
+                addTd('smu', d._smu, "text-slate-600 font-mono text-[11px] font-medium border-r border-slate-300 valign-middle bg-white group-col whitespace-nowrap");
+                addTd('flight', d._flight, "text-left text-slate-900 font-bold border-r border-slate-300 bg-white group-col whitespace-nowrap");
+                addTd('tglFlight', d._tglFlight, "text-left text-slate-500 border-r border-slate-300 bg-white group-col whitespace-nowrap");
                 
                 if (spans.sla[i] > 0) {
                     const slaColor = d._sla > 3 ? 'text-rose-600 font-extrabold bg-rose-50' : 'text-emerald-600 font-extrabold bg-emerald-50';
-                    const td = document.createElement('td');
-                    td.className = `text-center border-r border-slate-300 group-col valign-middle ${slaColor}`;
-                    td.rowSpan = spans.sla[i];
-                    td.textContent = d._sla;
-                    tr.appendChild(td);
+                    addTd('sla', d._sla, `text-center border-r border-slate-300 group-col ${slaColor}`);
                 }
 
-                const mbTd = document.createElement('td');
-                mbTd.className = "text-center font-mono font-bold text-slate-600 border-r border-slate-300 valign-middle bg-white";
-                mbTd.textContent = "1"; 
-                tr.appendChild(mbTd);
-
-                const pcsTd = document.createElement('td');
-                pcsTd.className = "text-right font-black text-slate-900 valign-middle bg-white";
-                pcsTd.textContent = formatNumber(d._pcs);
-                tr.appendChild(pcsTd);
+                // GABUNGKAN TOTAL MB & TOTAL PCS SECARA PIVOT
+                if(spans.totals[i] > 0) {
+                    let sumMb = 0, sumPcs = 0;
+                    for(let k=0; k<spans.totals[i]; k++) {
+                        sumMb += 1;
+                        sumPcs += pageData[i+k]._pcs;
+                    }
+                    addTd('totals', sumMb, "text-center font-mono font-bold text-indigo-700 border-r border-slate-300 bg-indigo-50/30 group-col");
+                    
+                    const tdPcs = document.createElement('td');
+                    tdPcs.className = "text-right font-black text-indigo-900 valign-middle bg-indigo-50/50 group-col";
+                    tdPcs.rowSpan = spans.totals[i];
+                    tdPcs.textContent = window.formatNumber(sumPcs);
+                    tr.appendChild(tdPcs);
+                }
 
                 tbody.appendChild(tr);
             });
             
-            document.getElementById('showingCount').textContent = `${Math.min(start+1, window.aggregatedData.length)} - ${Math.min(start+pageData.length, window.aggregatedData.length)}`;
-            document.getElementById('totalCount').textContent = window.aggregatedData.length;
+            document.getElementById('showingCount').textContent = `${Math.min(start+1, window.filteredData.length)} - ${Math.min(start+pageData.length, window.filteredData.length)}`;
+            document.getElementById('totalCount').textContent = window.filteredData.length;
             document.getElementById('pageIndicator').textContent = window.currentPage;
-        }
+        };
 
-        function renderMainChart() { 
+        window.renderMainChart = function() { 
             if(window.chartInstances.main) window.chartInstances.main.destroy();
             const ctx = document.getElementById('mainChart').getContext('2d');
             const agg = {};
             window.filteredData.forEach(d => {
                 let sortKey = '';
                 if (window.currentChartMode === 'daily') {
-                    sortKey = toLocalISOString(d._date);
+                    sortKey = window.toLocalISOString(d._date);
                 } else {
                     const y = d._date.getFullYear();
                     const m = String(d._date.getMonth() + 1).padStart(2, '0');
@@ -1403,14 +1367,14 @@
                             anchor: 'end', 
                             color: '#64748b', 
                             font: { weight: 'bold' },
-                            formatter: (value) => formatNumber(value)
+                            formatter: (value) => window.formatNumber(value)
                         } 
                     } 
                 }
             });
-        }
+        };
         
-        function renderTimeChart() {
+        window.renderTimeChart = function() {
             if(window.chartInstances.time) window.chartInstances.time.destroy();
             const ctx = document.getElementById('timeChart').getContext('2d');
             const agg = {};
@@ -1441,10 +1405,10 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: { y: { display: false }, x: { grid: { display: false } } },
-                    plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'end', color: '#64748b', font: { size: 9 }, formatter: (v) => v > 0 ? formatNumber(v) : '' } }
+                    plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'end', color: '#64748b', font: { size: 9 }, formatter: (v) => v > 0 ? window.formatNumber(v) : '' } }
                 }
             });
-        }
+        };
 
         window.setMainChartMode = function(mode) {
             window.currentChartMode = mode;
@@ -1461,10 +1425,10 @@
                 btnDaily.className = `${baseClasses} ${inactiveStyle}`;
                 btnMonthly.className = `${baseClasses} ${activeStyle}`;
             }
-            renderMainChart();
-        }
+            window.renderMainChart();
+        };
 
-        function renderBottomCharts() {
+        window.renderBottomCharts = function() {
             const serviceColors = ['#10B981', '#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6'];
 
             const renderBar = (id, f, c) => {
@@ -1472,7 +1436,7 @@
                 const ctx = document.getElementById(id).getContext('2d');
                 const agg = {}; window.filteredData.forEach(d => agg[d[f]] = (agg[d[f]]||0) + d._pcs); 
                 const s = Object.entries(agg).sort((a,b)=>b[1]-a[1]).slice(0, 10);
-                window.chartInstances[id] = new Chart(ctx, { type: 'bar', data: { labels: s.map(e=>e[0]), datasets: [{ data: s.map(e=>e[1]), backgroundColor: c, borderRadius: 6 }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, scales: { x: { display: false }, y: { grid: { display: false } } }, plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'end', color: '#6b7280', font: { size: 9 }, formatter: (v) => formatNumber(v) } } } });
+                window.chartInstances[id] = new Chart(ctx, { type: 'bar', data: { labels: s.map(e=>e[0]), datasets: [{ data: s.map(e=>e[1]), backgroundColor: c, borderRadius: 6 }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, scales: { x: { display: false }, y: { grid: { display: false } } }, plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'end', color: '#6b7280', font: { size: 9 }, formatter: (v) => window.formatNumber(v) } } } });
             };
             renderBar('chartVendor', '_vendor', '#6366f1');
             renderBar('chartOrigin', '_origin', '#8B5CF6');
@@ -1521,46 +1485,45 @@
                             <span class="w-2 h-2 rounded-full" style="background-color: ${color}"></span>
                             <span class="font-semibold">${serviceName}</span>
                         </td>
-                        <td class="py-1.5 text-right font-mono">${formatNumber(val)}</td>
+                        <td class="py-1.5 text-right font-mono">${window.formatNumber(val)}</td>
                         <td class="py-1.5 text-right font-bold text-slate-400">${pct}</td>
                     </tr>
                 `;
             });
             tableHTML += '</tbody>';
             tableEl.innerHTML = tableHTML;
-        }
+        };
 
-        function renderSlaMatrices() {
+        window.renderSlaMatrices = function() {
             const render = (id, f, l) => {
                 const t = document.getElementById(id); t.innerHTML = '';
                 const agg = {}; window.filteredData.forEach(d => { const k=d[f]; if(!agg[k]) agg[k]={u3:0,b35:0,o5:0,tot:0,sum:0}; agg[k].tot+=d._pcs; agg[k].sum+=(d._sla*d._pcs); if(d._sla<=2)agg[k].u3+=d._pcs; else if(d._sla<=5)agg[k].b35+=d._pcs; else agg[k].o5+=d._pcs; });
                 let h = `<thead class="sticky top-0 bg-white z-10"><tr><th class="text-left text-slate-500">${l}</th><th class="text-center text-emerald-600 bg-emerald-50">0-2H</th><th class="text-center text-amber-600 bg-amber-50">3-5H</th><th class="text-center text-rose-600 bg-rose-50">>5H</th><th class="text-center text-slate-800 bg-slate-100">Tot</th><th class="text-center text-indigo-600 bg-indigo-50">Avg</th></tr></thead><tbody>`;
-                Object.keys(agg).sort().forEach(k => { const d=agg[k]; h += `<tr class="hover:bg-slate-50"><td class="font-bold text-slate-700">${k}</td><td class="text-center text-emerald-600 font-mono">${formatNumber(d.u3)}</td><td class="text-center text-amber-600 font-mono">${formatNumber(d.b35)}</td><td class="text-center text-rose-600 font-bold font-mono">${formatNumber(d.o5)}</td><td class="text-center font-bold bg-slate-50 font-mono">${formatNumber(d.tot)}</td><td class="text-center font-bold text-indigo-600">${(d.tot>0?d.sum/d.tot:0).toFixed(1)}</td></tr>`; });
+                Object.keys(agg).sort().forEach(k => { const d=agg[k]; h += `<tr class="hover:bg-slate-50"><td class="font-bold text-slate-700">${k}</td><td class="text-center text-emerald-600 font-mono">${window.formatNumber(d.u3)}</td><td class="text-center text-amber-600 font-mono">${window.formatNumber(d.b35)}</td><td class="text-center text-rose-600 font-bold font-mono">${window.formatNumber(d.o5)}</td><td class="text-center font-bold bg-slate-50 font-mono">${window.formatNumber(d.tot)}</td><td class="text-center font-bold text-indigo-600">${(d.tot>0?d.sum/d.tot:0).toFixed(1)}</td></tr>`; });
                 t.innerHTML = h + '</tbody>';
             };
             render('slaOriginTable', '_origin', 'ORIGIN'); render('slaDestTable', '_dest', 'DESTINASI');
-        }
+        };
 
-        function changeMatrixPage(delta) {
-             const uniqueMondays = [...new Set(window.filteredData.map(d => getMondayTime(d._date)))].sort((a,b)=>a-b);
+        window.changeMatrixPage = function(delta) {
+             const uniqueMondays = [...new Set(window.filteredData.map(d => window.getMondayTime(d._date)))].sort((a,b)=>a-b);
              const totalPages = uniqueMondays.length || 1;
              const nextPage = window.matrixPage + delta;
              if(nextPage >= 1 && nextPage <= totalPages) {
                  window.matrixPage = nextPage;
-                 renderMatrixTable();
+                 window.renderMatrixTable();
              }
-        }
-        window.changeMatrixPage = changeMatrixPage;
+        };
 
-        function renderMatrixTable() {
-            const uniqueMondays = [...new Set(window.filteredData.map(d => getMondayTime(d._date)))].sort((a,b)=>a-b);
+        window.renderMatrixTable = function() {
+            const uniqueMondays = [...new Set(window.filteredData.map(d => window.getMondayTime(d._date)))].sort((a,b)=>a-b);
             const totalPages = uniqueMondays.length || 1;
             
             if (window.matrixPage > totalPages) window.matrixPage = 1;
 
             document.getElementById('matrixPageIndicator').innerText = `Minggu ${window.matrixPage} / ${totalPages}`;
 
-            let currentMonday = uniqueMondays.length > 0 ? uniqueMondays[window.matrixPage - 1] : getMondayTime(new Date());
+            let currentMonday = uniqueMondays.length > 0 ? uniqueMondays[window.matrixPage - 1] : window.getMondayTime(new Date());
             
             const weekDates = [];
             for(let i=0; i<7; i++) {
@@ -1586,7 +1549,7 @@
             weekDates.forEach((d, i) => {
                 h += `<th class="text-center border-r border-slate-200 min-w-[80px]">
                         <div class="text-[11px] font-bold text-slate-700">${daysName[i]}</div>
-                        <div class="text-[9px] font-normal text-slate-400 mt-0.5 tracking-wider">${formatDate(d)}</div>
+                        <div class="text-[9px] font-normal text-slate-400 mt-0.5 tracking-wider">${window.formatDate(d)}</div>
                       </th>`;
             });
             h += `<th class="text-center font-extrabold bg-slate-100 border-l border-slate-300 text-slate-800">TOTAL</th></tr></thead><tbody>`;
@@ -1610,33 +1573,32 @@
                     const v = weekData.filter(d => d._date.getTime() === t && d._dest === dst).reduce((s,d) => s+d._pcs, 0); 
                     rowTotal += v;
                     grandTotals[i] += v;
-                    r += `<td class="text-center border-r border-slate-100 ${v>0?'text-slate-800 font-bold bg-indigo-50/20':'text-slate-300'}">${v>0?formatNumber(v):'-'}</td>`;
+                    r += `<td class="text-center border-r border-slate-100 ${v>0?'text-slate-800 font-bold bg-indigo-50/20':'text-slate-300'}">${v>0?window.formatNumber(v):'-'}</td>`;
                 });
                 
                 grandTotalAll += rowTotal;
-                h += r + `<td class="text-center font-black text-slate-900 bg-slate-50 border-l border-slate-200">${formatNumber(rowTotal)}</td></tr>`;
+                h += r + `<td class="text-center font-black text-slate-900 bg-slate-50 border-l border-slate-200">${window.formatNumber(rowTotal)}</td></tr>`;
             });
 
             // --- FOOTER (Grand Totals) ---
             let gRow = `<tr><td class="font-black text-slate-900 sticky left-0 bg-slate-100 border-r border-slate-300 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] whitespace-nowrap uppercase text-[10px]">TOTAL HARIAN</td>`;
             grandTotals.forEach(gt => {
-                gRow += `<td class="text-center font-black text-indigo-700 bg-indigo-50/50 border-r border-indigo-100/50">${gt>0?formatNumber(gt):'-'}</td>`;
+                gRow += `<td class="text-center font-black text-indigo-700 bg-indigo-50/50 border-r border-indigo-100/50">${gt>0?window.formatNumber(gt):'-'}</td>`;
             });
-            gRow += `<td class="text-center font-black text-indigo-900 bg-indigo-100 border-l border-indigo-200">${formatNumber(grandTotalAll)}</td></tr>`;
+            gRow += `<td class="text-center font-black text-indigo-900 bg-indigo-100 border-l border-indigo-200">${window.formatNumber(grandTotalAll)}</td></tr>`;
 
             h += gRow + '</tbody>';
             table.innerHTML = h;
-        }
+        };
         
-        function changePage(delta) {
-            const totalPages = Math.ceil(window.aggregatedData.length / window.rowsPerPage) || 1;
+        window.changePage = function(delta) {
+            const totalPages = Math.ceil(window.filteredData.length / window.rowsPerPage) || 1;
             const nextPage = window.currentPage + delta;
             if (nextPage >= 1 && nextPage <= totalPages) {
                 window.currentPage = nextPage;
-                aggregateAndRenderTable();
+                window.aggregateAndRenderTable();
             }
-        }
-        window.changePage = changePage;
+        };
 
     </script>
 
@@ -1668,18 +1630,18 @@
                 const connectionStatus = document.getElementById('connectionStatus');
                 if(statusText) statusText.textContent = 'Connected';
                 if(connectionStatus) connectionStatus.className = "w-1.5 h-1.5 rounded-full bg-emerald-500";
-                loadDataFromFirestore();
+                window.loadDataFromFirestore();
             } else {
                 signInAnonymously(auth).catch(console.error);
             }
         });
 
-        async function loadDataFromFirestore() {
+        window.loadDataFromFirestore = async function() {
             try {
-                showLoading(true, "Syncing...");
+                if(window.showLoading) window.showLoading(true, "Syncing...");
                 const qs = await getDocs(collection(db, "inbound_data"));
                 if (qs.empty) {
-                    showLoading(false);
+                    if(window.showLoading) window.showLoading(false);
                     return; 
                 }
                 const docs = [];
@@ -1694,17 +1656,15 @@
                     document.getElementById('initialState').classList.add('hidden');
                     document.getElementById('dashboardContent').classList.remove('hidden');
                 }
-                showLoading(false);
+                if(window.showLoading) window.showLoading(false);
             } catch (e) {
                 console.error(e);
-                showLoading(false);
+                if(window.showLoading) window.showLoading(false);
             }
-        }
-        // Expose to window so success modal can call it
-        window.loadDataFromFirestore = loadDataFromFirestore;
+        };
 
         window.deleteDataForDate = async function(dateString) {
-            showLoading(true, "Menghapus Data...");
+            if(window.showLoading) window.showLoading(true, "Menghapus Data...");
             const targetDate = new Date(dateString);
             targetDate.setHours(0,0,0,0);
 
@@ -1715,8 +1675,8 @@
             });
 
             if(toDelete.length === 0) {
-                showLoading(false);
-                showToast("Tidak ada data tanggal tersebut", "info");
+                if(window.showLoading) window.showLoading(false);
+                window.showToast("Tidak ada data tanggal tersebut", "info");
                 return;
             }
 
@@ -1740,13 +1700,13 @@
 
             try {
                 await Promise.all(batches);
-                showLoading(false);
-                showToast(`Berhasil menghapus ${count} data`, "success");
-                loadDataFromFirestore();
+                if(window.showLoading) window.showLoading(false);
+                window.showToast(`Berhasil menghapus ${count} data`, "success");
+                window.loadDataFromFirestore();
             } catch(e) {
                 console.error(e);
-                showLoading(false);
-                showToast("Gagal menghapus data", "error");
+                if(window.showLoading) window.showLoading(false);
+                window.showToast("Gagal menghapus data", "error");
             }
         };
 
@@ -1754,7 +1714,7 @@
         window.pendingUploadData = [];
 
         window.uploadCSVToFirestore = function(file) {
-            showLoading(true, "Menganalisis file...");
+            if(window.showLoading) window.showLoading(true, "Menganalisis file...");
             Papa.parse(file, {
                 header: true, skipEmptyLines: true,
                 complete: function(results) {
@@ -1798,7 +1758,7 @@
                         window.pendingUploadData.push(row);
                     }
                     
-                    showLoading(false);
+                    if(window.showLoading) window.showLoading(false);
                     // Reset input so the same file can be selected again if needed
                     document.getElementById('csvFile').value = '';
                     
@@ -1817,7 +1777,7 @@
                 return;
             }
 
-            showLoading(true, "Menyimpan ke Cloud...");
+            if(window.showLoading) window.showLoading(true, "Menyimpan ke Cloud...");
             const batchSize = 450; 
             let batches = [];
             let currentBatch = writeBatch(db);
@@ -1839,13 +1799,13 @@
 
             try {
                 await Promise.all(batches);
-                showLoading(false);
+                if(window.showLoading) window.showLoading(false);
                 window.pendingUploadData = []; // Clear pending
                 window.openSuccessModal(count);
                 window.loadDataFromFirestore(); // Reload in background
             } catch (e) {
                 console.error(e);
-                showLoading(false);
+                if(window.showLoading) window.showLoading(false);
                 window.showToast("Upload Gagal", "error");
             }
         };
