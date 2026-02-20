@@ -646,15 +646,15 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="fresh-card p-5 flex flex-col">
                     <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-4 flex items-center gap-2"><i class="fa-solid fa-building text-slate-300"></i> Top Vendor</h4>
-                    <div class="flex-grow min-h-[180px]"><canvas id="chartVendor"></canvas></div>
+                    <div class="flex-grow relative h-[300px] w-full"><canvas id="chartVendor"></canvas></div>
                 </div>
                 <div class="fresh-card p-5 flex flex-col">
                     <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-4 flex items-center gap-2"><i class="fa-solid fa-plane-departure text-slate-300"></i> Origin Dist.</h4>
-                    <div class="flex-grow min-h-[180px]"><canvas id="chartOrigin"></canvas></div>
+                    <div class="flex-grow relative h-[300px] w-full"><canvas id="chartOrigin"></canvas></div>
                 </div>
                 <div class="fresh-card p-5 flex flex-col">
                     <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-4 flex items-center gap-2"><i class="fa-solid fa-location-dot text-slate-300"></i> Destinasi Dist.</h4>
-                    <div class="flex-grow min-h-[180px]"><canvas id="chartDestinasi"></canvas></div>
+                    <div class="flex-grow relative h-[300px] w-full"><canvas id="chartDestinasi"></canvas></div>
                 </div>
             </div>
             
@@ -1729,7 +1729,40 @@
                 const ctx = document.getElementById(id).getContext('2d');
                 const agg = {}; window.filteredData.forEach(d => agg[d[f]] = (agg[d[f]]||0) + d._pcs); 
                 const s = Object.entries(agg).sort((a,b)=>b[1]-a[1]).slice(0, 10);
-                window.chartInstances[id] = new Chart(ctx, { type: 'bar', data: { labels: s.map(e=>e[0]), datasets: [{ data: s.map(e=>e[1]), backgroundColor: c, borderRadius: 6 }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, scales: { x: { display: false }, y: { grid: { display: false } } }, plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'end', color: '#6b7280', font: { size: 9 }, formatter: (v) => window.formatNumber(v) } } } });
+                window.chartInstances[id] = new Chart(ctx, { 
+                    type: 'bar', 
+                    data: { 
+                        labels: s.map(e=>e[0]), 
+                        datasets: [{ 
+                            data: s.map(e=>e[1]), 
+                            backgroundColor: c, 
+                            borderRadius: 4,
+                            maxBarThickness: 24 
+                        }] 
+                    }, 
+                    options: { 
+                        indexAxis: 'y', 
+                        responsive: true, 
+                        maintainAspectRatio: false, 
+                        layout: {
+                            padding: { right: 40 }
+                        },
+                        scales: { 
+                            x: { display: false }, 
+                            y: { grid: { display: false }, ticks: { font: { size: 10 } } } 
+                        }, 
+                        plugins: { 
+                            legend: { display: false }, 
+                            datalabels: { 
+                                anchor: 'end', 
+                                align: 'end', 
+                                color: '#64748b', 
+                                font: { size: 10, weight: 'bold' }, 
+                                formatter: (v) => window.formatNumber(v) 
+                            } 
+                        } 
+                    } 
+                });
             };
             renderBar('chartVendor', '_vendor', '#6366f1');
             renderBar('chartOrigin', '_origin', '#8B5CF6');
