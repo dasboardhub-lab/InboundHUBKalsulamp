@@ -554,8 +554,8 @@
                             <thead>
                                 <tr>
                                     <th class="text-center group-col w-24">Tgl Terima</th>
-                                    <th class="text-center group-col bg-indigo-50/50 text-indigo-700 w-24">Destinasi</th>
                                     <th class="text-left group-col w-16">Jam</th>
+                                    <th class="text-center group-col bg-indigo-50/50 text-indigo-700 w-24">Destinasi</th>
                                     <th class="text-left group-col w-20">Tgl PA</th>
                                     <th class="text-left group-col w-16">Batch</th>
                                     <th class="text-left group-col">Origin</th>
@@ -609,9 +609,9 @@
         window.chartInstances = {};
         window.currentChartMode = 'daily';
         
-        // Manifest Pagination - DIBUAT LEBIH BESAR (PIVOT STYLE)
+        // Manifest Pagination
         window.currentPage = 1;
-        window.rowsPerPage = 100; 
+        window.rowsPerPage = 50; 
 
         // Matrix Pagination
         window.matrixPage = 1;
@@ -1209,13 +1209,35 @@
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
 
-            let displayData = [...window.filteredData];
-            
-            // PIVOT SORTING: Pengurutan hierarkis ketat
-            displayData.sort((a,b) => {
+            // 1. PRE-AGGREGATE: Menggabungkan MB dan Pcs untuk data dengan rincian persis sama
+            let aggregatedList = [];
+            window.filteredData.forEach(row => {
+                const existing = aggregatedList.find(d =>
+                    d._date.getTime() === row._date.getTime() &&
+                    d._jam === row._jam &&
+                    d._dest === row._dest &&
+                    (d._dateOrigin?.getTime()||0) === (row._dateOrigin?.getTime()||0) &&
+                    d._batch === row._batch &&
+                    d._origin === row._origin &&
+                    d._smu === row._smu &&
+                    d._flight === row._flight &&
+                    d._tglFlight === row._tglFlight &&
+                    d._sla === row._sla
+                );
+                if (existing) {
+                    existing._mb_count += 1;
+                    existing._pcs += row._pcs;
+                } else {
+                    aggregatedList.push({ ...row, _mb_count: 1 });
+                }
+            });
+            window.aggregatedData = aggregatedList;
+
+            // 2. PIVOT SORTING: Date -> Jam -> Destinasi -> Dst
+            aggregatedList.sort((a,b) => {
                 if(a._date.getTime() !== b._date.getTime()) return a._date - b._date;
-                if(a._dest !== b._dest) return a._dest.localeCompare(b._dest);
                 if(a._jam !== b._jam) return a._jam.localeCompare(b._jam);
+                if(a._dest !== b._dest) return a._dest.localeCompare(b._dest);
                 if((a._dateOrigin?.getTime()||0) !== (b._dateOrigin?.getTime()||0)) return (a._dateOrigin?.getTime()||0) - (b._dateOrigin?.getTime()||0);
                 if(a._batch !== b._batch) return a._batch.localeCompare(b._batch);
                 if(a._origin !== b._origin) return a._origin.localeCompare(b._origin);
@@ -1223,106 +1245,153 @@
                 return a._flight.localeCompare(b._flight);
             });
 
+            // 3. PAGINATION
             const start = (window.currentPage - 1) * window.rowsPerPage;
-            const pageData = displayData.slice(start, start + window.rowsPerPage);
+            const pageData = aggregatedList.slice(start, start + window.rowsPerPage);
             
-            // SPAN CALCULATIONS UNTUK PIVOT MERGE
-            const spans = { date: [], dest: [], jam: [], pa: [], batch: [], origin: [], smu: [], flight: [], tglFlight: [], sla: [], totals: [] };
-            for(let k in spans) spans[k] = new Array(pageData.length).fill(0);
+            // 4. MEMBUAT DAFTAR BARIS RENDER (Menyisipkan Baris Total)
+            let renderRows = [];
+            for (let i = 0; i < pageData.length; i++) {
+                renderRows.push({ type: 'data', data: pageData[i], date: pageData[i]._date, jam: pageData[i]._jam });
 
-            const pmGroup = (fields, a, b) => fields.every(f => {
-                if(f === '_date' || f === '_dateOrigin') return a[f]?.getTime() === b[f]?.getTime();
-                return a[f] === b[f];
+                const isLastInJam = (i === pageData.length - 1) || (pageData[i]._jam !== pageData[i+1]._jam) || (pageData[i]._date.getTime() !== pageData[i+1]._date.getTime());
+                const isLastInDate = (i === pageData.length - 1) || (pageData[i]._date.getTime() !== pageData[i+1]._date.getTime());
+
+                // Inject baris Total Jam
+                if (isLastInJam) {
+                    const trueJamData = aggregatedList.filter(x => x._date.getTime() === pageData[i]._date.getTime() && x._jam === pageData[i]._jam);
+                    const sumMb = trueJamData.reduce((s, x) => s + x._mb_count, 0);
+                    const sumPcs = trueJamData.reduce((s, x) => s + x._pcs, 0);
+                    renderRows.push({ type: 'total_jam', date: pageData[i]._date, jam: pageData[i]._jam, mb: sumMb, pcs: sumPcs });
+                }
+
+                // Inject baris Total Tanggal
+                if (isLastInDate) {
+                    const trueDateData = aggregatedList.filter(x => x._date.getTime() === pageData[i]._date.getTime());
+                    const sumMb = trueDateData.reduce((s, x) => s + x._mb_count, 0);
+                    const sumPcs = trueDateData.reduce((s, x) => s + x._pcs, 0);
+                    renderRows.push({ type: 'total_date', date: pageData[i]._date, mb: sumMb, pcs: sumPcs });
+                }
+            }
+
+            // 5. MENGHITUNG ROW SPAN UNTUK PIVOT MERGING
+            renderRows.forEach(r => {
+                r.spanDate = -1; r.spanJam = -1; r.spanDest = -1; r.spanPa = -1;
+                r.spanBatch = -1; r.spanOrigin = -1; r.spanSmu = -1; r.spanFlight = -1;
+                r.spanTglFlight = -1; r.spanSla = -1;
             });
 
-            // Tingkatan Grouping
-            const fDate = ['_date'];
-            const fDest = ['_date', '_dest'];
-            const fJam = ['_date', '_dest', '_jam'];
-            const fPa = [...fJam, '_dateOrigin'];
-            const fBatch = [...fPa, '_batch'];
-            const fOrigin = [...fBatch, '_origin'];
-            const fSmu = [...fOrigin, '_smu'];
-            const fFlight = [...fSmu, '_flight'];
-            const fTglFlight = [...fFlight, '_tglFlight'];
-            const fTotals = [...fTglFlight]; // Kriteria akhir untuk menggabungkan Pcs & MB
+            // Set default ke 0 (hidden) untuk baris total agar rowspan tidak aktif
+            renderRows.forEach(r => {
+                if(r.type === 'total_date') { r.spanDate = 0; }
+                if(r.type === 'total_jam') { r.spanJam = 0; }
+            });
 
-            const calcSpan = (field, fieldsArray) => {
-                for(let i=0; i<pageData.length; i++) {
-                    if(spans[field][i] === -1) continue;
-                    let c = 1;
-                    for(let j=i+1; j<pageData.length; j++) {
-                        if(pmGroup(fieldsArray, pageData[i], pageData[j])) {
-                            c++; spans[field][j] = -1;
+            for (let i = 0; i < renderRows.length; i++) {
+                // Span Kolom Tanggal (Membentang melewati baris Total Jam)
+                if (renderRows[i].type !== 'total_date' && renderRows[i].spanDate === -1) {
+                    let count = 1;
+                    for (let j = i + 1; j < renderRows.length; j++) {
+                        if (renderRows[j].type === 'total_date') break;
+                        if (renderRows[j].date.getTime() === renderRows[i].date.getTime()) {
+                            count++; renderRows[j].spanDate = 0;
                         } else break;
                     }
-                    spans[field][i] = c;
+                    renderRows[i].spanDate = count;
                 }
-            };
 
-            calcSpan('date', fDate);
-            calcSpan('dest', fDest);
-            calcSpan('jam', fJam);
-            calcSpan('pa', fPa);
-            calcSpan('batch', fBatch);
-            calcSpan('origin', fOrigin);
-            calcSpan('smu', fSmu);
-            calcSpan('flight', fFlight);
-            calcSpan('tglFlight', fTglFlight);
-            calcSpan('sla', fSmu); 
-            calcSpan('totals', fTotals);
+                // Span Kolom Lainnya (Hanya membentang di baris data yang persis)
+                if (renderRows[i].type === 'data') {
+                    const calcDataSpan = (field, matchFn) => {
+                        if (renderRows[i]['span'+field] === -1) {
+                            let count = 1;
+                            for (let j = i + 1; j < renderRows.length; j++) {
+                                if (renderRows[j].type !== 'data') break; 
+                                if (matchFn(renderRows[i].data, renderRows[j].data)) {
+                                    count++; renderRows[j]['span'+field] = 0;
+                                } else break;
+                            }
+                            renderRows[i]['span'+field] = count;
+                        }
+                    };
 
-            pageData.forEach((d, i) => {
+                    const pmJam = (a, b) => a._date.getTime()===b._date.getTime() && a._jam===b._jam;
+                    const pmDest = (a, b) => pmJam(a,b) && a._dest===b._dest;
+                    const pmPa = (a, b) => pmDest(a,b) && (a._dateOrigin?.getTime()||0)===(b._dateOrigin?.getTime()||0);
+                    const pmBatch = (a, b) => pmPa(a,b) && a._batch===b._batch;
+                    const pmOrigin = (a, b) => pmBatch(a,b) && a._origin===b._origin;
+                    const pmSmu = (a, b) => pmOrigin(a,b) && a._smu===b._smu;
+                    const pmFlight = (a, b) => pmSmu(a,b) && a._flight===b._flight;
+                    const pmTglFlight = (a, b) => pmFlight(a,b) && a._tglFlight===b._tglFlight;
+                    const pmSla = (a, b) => pmSmu(a,b) && a._sla===b._sla;
+
+                    calcDataSpan('Jam', pmJam);
+                    calcDataSpan('Dest', pmDest);
+                    calcDataSpan('Pa', pmPa);
+                    calcDataSpan('Batch', pmBatch);
+                    calcDataSpan('Origin', pmOrigin);
+                    calcDataSpan('Smu', pmSmu);
+                    calcDataSpan('Flight', pmFlight);
+                    calcDataSpan('TglFlight', pmTglFlight);
+                    calcDataSpan('Sla', pmSla);
+                }
+            }
+
+            // 6. RENDER TABEL HTML
+            renderRows.forEach(r => {
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 transition border-b border-slate-300"; 
-                if(spans.date[i] > 0 && i > 0) tr.classList.add("thick-date-border");
-
-                const addTd = (f, txt, cls) => {
-                    if(spans[f][i] > 0) {
-                        const td = document.createElement('td');
-                        td.className = cls + " valign-middle"; 
-                        td.rowSpan = spans[f][i];
-                        td.innerHTML = txt;
-                        tr.appendChild(td);
-                    }
-                };
-
-                addTd('date', window.formatDate(d._date), "text-center font-bold text-slate-800 bg-white border-r border-slate-300 group-col whitespace-nowrap");
-                addTd('dest', d._dest, "text-center font-bold text-indigo-800 bg-indigo-50/50 border-r border-slate-300 group-col whitespace-nowrap");
-                addTd('jam', d._jam, "text-center text-slate-700 font-bold border-r border-slate-300 bg-white group-col whitespace-nowrap");
-                addTd('pa', window.formatDate(d._dateOrigin), "text-left text-slate-500 border-r border-slate-300 bg-white group-col whitespace-nowrap");
-                addTd('batch', d._batch, "text-left text-slate-500 border-r border-slate-300 bg-white group-col");
-                addTd('origin', d._origin, "text-left text-slate-700 border-r border-slate-300 bg-white group-col whitespace-nowrap");
-                addTd('smu', d._smu, "text-slate-600 font-mono text-[11px] font-medium border-r border-slate-300 valign-middle bg-white group-col whitespace-nowrap");
-                addTd('flight', d._flight, "text-left text-slate-900 font-bold border-r border-slate-300 bg-white group-col whitespace-nowrap");
-                addTd('tglFlight', d._tglFlight, "text-left text-slate-500 border-r border-slate-300 bg-white group-col whitespace-nowrap");
                 
-                if (spans.sla[i] > 0) {
-                    const slaColor = d._sla > 3 ? 'text-rose-600 font-extrabold bg-rose-50' : 'text-emerald-600 font-extrabold bg-emerald-50';
-                    addTd('sla', d._sla, `text-center border-r border-slate-300 group-col ${slaColor}`);
-                }
+                if (r.type === 'total_date') {
+                    tr.className = "bg-indigo-100 font-black text-indigo-900 border-b-2 border-indigo-300 shadow-sm";
+                    tr.innerHTML = `
+                        <td colspan="10" class="text-right py-2 px-4 uppercase text-[11px] tracking-wide border-r border-indigo-200">Total Keseluruhan Tanggal ${window.formatDate(r.date)}</td>
+                        <td class="text-center font-mono text-indigo-800 border-r border-indigo-200">${window.formatNumber(r.mb)}</td>
+                        <td class="text-right text-indigo-900 px-4">${window.formatNumber(r.pcs)}</td>
+                    `;
+                } else if (r.type === 'total_jam') {
+                    tr.className = "bg-slate-100 font-bold text-slate-700 border-y border-slate-300";
+                    tr.innerHTML = `
+                        <td colspan="9" class="text-right py-1.5 px-4 uppercase text-[10px] tracking-wider border-r border-slate-300 text-slate-500">Total Jam ${r.jam}</td>
+                        <td class="text-center font-mono text-slate-700 border-r border-slate-300">${window.formatNumber(r.mb)}</td>
+                        <td class="text-right text-slate-800 px-4">${window.formatNumber(r.pcs)}</td>
+                    `;
+                } else {
+                    tr.className = "hover:bg-slate-50 transition border-b border-slate-200";
+                    const d = r.data;
+                    const addTd = (val, span, cls) => {
+                        if (span > 0) {
+                            const td = document.createElement('td');
+                            td.className = cls + " valign-middle";
+                            td.rowSpan = span;
+                            td.innerHTML = val;
+                            tr.appendChild(td);
+                        }
+                    };
 
-                // GABUNGKAN TOTAL MB & TOTAL PCS SECARA PIVOT
-                if(spans.totals[i] > 0) {
-                    let sumMb = 0, sumPcs = 0;
-                    for(let k=0; k<spans.totals[i]; k++) {
-                        sumMb += 1;
-                        sumPcs += pageData[i+k]._pcs;
-                    }
-                    addTd('totals', sumMb, "text-center font-mono font-bold text-indigo-700 border-r border-slate-300 bg-indigo-50/30 group-col");
+                    addTd(window.formatDate(d._date), r.spanDate, "text-center font-bold text-slate-800 bg-white border-r border-slate-300 group-col whitespace-nowrap");
+                    addTd(d._jam, r.spanJam, "text-center text-slate-700 font-bold border-r border-slate-300 bg-white group-col whitespace-nowrap");
+                    addTd(d._dest, r.spanDest, "text-center font-bold text-indigo-800 bg-indigo-50/50 border-r border-slate-300 group-col whitespace-nowrap");
+                    addTd(window.formatDate(d._dateOrigin), r.spanPa, "text-left text-slate-500 border-r border-slate-300 bg-white group-col whitespace-nowrap");
+                    addTd(d._batch, r.spanBatch, "text-left text-slate-500 border-r border-slate-300 bg-white group-col");
+                    addTd(d._origin, r.spanOrigin, "text-left text-slate-700 border-r border-slate-300 bg-white group-col whitespace-nowrap");
+                    addTd(d._smu, r.spanSmu, "text-slate-600 font-mono text-[11px] font-medium border-r border-slate-300 valign-middle bg-white group-col whitespace-nowrap");
+                    addTd(d._flight, r.spanFlight, "text-left text-slate-900 font-bold border-r border-slate-300 bg-white group-col whitespace-nowrap");
+                    addTd(d._tglFlight, r.spanTglFlight, "text-left text-slate-500 border-r border-slate-300 bg-white group-col whitespace-nowrap");
                     
-                    const tdPcs = document.createElement('td');
-                    tdPcs.className = "text-right font-black text-indigo-900 valign-middle bg-indigo-50/50 group-col";
-                    tdPcs.rowSpan = spans.totals[i];
-                    tdPcs.textContent = window.formatNumber(sumPcs);
-                    tr.appendChild(tdPcs);
-                }
+                    if (r.spanSla > 0) {
+                        const slaColor = d._sla > 3 ? 'text-rose-600 font-extrabold bg-rose-50' : 'text-emerald-600 font-extrabold bg-emerald-50';
+                        addTd(d._sla, r.spanSla, `text-center border-r border-slate-300 group-col ${slaColor}`);
+                    }
 
+                    // MB & Pcs merged cleanly
+                    addTd(window.formatNumber(d._mb_count), 1, "text-center font-mono font-bold text-indigo-700 border-r border-slate-300 bg-indigo-50/30 group-col");
+                    addTd(window.formatNumber(d._pcs), 1, "text-right font-black text-indigo-900 valign-middle bg-indigo-50/50 group-col");
+                }
                 tbody.appendChild(tr);
             });
             
-            document.getElementById('showingCount').textContent = `${Math.min(start+1, window.filteredData.length)} - ${Math.min(start+pageData.length, window.filteredData.length)}`;
-            document.getElementById('totalCount').textContent = window.filteredData.length;
+            document.getElementById('showingCount').textContent = `${Math.min(start+1, window.aggregatedData.length)} - ${Math.min(start+pageData.length, window.aggregatedData.length)}`;
+            document.getElementById('totalCount').textContent = window.aggregatedData.length;
             document.getElementById('pageIndicator').textContent = window.currentPage;
         };
 
@@ -1592,7 +1661,7 @@
         };
         
         window.changePage = function(delta) {
-            const totalPages = Math.ceil(window.filteredData.length / window.rowsPerPage) || 1;
+            const totalPages = Math.ceil(window.aggregatedData.length / window.rowsPerPage) || 1;
             const nextPage = window.currentPage + delta;
             if (nextPage >= 1 && nextPage <= totalPages) {
                 window.currentPage = nextPage;
