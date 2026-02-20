@@ -249,6 +249,49 @@
         </div>
     </div>
 
+    <!-- Preview Upload Modal (New) -->
+    <div id="previewModal" class="fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-md hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-[360px] p-8 transform scale-95 transition-all duration-300 border border-white/50" id="previewModalContent">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-indigo-600 shadow-sm">
+                    <i class="fa-solid fa-magnifying-glass-chart text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800">Analisis Data</h3>
+                <p class="text-xs text-slate-500 mt-1">Laporan pra-unggah (Pengecekan Bagseals)</p>
+            </div>
+            <div class="bg-slate-50 rounded-xl p-4 mb-6 border border-slate-100">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-xs font-bold text-slate-600">Data Baru (Akan Disimpan):</span>
+                    <span class="text-sm font-black text-emerald-600" id="previewNewCount">0</span>
+                </div>
+                <div class="flex justify-between items-center border-t border-slate-200 pt-3">
+                    <span class="text-xs font-bold text-slate-500">Data Duplikat (Diabaikan):</span>
+                    <span class="text-sm font-black text-rose-500" id="previewDupCount">0</span>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="closePreviewModal()" class="py-2.5 rounded-xl border border-slate-200 text-slate-500 text-xs font-bold hover:bg-slate-50">Batal</button>
+                <button onclick="window.confirmUpload()" class="py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 shadow-lg">Lanjutkan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Upload Modal (New) -->
+    <div id="successModal" class="fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-md hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-[320px] p-8 transform scale-95 transition-all duration-300 border border-white/50" id="successModalContent">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-emerald-600 shadow-sm">
+                    <i class="fa-solid fa-check-double text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800">Update Berhasil!</h3>
+                <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+                    <span id="successCount" class="font-bold text-emerald-600 text-base">0</span> data baru telah berhasil disimpan ke dalam database.
+                </p>
+            </div>
+            <button onclick="closeSuccessModal()" class="w-full py-3 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 shadow-lg transition">Selesai</button>
+        </div>
+    </div>
+
     <!-- HEADER -->
     <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-sm h-[72px]">
         <div class="max-w-[1600px] mx-auto px-6 h-full flex justify-between items-center">
@@ -626,7 +669,7 @@
             setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translate(-50%, -20px)'; setTimeout(() => toast.remove(), 300); }, 3000);
         }
 
-        // --- UI INTERACTION FUNCTIONS ---
+        // --- MODAL CONTROLS ---
         function openPasswordModal(action) {
             currentAction = action;
             document.getElementById('passwordModal').classList.remove('hidden');
@@ -662,6 +705,43 @@
             document.getElementById('deleteModalContent').classList.remove('scale-100');
             document.getElementById('deleteModalContent').classList.add('scale-95');
             setTimeout(() => document.getElementById('deleteModal').classList.add('hidden'), 300);
+        }
+
+        function openPreviewModal(newCount, dupCount) {
+            document.getElementById('previewModal').classList.remove('hidden');
+            document.getElementById('previewNewCount').textContent = formatNumber(newCount);
+            document.getElementById('previewDupCount').textContent = formatNumber(dupCount);
+            setTimeout(() => {
+                document.getElementById('previewModal').classList.remove('opacity-0');
+                document.getElementById('previewModalContent').classList.remove('scale-95');
+                document.getElementById('previewModalContent').classList.add('scale-100');
+            }, 10);
+        }
+
+        function closePreviewModal() {
+            document.getElementById('previewModal').classList.add('opacity-0');
+            document.getElementById('previewModalContent').classList.remove('scale-100');
+            document.getElementById('previewModalContent').classList.add('scale-95');
+            setTimeout(() => document.getElementById('previewModal').classList.add('hidden'), 300);
+        }
+
+        function openSuccessModal(count) {
+            document.getElementById('successModal').classList.remove('hidden');
+            document.getElementById('successCount').textContent = formatNumber(count);
+            setTimeout(() => {
+                document.getElementById('successModal').classList.remove('opacity-0');
+                document.getElementById('successModalContent').classList.remove('scale-95');
+                document.getElementById('successModalContent').classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.add('opacity-0');
+            document.getElementById('successModalContent').classList.remove('scale-100');
+            document.getElementById('successModalContent').classList.add('scale-95');
+            setTimeout(() => {
+                document.getElementById('successModal').classList.add('hidden');
+            }, 300);
         }
         
         function confirmDelete() {
@@ -872,17 +952,14 @@
             updateToggleVisuals();
         }
 
-        // --- NEW: Multi Select Logic ---
         window.toggleMulti = (id) => {
             const el = document.getElementById(id);
-            // Close others
             ['originMenu', 'destMenu'].forEach(m => {
                 if(m !== id) document.getElementById(m).classList.add('hidden');
             });
             el.classList.toggle('hidden');
         };
 
-        // Close dropdowns when clicking outside
         window.addEventListener('click', (e) => {
             if (!e.target.closest('.relative')) {
                 document.getElementById('originMenu').classList.add('hidden');
@@ -949,7 +1026,6 @@
         }
 
         function resetFilters() {
-            // Reset Multi Selects
             ['originMenu', 'destMenu'].forEach(id => {
                 const inputs = document.querySelectorAll(`#${id} input`);
                 inputs.forEach(i => i.checked = true);
@@ -973,7 +1049,6 @@
             const startVal = document.getElementById('filterStartDate').value;
             const endVal = document.getElementById('filterEndDate').value;
 
-            // Construct dates manually from components to ensure local midnight time
             let sDate = null, eDate = null;
             if(startVal) {
                 const p = startVal.split('-');
@@ -985,36 +1060,23 @@
                 eDate.setHours(23,59,59,999); 
             }
 
-            // Get Multi Select Values
             const fOrg = window.getSelectedValues('originMenu');
             const fDst = window.getSelectedValues('destMenu');
-            
             const search = document.getElementById('globalSearch').value.toUpperCase();
 
             window.filteredData = window.rawData.filter(d => {
-                // Ensure d._date is also valid for comparison
                 if(!d._date) return false;
                 
                 const dateOk = (!sDate || d._date >= sDate) && (!eDate || d._date <= eDate);
-                // Array inclusion check for multi-select
                 const orgOk = fOrg.includes('ALL') || fOrg.includes(d._origin);
                 const dstOk = fDst.includes('ALL') || fDst.includes(d._dest);
-                
                 const svcOk = window.selectedService === 'ALL' || d._service === window.selectedService;
                 
-                // IMPROVED: Global Search across ALL relevant fields
                 let searchOk = true;
                 if(search) {
                     const haystack = [
-                        d._smu, 
-                        d._flight, 
-                        d._vendor, 
-                        d._origin, 
-                        d._dest,
-                        d._batch,
-                        d._mb,      // Bagseals
-                        d._note,    // Notes
-                        d._service
+                        d._smu, d._flight, d._vendor, d._origin, d._dest,
+                        d._batch, d._mb, d._note, d._service
                     ].join(' ').toUpperCase();
                     searchOk = haystack.includes(search);
                 }
@@ -1054,7 +1116,6 @@
                 prevStartDate.setDate(prevStartDate.getDate() - diffDays + 1); 
                 prevStartDate.setHours(0,0,0,0);
                 
-                // CHANGED: Helper logic for previous period comparison with multi-select
                 const fOrg = window.getSelectedValues('originMenu');
                 const fDst = window.getSelectedValues('destMenu');
 
@@ -1076,12 +1137,12 @@
             updateDiff('kpiMBDiff', m, prevMB);
 
             renderMainChart();
-            renderTimeChart(); // NEW
+            renderTimeChart(); 
             renderBottomCharts();
             renderSlaMatrices();
             renderMatrixTable();
             aggregateAndRenderTable();
-            renderBagsealTable(); // NEW
+            renderBagsealTable(); 
         }
 
         function updateDiff(id, current, previous) {
@@ -1098,7 +1159,6 @@
             else el.className = "text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-50 text-rose-600";
         }
 
-        // --- NEW: BAGSEAL TABLE RENDERER ---
         function renderBagsealTable() {
             const tbody = document.getElementById('bagsealTable');
             tbody.innerHTML = '';
@@ -1126,7 +1186,6 @@
             tbody.innerHTML = html;
         }
 
-        // --- NEW: COPY BAGSEALS FUNCTION ---
         function copyBagseals() {
             const bagseals = window.filteredData.map(d => d._mb).join('\n');
             navigator.clipboard.writeText(bagseals).then(() => {
@@ -1137,15 +1196,12 @@
         }
         window.copyBagseals = copyBagseals;
 
-        // --- AGGREGATED TABLE (MANIFEST) ---
         function aggregateAndRenderTable() {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
 
-            // Use filteredData directly (detail rows)
             let displayData = [...window.filteredData];
             
-            // SORTING: Date -> Dest -> Jam -> Flight
             displayData.sort((a,b) => {
                 if(a._date.getTime() !== b._date.getTime()) return a._date - b._date;
                 if(a._dest !== b._dest) return a._dest < b._dest ? -1 : 1; 
@@ -1156,13 +1212,11 @@
             const start = (window.currentPage - 1) * window.rowsPerPage;
             const pageData = displayData.slice(start, start + window.rowsPerPage);
             
-            // Span Calculation
             const spans = { 
                 date: [], dest: [], jam: [], pa: [], sla: [], batch: [], origin: [], flight: [], tglFlight: [], mb: [], pcs: [] 
             };
             for(let k in spans) spans[k] = new Array(pageData.length).fill(0);
 
-            // Generic Calculator
             const calcSpan = (field, parentMatch, selfMatchField) => {
                 for(let i=0; i<pageData.length; i++) {
                     if(spans[field][i] === -1) continue;
@@ -1177,7 +1231,6 @@
                 }
             };
 
-            // Hierarchy
             const pmDate = (a,b) => a._date.getTime()===b._date.getTime() && a._dest===b._dest; 
             
             for(let i=0; i<pageData.length; i++) {
@@ -1201,12 +1254,11 @@
             calcSpan('tglFlight', pmJam);
             calcSpan('sla', pmJam);
 
-            // Helper to calculate sums for a range
             const calcSum = (startIdx, span) => {
                 let mb = 0, pcs = 0;
                 for(let k=0; k<span; k++) {
                     if (startIdx + k < pageData.length) {
-                        mb += 1; // Each row is 1 MB
+                        mb += 1; 
                         pcs += pageData[startIdx + k]._pcs;
                     }
                 }
@@ -1230,7 +1282,6 @@
                     }
                 };
 
-                // DATE CELL with Summary
                 if (spans.date[i] > 0) {
                     const totals = calcSum(i, spans.date[i]);
                     const html = `
@@ -1250,7 +1301,6 @@
 
                 addTd('dest', d._dest, "text-center font-bold text-indigo-800 bg-indigo-50 border-r border-slate-300 group-col");
                 
-                // JAM CELL with Summary
                 if (spans.jam[i] > 0) {
                     const totals = calcSum(i, spans.jam[i]);
                     const html = `
@@ -1276,7 +1326,6 @@
                 addTd('flight', d._flight, "text-left text-slate-900 font-bold border-r border-slate-300 bg-white");
                 addTd('tglFlight', d._tglFlight, "text-left text-slate-500 border-r border-slate-300 bg-white");
                 
-                // SLA Moved here
                 if (spans.sla[i] > 0) {
                     const slaColor = d._sla > 3 ? 'text-rose-600 font-extrabold bg-rose-50' : 'text-emerald-600 font-extrabold bg-emerald-50';
                     const td = document.createElement('td');
@@ -1286,7 +1335,6 @@
                     tr.appendChild(td);
                 }
 
-                // Individual Rows for MB & PCS (No Merge)
                 const mbTd = document.createElement('td');
                 mbTd.className = "text-center font-mono font-bold text-slate-600 border-r border-slate-300 valign-middle bg-white";
                 mbTd.textContent = "1"; 
@@ -1305,18 +1353,15 @@
             document.getElementById('pageIndicator').textContent = window.currentPage;
         }
 
-        // --- CHARTS & MATRICES (Using Global Functions) ---
         function renderMainChart() { 
             if(window.chartInstances.main) window.chartInstances.main.destroy();
             const ctx = document.getElementById('mainChart').getContext('2d');
             const agg = {};
             window.filteredData.forEach(d => {
-                // FIX: Use manual date formatting to avoid timezone shifts
                 const k = window.currentChartMode === 'daily' ? toLocalISOString(d._date) : d._date.toLocaleString('id-ID', {month:'short', year:'numeric'});
                 agg[k] = (agg[k]||0) + d._pcs;
             });
-            // FIX: Sort keys (Dates) properly for X axis
-            const lbls = Object.keys(agg).sort(); // YYYY-MM-DD sorts correctly
+            const lbls = Object.keys(agg).sort(); 
             window.chartInstances.main = new Chart(ctx, {
                 type: 'line',
                 data: { labels: lbls, datasets: [{ label: 'Total Pcs', data: lbls.map(k=>agg[k]), borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.1)', fill: true, tension: 0.3 }] },
@@ -1332,18 +1377,15 @@
             });
         }
         
-        // --- NEW: TIME TREND CHART ---
         function renderTimeChart() {
             if(window.chartInstances.time) window.chartInstances.time.destroy();
             const ctx = document.getElementById('timeChart').getContext('2d');
             const agg = {};
-            // Init 00-23
             for(let i=0; i<24; i++) {
                 agg[String(i).padStart(2, '0')] = 0;
             }
             
             window.filteredData.forEach(d => {
-                // Extract Hour from JAM (assuming format HH:mm)
                 if(d._jam && d._jam.includes(':')) {
                     const hour = d._jam.split(':')[0];
                     if(agg[hour] !== undefined) agg[hour] += d._pcs;
@@ -1395,7 +1437,7 @@
             const renderBar = (id, f, c) => {
                 if(window.chartInstances[id]) window.chartInstances[id].destroy();
                 const ctx = document.getElementById(id).getContext('2d');
-                const agg = {}; window.filteredData.forEach(d => agg[d[f]] = (agg[d[f]]||0) + d._pcs); // Summing Pcs
+                const agg = {}; window.filteredData.forEach(d => agg[d[f]] = (agg[d[f]]||0) + d._pcs); 
                 const s = Object.entries(agg).sort((a,b)=>b[1]-a[1]).slice(0, 10);
                 window.chartInstances[id] = new Chart(ctx, { type: 'bar', data: { labels: s.map(e=>e[0]), datasets: [{ data: s.map(e=>e[1]), backgroundColor: c, borderRadius: 6 }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, scales: { x: { display: false }, y: { grid: { display: false } } }, plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'end', color: '#6b7280', font: { size: 9 }, formatter: (v) => formatNumber(v) } } } });
             };
@@ -1481,9 +1523,7 @@
             const allDates = [...new Set(window.filteredData.map(d => d._date.getTime()))].sort((a,b)=>a-b);
             const dests = [...new Set(window.filteredData.map(d => d._dest))].sort();
             
-            // Pagination Logic
             const totalPages = Math.ceil(allDates.length / window.matrixRowsPerPage) || 1;
-            // Ensure current page is valid
             if (window.matrixPage > totalPages) window.matrixPage = 1;
 
             const start = (window.matrixPage - 1) * window.matrixRowsPerPage;
@@ -1525,17 +1565,20 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
         import { getFirestore, collection, getDocs, setDoc, doc, writeBatch, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
         import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+        import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js';
 
         const firebaseConfig = {
-            apiKey: "AIzaSyAZFpX5OxSVIG7f58U60dVJHufHORFQuIg",
-            authDomain: "hub-dashboard-92428.firebaseapp.com",
-            projectId: "hub-dashboard-92428",
-            storageBucket: "hub-dashboard-92428.firebasestorage.app",
-            messagingSenderId: "827243064075",
-            appId: "1:827243064075:web:9d7c41560e3da99833d00e"
+            apiKey: "AIzaSyDNB8muGuCvKuXVmQdJt8MkrAltKn2mtIY",
+            authDomain: "dasboardhub-ab72e.firebaseapp.com",
+            projectId: "dasboardhub-ab72e",
+            storageBucket: "dasboardhub-ab72e.firebasestorage.app",
+            messagingSenderId: "126699041682",
+            appId: "1:126699041682:web:3d96b34c074108697c474b",
+            measurementId: "G-CW183HEGQN"
         };
 
         const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
         const db = getFirestore(app);
         const auth = getAuth(app);
 
@@ -1570,7 +1613,6 @@
                     window.processRawDataWrapper(docs);
                     document.getElementById('initialState').classList.add('hidden');
                     document.getElementById('dashboardContent').classList.remove('hidden');
-                    showToast("Cloud Data Synced", "success");
                 }
                 showLoading(false);
             } catch (e) {
@@ -1578,6 +1620,8 @@
                 showLoading(false);
             }
         }
+        // Expose to window so success modal can call it
+        window.loadDataFromFirestore = loadDataFromFirestore;
 
         window.deleteDataForDate = async function(dateString) {
             showLoading(true, "Menghapus Data...");
@@ -1626,60 +1670,89 @@
             }
         };
 
+        // --- NEW DATA UPLOAD FLOW ---
+        window.pendingUploadData = [];
+
         window.uploadCSVToFirestore = function(file) {
-            showLoading(true, "Uploading...");
+            showLoading(true, "Menganalisis file...");
             Papa.parse(file, {
                 header: true, skipEmptyLines: true,
-                complete: async function(results) {
+                complete: function(results) {
                     const data = results.data;
-                    const batchSize = 450; 
-                    let batches = [];
-                    let currentBatch = writeBatch(db);
-                    let count = 0;
-                    let skippedCount = 0;
-
                     const existingBagseals = new Set(window.rawData.map(d => String(d._mb).trim()));
+                    
+                    window.pendingUploadData = [];
+                    let duplicateCount = 0;
 
                     for (const row of data) {
                         const bagseal = String(row['No Bagseals'] || '').trim();
                         
+                        // Check Duplicate
                         if (bagseal && existingBagseals.has(bagseal)) {
-                            skippedCount++;
+                            duplicateCount++;
                             continue; 
                         }
-
-                        const smu = (row['SMU']||'').replace(/\s/g, '');
-                        const dest = (row['Destinasi']||'').replace(/\s/g, '');
-                        const date = (row['Tanggal DIterima']||'').replace(/[\/\s,]/g, ''); 
-                        const id = bagseal || `${smu}_${dest}_${date}`.substring(0, 100) || doc(collection(db, "inbound_data")).id; 
-
-                        if (bagseal) existingBagseals.add(bagseal);
-
-                        const docRef = doc(db, "inbound_data", id);
-                        currentBatch.set(docRef, row);
-                        count++;
-                        if (count % batchSize === 0) { batches.push(currentBatch.commit()); currentBatch = writeBatch(db); }
+                        
+                        // Add to pending
+                        window.pendingUploadData.push(row);
                     }
-                    if (count % batchSize !== 0) batches.push(currentBatch.commit());
-
-                    try {
-                        if (count > 0) {
-                            await Promise.all(batches);
-                            showLoading(false);
-                            showToast(`Uploaded ${count} new. Skipped ${skippedCount}.`, "success");
-                            loadDataFromFirestore();
-                        } else {
-                            showLoading(false);
-                            showToast(`No new data. Skipped ${skippedCount}.`, "info");
-                        }
-                    } catch (e) {
-                        console.error(e);
-                        showLoading(false);
-                        showToast("Upload Failed", "error");
-                    }
+                    
+                    showLoading(false);
+                    // Reset input so the same file can be selected again if needed
+                    document.getElementById('csvFile').value = '';
+                    
+                    // Show Preview
+                    window.openPreviewModal(window.pendingUploadData.length, duplicateCount);
                 }
             });
         };
+
+        // Triggered by the "Lanjutkan" button in the Preview Modal
+        window.confirmUpload = async function() {
+            window.closePreviewModal();
+            
+            if (window.pendingUploadData.length === 0) {
+                window.showToast("Tidak ada data baru untuk diunggah", "info");
+                return;
+            }
+
+            showLoading(true, "Menyimpan ke Cloud...");
+            const batchSize = 450; 
+            let batches = [];
+            let currentBatch = writeBatch(db);
+            let count = 0;
+
+            for (const row of window.pendingUploadData) {
+                const bagseal = String(row['No Bagseals'] || '').trim();
+                const smu = (row['SMU']||'').replace(/\s/g, '');
+                const dest = (row['Destinasi']||'').replace(/\s/g, '');
+                const date = (row['Tanggal DIterima']||'').replace(/[\/\s,]/g, ''); 
+                const id = bagseal || `${smu}_${dest}_${date}`.substring(0, 100) || doc(collection(db, "inbound_data")).id; 
+
+                const docRef = doc(db, "inbound_data", id);
+                currentBatch.set(docRef, row);
+                count++;
+                if (count % batchSize === 0) { batches.push(currentBatch.commit()); currentBatch = writeBatch(db); }
+            }
+            if (count % batchSize !== 0) batches.push(currentBatch.commit());
+
+            try {
+                await Promise.all(batches);
+                showLoading(false);
+                window.pendingUploadData = []; // Clear pending
+                window.openSuccessModal(count);
+                window.loadDataFromFirestore(); // Reload in background
+            } catch (e) {
+                console.error(e);
+                showLoading(false);
+                window.showToast("Upload Gagal", "error");
+            }
+        };
+
+        // Trigger file input dialog
+        document.getElementById('csvFile').addEventListener('change', function(e) {
+            if(e.target.files.length > 0) window.uploadCSVToFirestore(e.target.files[0]);
+        });
     </script>
 </body>
 </html>
