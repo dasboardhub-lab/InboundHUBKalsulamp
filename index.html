@@ -909,8 +909,8 @@
             }
             return '';
         };
-        
-        window.parseDate = (dateStr) => {
+
+        const parseDate = (dateStr) => {
             if (!dateStr) return null;
             if (dateStr.includes('/')) { 
                 const p = dateStr.split('/'); 
@@ -921,16 +921,21 @@
             if (p.length >= 3) { let y = parseInt(p[2]); if (y < 100) y += 2000; return new Date(y, m[p[1]], parseInt(p[0])); }
             return null;
         };
-        
-        window.formatDate = (d) => {
-            if (d instanceof Date && !isNaN(d)) {
-                return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+        const formatDate = (d) => `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+        const formatInputDate = (d) => window.toLocalISOString(d);
+        const formatNumber = (num) => num ? num.toLocaleString('id-ID') : '0';
+
+        // Helper untuk format Jam menjadi pasti HH:mm
+        const formatTimeHHMM = (timeStr) => {
+            if (!timeStr) return '-';
+            const parts = timeStr.toString().split(':');
+            if (parts.length >= 2) {
+                const h = parts[0].trim().padStart(2, '0');
+                const m = parts[1].trim().substring(0, 2).padStart(2, '0');
+                return `${h}:${m}`;
             }
-            return '-';
+            return timeStr;
         };
-        
-        window.formatInputDate = (d) => window.toLocalISOString(d);
-        window.formatNumber = (num) => num ? num.toLocaleString('id-ID') : '0';
 
         // NEW HELPER: Get Monday of a given date (for Weekly Matrix)
         window.getMondayTime = (d) => {
@@ -999,8 +1004,8 @@
 
         window.openPreviewModal = function(newCount, dupCount) {
             document.getElementById('previewModal').classList.remove('hidden');
-            document.getElementById('previewNewCount').textContent = window.formatNumber(newCount);
-            document.getElementById('previewDupCount').textContent = window.formatNumber(dupCount);
+            document.getElementById('previewNewCount').textContent = formatNumber(newCount);
+            document.getElementById('previewDupCount').textContent = formatNumber(dupCount);
             setTimeout(() => {
                 document.getElementById('previewModal').classList.remove('opacity-0');
                 document.getElementById('previewModalContent').classList.remove('scale-95');
@@ -1017,7 +1022,7 @@
 
         window.openSuccessModal = function(count) {
             document.getElementById('successModal').classList.remove('hidden');
-            document.getElementById('successCount').textContent = window.formatNumber(count);
+            document.getElementById('successCount').textContent = formatNumber(count);
             setTimeout(() => {
                 document.getElementById('successModal').classList.remove('opacity-0');
                 document.getElementById('successModalContent').classList.remove('scale-95');
@@ -1104,7 +1109,7 @@
                 
                 if (tglTerimaStr.toLowerCase().includes('tolakan')) {
                     rejectedData.push({
-                        _tglPA: window.parseDate(row['Tanggal']),
+                        _tglPA: parseDate(row['Tanggal']),
                         _origin: origin,
                         _vendor: vendor,
                         _dest: dest,
@@ -1122,9 +1127,8 @@
                     });
                     return; 
                 }
-
-                const tglTerima = window.parseDate(tglTerimaStr);
-                const tglOrigin = window.parseDate(row['Tanggal']); 
+                const tglTerima = parseDate(tglTerimaStr);
+                const tglOrigin = parseDate(row['Tanggal']); 
                 
                 if (tglTerima) {
                     let sla = 0;
@@ -1133,6 +1137,7 @@
                         sla = Math.ceil(diff / (1000 * 60 * 60 * 24));
                     }
 
+                    // KEY CHANGE: _pcs comes from 'Kuantitas Paket (Awb)'
                     validData.push({
                         ...row,
                         _date: tglTerima,
@@ -1144,7 +1149,7 @@
                         _dest: dest,
                         _service: service,
                         _batch: batch,
-                        _jam: row['JAM'] || '-',
+                        _jam: formatTimeHHMM(row['JAM']), // Format jam otomatis HH:mm
                         _smu: row['SMU'] || '-',
                         _flight: cleanFlight,
                         _tglFlight: row['TANGGAL FLIGHT'] || '-',
@@ -1164,8 +1169,8 @@
             
             const dates = window.rawData.map(d => d._date).sort((a,b) => a-b);
             if (dates.length > 0) {
-                document.getElementById('filterStartDate').value = window.formatInputDate(dates[0]);
-                document.getElementById('filterEndDate').value = window.formatInputDate(dates[dates.length-1]);
+                document.getElementById('filterStartDate').value = formatInputDate(dates[0]);
+                document.getElementById('filterEndDate').value = formatInputDate(dates[dates.length-1]);
             }
 
             window.applyFilters();
@@ -1196,7 +1201,7 @@
             </tr></thead><tbody>`;
 
             window.rejectedData.forEach(d => {
-                const datePa = d._tglPA ? window.formatDate(d._tglPA) : '-';
+                const datePa = d._tglPA ? formatDate(d._tglPA) : '-';
                 html += `<tr class="hover:bg-red-50/30">
                     <td class="font-medium text-slate-600">${datePa}</td>
                     <td class="text-center">${d._batch}</td>
@@ -1209,8 +1214,8 @@
                     <td>${d._tglFlight}</td>
                     <td>${d._etd}</td>
                     <td class="text-center font-mono text-xs">${d._mb}</td>
-                    <td class="text-right">${window.formatNumber(d._weight)}</td>
-                    <td class="text-right font-bold">${window.formatNumber(d._pcs)}</td>
+                    <td class="text-right">${formatNumber(d._weight)}</td>
+                    <td class="text-right font-bold">${formatNumber(d._pcs)}</td>
                     <td class="text-xs text-red-500 italic">${d._note}</td>
                 </tr>`;
             });
@@ -1348,8 +1353,8 @@
             window.updateToggleVisuals();
             const dates = window.rawData.map(d => d._date).sort((a,b) => a-b);
             if(dates.length) {
-                document.getElementById('filterStartDate').value = window.formatInputDate(dates[0]);
-                document.getElementById('filterEndDate').value = window.formatInputDate(dates[dates.length-1]);
+                document.getElementById('filterStartDate').value = formatInputDate(dates[0]);
+                document.getElementById('filterEndDate').value = formatInputDate(dates[dates.length-1]);
             }
             window.applyFilters();
             window.showToast("Reset Complete", "info");
@@ -1421,6 +1426,21 @@
             document.getElementById('kpiWeight').innerText = formatNumber(w);
             document.getElementById('kpiMB').innerText = formatNumber(m);
             document.getElementById('kpiPcs').innerText = formatNumber(p);
+
+            let avgSLA = 0;
+            let minSLA = 0;
+            let maxSLA = 0;
+            if(fd.length > 0) {
+                const slas = fd.map(d => d._sla || 0);
+                minSLA = Math.min(...slas);
+                maxSLA = Math.max(...slas);
+                const totalSla = slas.reduce((acc, val) => acc + val, 0);
+                avgSLA = totalSla / fd.length;
+            }
+            
+            document.getElementById('kpiAvgSLA').innerText = avgSLA.toFixed(1).replace('.', ',');
+            document.getElementById('kpiMinSLA').innerText = formatNumber(minSLA);
+            document.getElementById('kpiMaxSLA').innerText = formatNumber(maxSLA);
 
             const startStr = document.getElementById('filterStartDate').value;
             const endStr = document.getElementById('filterEndDate').value;
@@ -1533,10 +1553,10 @@
             // Mapping raw filtered data (which is strictly 1 row per Bagseal)
             const csvRows = window.filteredData.map(d => {
                 return [
-                    window.formatDate(d._date),
+                    formatDate(d._date),
                     d._jam || '-',
                     d._dest || '-',
-                    d._dateOrigin ? window.formatDate(d._dateOrigin) : '-',
+                    d._dateOrigin ? formatDate(d._dateOrigin) : '-',
                     d._batch || '-',
                     d._origin || '-',
                     d._smu || '-',
@@ -1558,7 +1578,7 @@
             
             const link = document.createElement("a");
             link.setAttribute("href", url);
-            link.setAttribute("download", `Manifest_Detail_${window.formatInputDate(new Date())}.csv`);
+            link.setAttribute("download", `Manifest_Detail_${formatInputDate(new Date())}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -1594,11 +1614,14 @@
             });
             window.aggregatedData = aggregatedList;
 
-            // 2. PIVOT SORTING: Date -> Jam -> Destinasi -> Dst
+            // 2. PIVOT SORTING: Date (Terbaru ke Terlama) -> Jam (Kecil ke Besar) -> Destinasi -> Dst
             aggregatedList.sort((a,b) => {
-                if(a._date.getTime() !== b._date.getTime()) return a._date - b._date;
+                // Tanggal: Terbaru ke Terlama (DESC)
+                if(a._date.getTime() !== b._date.getTime()) return b._date - a._date;
+                // Jam: Kecil ke Besar (ASC)
                 if(a._jam !== b._jam) return a._jam.localeCompare(b._jam);
-                if(a._dest !== b._dest) return a._dest.localeCompare(b._dest);
+                // Sisanya
+                if(a._dest !== b._dest) return a._dest < b._dest ? -1 : 1; 
                 if((a._dateOrigin?.getTime()||0) !== (b._dateOrigin?.getTime()||0)) return (a._dateOrigin?.getTime()||0) - (b._dateOrigin?.getTime()||0);
                 if(a._batch !== b._batch) return a._batch.localeCompare(b._batch);
                 if(a._origin !== b._origin) return a._origin.localeCompare(b._origin);
@@ -1705,16 +1728,16 @@
                 if (r.type === 'total_date') {
                     tr.className = "bg-indigo-100 font-black text-indigo-900 border-b-2 border-indigo-300 shadow-sm";
                     tr.innerHTML = `
-                        <td colspan="10" class="text-right py-2 px-4 uppercase text-[11px] tracking-wide border-r border-indigo-200">Total Keseluruhan Tanggal ${window.formatDate(r.date)}</td>
-                        <td class="text-center font-mono text-indigo-800 border-r border-indigo-200">${window.formatNumber(r.mb)}</td>
-                        <td class="text-right text-indigo-900 px-4">${window.formatNumber(r.pcs)}</td>
+                        <td colspan="10" class="text-right py-2 px-4 uppercase text-[11px] tracking-wide border-r border-indigo-200">Total Keseluruhan Tanggal ${formatDate(r.date)}</td>
+                        <td class="text-center font-mono text-indigo-800 border-r border-indigo-200">${formatNumber(r.mb)}</td>
+                        <td class="text-right text-indigo-900 px-4">${formatNumber(r.pcs)}</td>
                     `;
                 } else if (r.type === 'total_jam') {
                     tr.className = "bg-slate-100 font-bold text-slate-700 border-y border-slate-300";
                     tr.innerHTML = `
                         <td colspan="9" class="text-right py-1.5 px-4 uppercase text-[10px] tracking-wider border-r border-slate-300 text-slate-500">Total Jam ${r.jam}</td>
-                        <td class="text-center font-mono text-slate-700 border-r border-slate-300">${window.formatNumber(r.mb)}</td>
-                        <td class="text-right text-slate-800 px-4">${window.formatNumber(r.pcs)}</td>
+                        <td class="text-center font-mono text-slate-700 border-r border-slate-300">${formatNumber(r.mb)}</td>
+                        <td class="text-right text-slate-800 px-4">${formatNumber(r.pcs)}</td>
                     `;
                 } else {
                     tr.className = "hover:bg-slate-50 transition border-b border-slate-200";
@@ -1729,10 +1752,10 @@
                         }
                     };
 
-                    addTd(window.formatDate(d._date), r.spanDate, "text-center font-bold text-slate-800 bg-white border-r border-slate-300 group-col whitespace-nowrap");
+                    addTd(formatDate(d._date), r.spanDate, "text-center font-bold text-slate-800 bg-white border-r border-slate-300 group-col whitespace-nowrap");
                     addTd(d._jam, r.spanJam, "text-center text-slate-700 font-bold border-r border-slate-300 bg-white group-col whitespace-nowrap");
                     addTd(d._dest, r.spanDest, "text-center font-bold text-indigo-800 bg-indigo-50/50 border-r border-slate-300 group-col whitespace-nowrap");
-                    addTd(window.formatDate(d._dateOrigin), r.spanPa, "text-left text-slate-500 border-r border-slate-300 bg-white group-col whitespace-nowrap");
+                    addTd(formatDate(d._dateOrigin), r.spanPa, "text-left text-slate-500 border-r border-slate-300 bg-white group-col whitespace-nowrap");
                     addTd(d._batch, r.spanBatch, "text-left text-slate-500 border-r border-slate-300 bg-white group-col");
                     addTd(d._origin, r.spanOrigin, "text-left text-slate-700 border-r border-slate-300 bg-white group-col whitespace-nowrap");
                     addTd(d._smu, r.spanSmu, "text-slate-600 font-mono text-[11px] font-medium border-r border-slate-300 valign-middle bg-white group-col whitespace-nowrap");
@@ -1745,8 +1768,8 @@
                     }
 
                     // MB & Pcs merged cleanly
-                    addTd(window.formatNumber(d._mb_count), 1, "text-center font-mono font-bold text-indigo-700 border-r border-slate-300 bg-indigo-50/30 group-col");
-                    addTd(window.formatNumber(d._pcs), 1, "text-right font-black text-indigo-900 valign-middle bg-indigo-50/50 group-col");
+                    addTd(formatNumber(d._mb_count), 1, "text-center font-mono font-bold text-indigo-700 border-r border-slate-300 bg-indigo-50/30 group-col");
+                    addTd(formatNumber(d._pcs), 1, "text-right font-black text-indigo-900 valign-middle bg-indigo-50/50 group-col");
                 }
                 tbody.appendChild(tr);
             });
@@ -1840,7 +1863,7 @@
                             anchor: 'end', 
                             color: '#64748b', 
                             font: { weight: 'bold' },
-                            formatter: (value) => window.formatNumber(value),
+                            formatter: (value) => formatNumber(value),
                             clip: false
                         } 
                     } 
@@ -1883,7 +1906,7 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: { y: { display: false }, x: { grid: { display: false } } },
-                    plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'end', color: '#64748b', font: { size: 9 }, formatter: (v) => v > 0 ? window.formatNumber(v) : '' } }
+                    plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'end', color: '#64748b', font: { size: 9 }, formatter: (v) => v > 0 ? formatNumber(v) : '' } }
                 }
             });
         };
@@ -2018,7 +2041,7 @@
                             <span class="w-2 h-2 rounded-full" style="background-color: ${color}"></span>
                             <span class="font-semibold">${serviceName}</span>
                         </td>
-                        <td class="py-1.5 text-right font-mono">${window.formatNumber(val)}</td>
+                        <td class="py-1.5 text-right font-mono">${formatNumber(val)}</td>
                         <td class="py-1.5 text-right font-bold text-slate-400">${pct}</td>
                     </tr>
                 `;
@@ -2032,7 +2055,7 @@
                 const t = document.getElementById(id); t.innerHTML = '';
                 const agg = {}; window.filteredData.forEach(d => { const k=d[f]; if(!agg[k]) agg[k]={u3:0,b35:0,b67:0,o7:0,tot:0,sum:0}; agg[k].tot+=d._pcs; agg[k].sum+=(d._sla*d._pcs); if(d._sla<=2)agg[k].u3+=d._pcs; else if(d._sla<=5)agg[k].b35+=d._pcs; else if(d._sla<=7)agg[k].b67+=d._pcs; else agg[k].o7+=d._pcs; });
                 let h = `<thead class="sticky top-0 bg-white z-10"><tr><th class="text-left text-slate-500">${l}</th><th class="text-center text-emerald-600 bg-emerald-50">0-2H</th><th class="text-center text-amber-600 bg-amber-50">3-5H</th><th class="text-center text-orange-600 bg-orange-50">5-7H</th><th class="text-center text-rose-600 bg-rose-50">>7H</th><th class="text-center text-slate-800 bg-slate-100">Tot</th><th class="text-center text-indigo-600 bg-indigo-50">Avg</th></tr></thead><tbody>`;
-                Object.keys(agg).sort((a, b) => agg[b].tot - agg[a].tot).forEach(k => { const d=agg[k]; h += `<tr class="hover:bg-slate-50"><td class="font-bold text-slate-700">${k}</td><td class="text-center text-emerald-600 font-mono">${window.formatNumber(d.u3)}</td><td class="text-center text-amber-600 font-mono">${window.formatNumber(d.b35)}</td><td class="text-center text-orange-600 font-bold font-mono">${window.formatNumber(d.b67)}</td><td class="text-center text-rose-600 font-bold font-mono">${window.formatNumber(d.o7)}</td><td class="text-center font-bold bg-slate-50 font-mono">${window.formatNumber(d.tot)}</td><td class="text-center font-bold text-indigo-600">${(d.tot>0?d.sum/d.tot:0).toFixed(1)}</td></tr>`; });
+                Object.keys(agg).sort((a, b) => agg[b].tot - agg[a].tot).forEach(k => { const d=agg[k]; h += `<tr class="hover:bg-slate-50"><td class="font-bold text-slate-700">${k}</td><td class="text-center text-emerald-600 font-mono">${formatNumber(d.u3)}</td><td class="text-center text-amber-600 font-mono">${formatNumber(d.b35)}</td><td class="text-center text-orange-600 font-bold font-mono">${formatNumber(d.b67)}</td><td class="text-center text-rose-600 font-bold font-mono">${formatNumber(d.o7)}</td><td class="text-center font-bold bg-slate-50 font-mono">${formatNumber(d.tot)}</td><td class="text-center font-bold text-indigo-600">${(d.tot>0?d.sum/d.tot:0).toFixed(1)}</td></tr>`; });
                 t.innerHTML = h + '</tbody>';
             };
             render('slaOriginTable', '_origin', 'ORIGIN'); render('slaDestTable', '_dest', 'DESTINASI');
@@ -2082,7 +2105,7 @@
             weekDates.forEach((d, i) => {
                 h += `<th class="text-center border-r border-slate-200 min-w-[80px]">
                         <div class="text-[11px] font-bold text-slate-700">${daysName[i]}</div>
-                        <div class="text-[9px] font-normal text-slate-400 mt-0.5 tracking-wider">${window.formatDate(d)}</div>
+                        <div class="text-[9px] font-normal text-slate-400 mt-0.5 tracking-wider">${formatDate(d)}</div>
                       </th>`;
             });
             h += `<th class="text-center font-extrabold bg-slate-100 border-l border-slate-300 text-slate-800">TOTAL</th></tr></thead><tbody>`;
@@ -2106,22 +2129,31 @@
                     const v = weekData.filter(d => d._date.getTime() === t && d._dest === dst).reduce((s,d) => s+d._pcs, 0); 
                     rowTotal += v;
                     grandTotals[i] += v;
-                    r += `<td class="text-center border-r border-slate-100 ${v>0?'text-slate-800 font-bold bg-indigo-50/20':'text-slate-300'}">${v>0?window.formatNumber(v):'-'}</td>`;
+                    r += `<td class="text-center border-r border-slate-100 ${v>0?'text-slate-800 font-bold bg-indigo-50/20':'text-slate-300'}">${v>0?formatNumber(v):'-'}</td>`;
                 });
                 
                 grandTotalAll += rowTotal;
-                h += r + `<td class="text-center font-black text-slate-900 bg-slate-50 border-l border-slate-200">${window.formatNumber(rowTotal)}</td></tr>`;
+                h += r + `<td class="text-center font-black text-slate-900 bg-slate-50 border-l border-slate-200">${formatNumber(rowTotal)}</td></tr>`;
             });
 
             // --- FOOTER (Grand Totals) ---
             let gRow = `<tr><td class="font-black text-slate-900 sticky left-0 bg-slate-100 border-r border-slate-300 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] whitespace-nowrap uppercase text-[10px]">TOTAL HARIAN</td>`;
             grandTotals.forEach(gt => {
-                gRow += `<td class="text-center font-black text-indigo-700 bg-indigo-50/50 border-r border-indigo-100/50">${gt>0?window.formatNumber(gt):'-'}</td>`;
+                gRow += `<td class="text-center font-black text-indigo-700 bg-indigo-50/50 border-r border-indigo-100/50">${gt>0?formatNumber(gt):'-'}</td>`;
             });
-            gRow += `<td class="text-center font-black text-indigo-900 bg-indigo-100 border-l border-indigo-200">${window.formatNumber(grandTotalAll)}</td></tr>`;
+            gRow += `<td class="text-center font-black text-indigo-900 bg-indigo-100 border-l border-indigo-200">${formatNumber(grandTotalAll)}</td></tr>`;
 
             h += gRow + '</tbody>';
             table.innerHTML = h;
+        };
+
+        window.changePage = function(delta) {
+            const totalPages = Math.ceil(window.aggregatedData.length / window.rowsPerPage) || 1;
+            const nextPage = window.currentPage + delta;
+            if (nextPage >= 1 && nextPage <= totalPages) {
+                window.currentPage = nextPage;
+                window.aggregateAndRenderTable();
+            }
         };
 
     </script>
