@@ -754,17 +754,6 @@
                 </div>
             </div>
             
-            <!-- 4b. REJECTED TABLE -->
-            <div class="fresh-card overflow-hidden border-l-4 border-red-500">
-                <div class="px-5 py-4 border-b border-slate-100 flex items-center gap-2 bg-red-50/20">
-                    <div class="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center text-red-600"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                    <h3 class="text-[11px] font-bold text-red-600 uppercase">Exception Monitoring: Tolakan Bandara</h3>
-                </div>
-                <div class="overflow-auto custom-scrollbar max-h-80 relative">
-                    <table class="fresh-table w-full" id="rejectedTable"></table>
-                </div>
-            </div>
-
             <!-- 5a. SLA BREAKDOWN -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
                 <div class="fresh-card overflow-hidden">
@@ -860,6 +849,28 @@
                             <!-- JS Generated -->
                         </table>
                     </div>
+                </div>
+            </div>
+
+            <!-- 7. REJECTED TABLE (COLLAPSIBLE) MOVED TO BOTTOM -->
+            <div class="fresh-card overflow-hidden border-l-4 border-red-500 transition-all duration-300">
+                <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-red-50/20 cursor-pointer hover:bg-red-50/50 transition-colors" onclick="window.toggleRejectedTable()">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center text-red-600">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-[11px] font-bold text-red-600 uppercase">Exception Monitoring: Tolakan Bandara</h3>
+                            <p class="text-[10px] text-slate-500 mt-0.5">Klik untuk melihat detail data yang tertolak</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span id="rejectedCountBadge" class="bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm">0 Data</span>
+                        <i id="rejectedToggleIcon" class="fa-solid fa-chevron-down text-red-400 transition-transform duration-300"></i>
+                    </div>
+                </div>
+                <div id="rejectedTableContainer" class="hidden overflow-auto custom-scrollbar max-h-80 relative">
+                    <table class="fresh-table w-full" id="rejectedTable"></table>
                 </div>
             </div>
 
@@ -1088,6 +1099,19 @@
             }
         };
 
+        // --- NEW: TOGGLE REJECTED TABLE ---
+        window.toggleRejectedTable = function() {
+            const container = document.getElementById('rejectedTableContainer');
+            const icon = document.getElementById('rejectedToggleIcon');
+            if (container.classList.contains('hidden')) {
+                container.classList.remove('hidden');
+                icon.classList.add('rotate-180');
+            } else {
+                container.classList.add('hidden');
+                icon.classList.remove('rotate-180');
+            }
+        };
+
         // --- PROCESSING (Global wrapper) ---
         window.processRawDataWrapper = function(data) {
             const validData = [];
@@ -1179,10 +1203,23 @@
         // --- NEW REJECTED TABLE RENDERER ---
         window.renderRejectedTable = function() {
             const table = document.getElementById('rejectedTable');
+            const badge = document.getElementById('rejectedCountBadge');
+
+            // Update Badge Count & Style
+            if (badge) {
+                badge.textContent = window.rejectedData.length + ' Data';
+                if (window.rejectedData.length === 0) {
+                    badge.className = 'bg-slate-200 text-slate-500 text-[10px] font-bold px-2 py-1 rounded-full shadow-sm';
+                } else {
+                    badge.className = 'bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm animate-pulse';
+                }
+            }
+
             if (window.rejectedData.length === 0) {
                 table.innerHTML = `<tr><td class="p-4 text-center text-slate-400 italic">Tidak ada data tolakan</td></tr>`;
                 return;
             }
+
             let html = `<thead class="bg-red-50 sticky top-0 z-20 shadow-sm border-b border-red-200"><tr>
                 <th class="text-left text-red-600 bg-red-50">Tgl PA</th>
                 <th class="text-center text-red-600 bg-red-50">Batch</th>
@@ -1485,7 +1522,7 @@
             window.renderMatrixTable();
             window.aggregateAndRenderTable();
             window.renderBagsealTable(); 
-        };
+        }
 
         window.updateDiff = function(id, current, previous) {
             const el = document.getElementById(id);
@@ -1926,10 +1963,10 @@
                 btnDaily.className = `${baseClasses} ${inactiveStyle}`;
                 btnMonthly.className = `${baseClasses} ${activeStyle}`;
             }
-            renderMainChart();
+            window.renderMainChart();
         }
 
-        function renderBottomCharts() {
+        window.renderBottomCharts = function() {
             const serviceColors = ['#10B981', '#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6'];
 
             // 1. Ekstrak data dan cari yang terpanjang agar tinggi ketiganya seragam (Maksimal 15 Data)
