@@ -757,8 +757,8 @@
             <!-- 5a. SLA BREAKDOWN -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
                 <div class="fresh-card overflow-hidden">
-                    <div class="px-5 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span><h3 class="text-[11px] font-bold text-slate-600 uppercase">SLA by Origin</h3></div>
-                    <div class="overflow-x-auto custom-scrollbar max-h-64"><table class="fresh-table w-full" id="slaOriginTable"></table></div>
+                    <div class="px-5 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span><h3 class="text-[11px] font-bold text-slate-600 uppercase">SLA by Vendor</h3></div>
+                    <div class="overflow-x-auto custom-scrollbar max-h-64"><table class="fresh-table w-full" id="slaVendorTable"></table></div>
                 </div>
                 <div class="fresh-card overflow-hidden">
                     <div class="px-5 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span><h3 class="text-[11px] font-bold text-slate-600 uppercase">SLA by Destination</h3></div>
@@ -841,7 +841,7 @@
                             Bagshield
                         </h3>
                         <button onclick="window.copyBagseals()" class="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-2 py-1 rounded border border-indigo-100 transition shadow-sm">
-                            <i class="fa-regular fa-copy mr-1"></i> Salin
+                            <i class="fa-regular fa-copy mr-1"></i> Salin bagshild
                         </button>
                     </div>
                     <div class="overflow-y-auto custom-scrollbar flex-grow p-0">
@@ -932,7 +932,15 @@
             if (p.length >= 3) { let y = parseInt(p[2]); if (y < 100) y += 2000; return new Date(y, m[p[1]], parseInt(p[0])); }
             return null;
         };
-        const formatDate = (d) => `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+        
+        // SAFE FORMAT DATE - Menambahkan pengecekan null untuk menghindari error saat _dateOrigin kosong
+        const formatDate = (d) => {
+            if (d instanceof Date && !isNaN(d)) {
+                return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+            }
+            return '-';
+        };
+
         const formatInputDate = (d) => window.toLocalISOString(d);
         const formatNumber = (num) => num ? num.toLocaleString('id-ID') : '0';
 
@@ -1565,13 +1573,36 @@
             tbody.innerHTML = html;
         };
 
+        // --- NEW: COPY BAGSEALS FUNCTION ---
+        // Funktioun fir d'Bagseals an de Clipboard ze kopéieren (Fallback Method)
         window.copyBagseals = function() {
             const bagseals = window.filteredData.map(d => d._mb).join('\n');
-            navigator.clipboard.writeText(bagseals).then(() => {
-                window.showToast("Bagseals copied to clipboard", "success");
-            }).catch(err => {
-                window.showToast("Failed to copy", "error");
-            });
+            
+            // Benotzt Textarea als Fallback fir iFrame Ëmfeld
+            const textArea = document.createElement("textarea");
+            textArea.value = bagseals;
+            
+            // Vermeiden datt d'Säit scrollt
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.position = "fixed";
+
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    window.showToast("Disalin ke papan klip", "success");
+                } else {
+                    window.showToast("Terjadi kesalahan saat menyalin", "error");
+                }
+            } catch (err) {
+                window.showToast("Terjadi kesalahan saat menyalin", "error");
+            }
+
+            document.body.removeChild(textArea);
         };
 
         // --- NEW: DOWNLOAD CSV FUNCTION ---
@@ -1964,7 +1995,7 @@
                 btnMonthly.className = `${baseClasses} ${activeStyle}`;
             }
             window.renderMainChart();
-        }
+        };
 
         window.renderBottomCharts = function() {
             const serviceColors = ['#10B981', '#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6'];
@@ -2088,14 +2119,140 @@
         };
 
         window.renderSlaMatrices = function() {
-            const render = (id, f, l) => {
-                const t = document.getElementById(id); t.innerHTML = '';
-                const agg = {}; window.filteredData.forEach(d => { const k=d[f]; if(!agg[k]) agg[k]={u3:0,b35:0,b67:0,o7:0,tot:0,sum:0}; agg[k].tot+=d._pcs; agg[k].sum+=(d._sla*d._pcs); if(d._sla<=2)agg[k].u3+=d._pcs; else if(d._sla<=5)agg[k].b35+=d._pcs; else if(d._sla<=7)agg[k].b67+=d._pcs; else agg[k].o7+=d._pcs; });
-                let h = `<thead class="sticky top-0 bg-white z-10"><tr><th class="text-left text-slate-500">${l}</th><th class="text-center text-emerald-600 bg-emerald-50">0-2H</th><th class="text-center text-amber-600 bg-amber-50">3-5H</th><th class="text-center text-orange-600 bg-orange-50">5-7H</th><th class="text-center text-rose-600 bg-rose-50">>7H</th><th class="text-center text-slate-800 bg-slate-100">Tot</th><th class="text-center text-indigo-600 bg-indigo-50">Avg</th></tr></thead><tbody>`;
-                Object.keys(agg).sort((a, b) => agg[b].tot - agg[a].tot).forEach(k => { const d=agg[k]; h += `<tr class="hover:bg-slate-50"><td class="font-bold text-slate-700">${k}</td><td class="text-center text-emerald-600 font-mono">${formatNumber(d.u3)}</td><td class="text-center text-amber-600 font-mono">${formatNumber(d.b35)}</td><td class="text-center text-orange-600 font-bold font-mono">${formatNumber(d.b67)}</td><td class="text-center text-rose-600 font-bold font-mono">${formatNumber(d.o7)}</td><td class="text-center font-bold bg-slate-50 font-mono">${formatNumber(d.tot)}</td><td class="text-center font-bold text-indigo-600">${(d.tot>0?d.sum/d.tot:0).toFixed(1)}</td></tr>`; });
-                t.innerHTML = h + '</tbody>';
-            };
-            render('slaOriginTable', '_origin', 'ORIGIN'); render('slaDestTable', '_dest', 'DESTINASI');
+            // 1. SLA by VENDOR (Kolom = Vendor, Baris = Detail SLA)
+            const tVendor = document.getElementById('slaVendorTable');
+            if(tVendor) tVendor.innerHTML = '';
+            
+            if (window.filteredData.length > 0 && tVendor) {
+                const matrix = {};
+                const vendorTotals = {};
+                let grandTotal = 0;
+                const slasSet = new Set();
+
+                // Kalkulasi Pcs ke dalam matriks dan hitung total vendor terlebih dahulu
+                window.filteredData.forEach(d => {
+                    slasSet.add(d._sla);
+                    if (!matrix[d._sla]) matrix[d._sla] = { total: 0 };
+                    matrix[d._sla][d._vendor] = (matrix[d._sla][d._vendor] || 0) + d._pcs;
+                    matrix[d._sla].total += d._pcs;
+                    vendorTotals[d._vendor] = (vendorTotals[d._vendor] || 0) + d._pcs;
+                    grandTotal += d._pcs;
+                });
+
+                const slas = [...slasSet].sort((a,b) => a - b);
+                // Mengurutkan vendor berdasarkan total terbesar ke terkecil (Penting: mengubah urutan ke kiri-kanan)
+                const vendors = Object.keys(vendorTotals).sort((a, b) => vendorTotals[b] - vendorTotals[a]);
+
+                // Header
+                let hV = `<thead class="sticky top-0 bg-white z-10 shadow-sm"><tr>
+                            <th class="text-center text-slate-500 w-16 border-r border-slate-200">SLA</th>`;
+                vendors.forEach(v => hV += `<th class="text-center text-slate-600 bg-slate-50 border-r border-slate-200 px-3 min-w-[80px]">${v}</th>`);
+                hV += `<th class="text-center text-slate-800 bg-slate-100 font-bold px-4">TOTAL</th></tr></thead><tbody>`;
+
+                // Body (Baris berdasarkan rentang SLA tunggal)
+                slas.forEach(sla => {
+                    hV += `<tr class="hover:bg-slate-50 border-b border-slate-100 last:border-0">
+                            <td class="text-center font-bold text-indigo-600 bg-indigo-50/50 border-r border-slate-200">${sla}</td>`;
+                    vendors.forEach(v => {
+                        const val = matrix[sla][v] || 0; // Fallback ke 0 jika tidak ada
+                        hV += `<td class="text-center font-mono border-r border-slate-100 ${val > 0 ? 'text-slate-700' : 'text-slate-300'}">${val > 0 ? formatNumber(val) : '-'}</td>`;
+                    });
+                    
+                    // Kalkulasi persentase untuk kolom total di tiap baris SLA
+                    const rowTotal = matrix[sla].total;
+                    const rowPct = grandTotal > 0 ? ((rowTotal / grandTotal) * 100).toFixed(1) : 0;
+                    
+                    hV += `<td class="text-center bg-slate-50 py-1">
+                                <div class="font-bold text-slate-800 font-mono">${formatNumber(rowTotal)}</div>
+                                <div class="text-[9px] font-bold text-slate-500">${rowPct}%</div>
+                           </td></tr>`;
+                });
+
+                // Footer (Total & Persentase)
+                hV += `</tbody><tfoot class="sticky bottom-0 bg-slate-100 shadow-[0_-2px_5px_-2px_rgba(0,0,0,0.05)] border-t-2 border-slate-300">
+                        <tr><td class="text-center font-black text-slate-800 uppercase text-[10px] py-2 border-r border-slate-300">TOT</td>`;
+                vendors.forEach(v => {
+                    const pct = grandTotal > 0 ? ((vendorTotals[v] / grandTotal) * 100).toFixed(1) : 0;
+                    hV += `<td class="text-center py-2 border-r border-slate-200">
+                                <div class="font-black text-indigo-700 font-mono">${formatNumber(vendorTotals[v])}</div>
+                                <div class="text-[9px] font-bold text-slate-500">${pct}%</div>
+                           </td>`;
+                });
+                hV += `<td class="text-center py-2 bg-slate-200">
+                            <div class="font-black text-slate-900 font-mono">${formatNumber(grandTotal)}</div>
+                            <div class="text-[9px] font-bold text-slate-600">100%</div>
+                       </td></tr></tfoot>`;
+                tVendor.innerHTML = hV;
+            } else if (tVendor) {
+                tVendor.innerHTML = `<tr><td class="p-4 text-center text-slate-400">Tidak ada data</td></tr>`;
+            }
+
+            // 2. SLA by DESTINASI (Kolom = Range SLA, Baris = Destinasi)
+            const tDest = document.getElementById('slaDestTable'); 
+            if(tDest) tDest.innerHTML = '';
+            const agg = {}; 
+            let grandU3 = 0, grandB35 = 0, grandO5 = 0, grandTot = 0, grandSum = 0;
+
+            window.filteredData.forEach(d => { 
+                const k = d._dest; 
+                if(!agg[k]) agg[k] = {u3:0, b35:0, o5:0, tot:0, sum:0}; 
+                agg[k].tot += d._pcs; 
+                agg[k].sum += (d._sla * d._pcs); 
+                if(d._sla <= 2) agg[k].u3 += d._pcs; 
+                else if(d._sla <= 5) agg[k].b35 += d._pcs; 
+                else agg[k].o5 += d._pcs; 
+            });
+
+            let h = `<thead class="sticky top-0 bg-white z-10 shadow-sm"><tr>
+                        <th class="text-left text-slate-500">DESTINASI</th>
+                        <th class="text-center text-emerald-600 bg-emerald-50">0-2H</th>
+                        <th class="text-center text-amber-600 bg-amber-50">3-5H</th>
+                        <th class="text-center text-rose-600 bg-rose-50">>5H</th>
+                        <th class="text-center text-slate-800 bg-slate-100">Tot</th>
+                        <th class="text-center text-indigo-600 bg-indigo-50">Avg</th>
+                    </tr></thead><tbody>`;
+
+            Object.keys(agg).sort((a,b) => agg[b].tot - agg[a].tot).forEach(k => { 
+                const d = agg[k]; 
+                grandU3 += d.u3; grandB35 += d.b35; grandO5 += d.o5; grandTot += d.tot; grandSum += d.sum;
+                h += `<tr class="hover:bg-slate-50 border-b border-slate-100 last:border-0">
+                        <td class="font-bold text-slate-700">${k}</td>
+                        <td class="text-center text-emerald-600 font-mono">${formatNumber(d.u3)}</td>
+                        <td class="text-center text-amber-600 font-mono">${formatNumber(d.b35)}</td>
+                        <td class="text-center text-rose-600 font-bold font-mono">${formatNumber(d.o5)}</td>
+                        <td class="text-center font-bold bg-slate-50 font-mono">${formatNumber(d.tot)}</td>
+                        <td class="text-center font-bold text-indigo-600">${(d.tot>0 ? d.sum/d.tot : 0).toFixed(1)}</td>
+                      </tr>`; 
+            });
+
+            const pctU3 = grandTot > 0 ? ((grandU3/grandTot)*100).toFixed(1) : 0;
+            const pctB35 = grandTot > 0 ? ((grandB35/grandTot)*100).toFixed(1) : 0;
+            const pctO5 = grandTot > 0 ? ((grandO5/grandTot)*100).toFixed(1) : 0;
+            const grandAvg = grandTot > 0 ? (grandSum/grandTot).toFixed(1) : 0;
+
+            h += `</tbody><tfoot class="sticky bottom-0 bg-slate-100 shadow-[0_-2px_5px_-2px_rgba(0,0,0,0.05)] border-t-2 border-slate-300">
+                    <tr>
+                        <td class="font-black text-slate-800 uppercase text-[10px] py-2">TOTAL</td>
+                        <td class="text-center py-2">
+                            <div class="font-black text-emerald-700 font-mono">${formatNumber(grandU3)}</div>
+                            <div class="text-[9px] font-bold text-slate-500">${pctU3}%</div>
+                        </td>
+                        <td class="text-center py-2">
+                            <div class="font-black text-amber-700 font-mono">${formatNumber(grandB35)}</div>
+                            <div class="text-[9px] font-bold text-slate-500">${pctB35}%</div>
+                        </td>
+                        <td class="text-center py-2">
+                            <div class="font-black text-rose-700 font-mono">${formatNumber(grandO5)}</div>
+                            <div class="text-[9px] font-bold text-slate-500">${pctO5}%</div>
+                        </td>
+                        <td class="text-center py-2 bg-slate-200">
+                            <div class="font-black text-slate-900 font-mono">${formatNumber(grandTot)}</div>
+                            <div class="text-[9px] font-bold text-slate-600">100%</div>
+                        </td>
+                        <td class="text-center py-2 bg-indigo-100 font-black text-indigo-800">${grandAvg}</td>
+                    </tr>
+                  </tfoot>`;
+            if(tDest) tDest.innerHTML = h;
         };
 
         window.changeMatrixPage = function(delta) {
