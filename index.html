@@ -828,8 +828,8 @@
                                     <th class="text-left group-col w-16">Batch</th>
                                     <th class="text-left group-col">Origin</th>
                                     <th class="text-left">SMU</th>
-                                    <th class="text-left">Flight</th>
-                                    <th class="text-left w-20">Tgl Flight</th>
+                                    <th class="text-left">Flight/Kapal</th>
+                                    <th class="text-left w-20">Tgl Berangkat</th>
                                     <th class="text-center w-16">SLA (H)</th>
                                     <th class="text-center w-16">Total MB</th>
                                     <th class="text-right w-16">Total Pcs</th>
@@ -957,13 +957,17 @@
         // Helper untuk format Jam menjadi pasti HH:mm
         const formatTimeHHMM = (timeStr) => {
             if (!timeStr) return '-';
-            const parts = timeStr.toString().split(':');
+            
+            // Mengganti salah ketik titik koma (;) menjadi titik dua (:)
+            let normalizedTimeStr = timeStr.toString().replace(';', ':');
+            
+            const parts = normalizedTimeStr.split(':');
             if (parts.length >= 2) {
                 const h = parts[0].trim().padStart(2, '0');
                 const m = parts[1].trim().substring(0, 2).padStart(2, '0');
                 return `${h}:${m}`;
             }
-            return timeStr;
+            return normalizedTimeStr;
         };
 
         // NEW HELPER: Get Monday of a given date (for Weekly Matrix)
