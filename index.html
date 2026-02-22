@@ -746,7 +746,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="fresh-card p-5 flex flex-col">
                     <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-4 flex items-center gap-2"><i class="fa-solid fa-building text-slate-300"></i> Top Vendor</h4>
-                    <div class="flex-grow min-h-[180px]"><canvas id="chartVendor"></canvas></div>
+                    <div class="w-full relative transition-all duration-300"><canvas id="chartVendor"></canvas></div>
                 </div>
                 <div class="fresh-card p-5 flex flex-col">
                     <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-4 flex items-center gap-2">
@@ -756,32 +756,21 @@
                         </span> 
                         Origin Dist.
                     </h4>
-                    <div class="flex-grow min-h-[180px]"><canvas id="chartOrigin"></canvas></div>
+                    <div class="w-full relative transition-all duration-300"><canvas id="chartOrigin"></canvas></div>
                 </div>
                 <div class="fresh-card p-5 flex flex-col">
                     <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-4 flex items-center gap-2"><i class="fa-solid fa-location-dot text-slate-300"></i> Destinasi Dist.</h4>
-                    <div class="flex-grow min-h-[180px]"><canvas id="chartDestinasi"></canvas></div>
+                    <div class="w-full relative transition-all duration-300"><canvas id="chartDestinasi"></canvas></div>
                 </div>
             </div>
             
-            <!-- 4b. REJECTED TABLE -->
-            <div class="fresh-card overflow-hidden border-l-4 border-red-500">
-                <div class="px-5 py-4 border-b border-slate-100 flex items-center gap-2 bg-red-50/20">
-                    <div class="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center text-red-600"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                    <h3 class="text-[11px] font-bold text-red-600 uppercase">Exception Monitoring: Tolakan Bandara</h3>
-                </div>
-                <div class="overflow-x-auto custom-scrollbar max-h-80">
-                    <table class="fresh-table w-full" id="rejectedTable"></table>
-                </div>
-            </div>
-
             <!-- 5a. SLA BREAKDOWN -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-                <div class="fresh-card overflow-hidden lg:col-span-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                <div class="fresh-card overflow-hidden">
                     <div class="px-5 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span><h3 class="text-[11px] font-bold text-slate-600 uppercase">SLA by Vendor</h3></div>
                     <div class="overflow-x-auto custom-scrollbar max-h-64"><table class="fresh-table w-full" id="slaVendorTable"></table></div>
                 </div>
-                <div class="fresh-card overflow-hidden lg:col-span-4">
+                <div class="fresh-card overflow-hidden">
                     <div class="px-5 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span><h3 class="text-[11px] font-bold text-slate-600 uppercase">SLA by Destination</h3></div>
                     <div class="overflow-x-auto custom-scrollbar max-h-64"><table class="fresh-table w-full" id="slaDestTable"></table></div>
                 </div>
