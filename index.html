@@ -614,6 +614,16 @@
                             <div id="destMenu" class="hidden absolute top-full right-0 left-auto md:left-0 md:right-auto w-48 bg-white border border-slate-200 shadow-xl rounded-xl mt-1 z-[60] max-h-60 overflow-y-auto p-2 flex flex-col gap-1"></div>
                         </div>
 
+                        <!-- Vendor -->
+                        <div class="col-span-3 md:w-24 lg:w-28 shrink-0 relative">
+                            <span class="input-label truncate">Vendor</span>
+                            <button onclick="window.toggleMulti('vendorMenu')" class="fresh-input w-full text-left flex justify-between items-center bg-white h-[38px] relative z-10 group px-2 sm:px-3">
+                                <span id="vendorLabel" class="truncate text-[10px] sm:text-[11px] text-slate-600">Semua</span>
+                                <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 group-hover:text-indigo-500"></i>
+                            </button>
+                            <div id="vendorMenu" class="hidden absolute top-full right-0 left-auto md:left-0 md:right-auto w-48 bg-white border border-slate-200 shadow-xl rounded-xl mt-1 z-[60] max-h-60 overflow-y-auto p-2 flex flex-col gap-1"></div>
+                        </div>
+
                         <!-- Layanan -->
                         <div class="col-span-4 md:flex-1 min-w-[80px] overflow-hidden shrink-0">
                             <span class="input-label truncate">Layanan</span>
@@ -1199,11 +1209,12 @@
             window.populateFilters();
             window.renderRejectedTable();
             
-            const dates = window.rawData.map(d => d._date).sort((a,b) => a-b);
-            if (dates.length > 0) {
-                document.getElementById('filterStartDate').value = formatInputDate(dates[0]);
-                document.getElementById('filterEndDate').value = formatInputDate(dates[dates.length-1]);
-            }
+            // Setel filter tanggal bawaan: 30 Hari Terakhir
+            const endDate = new Date();
+            const startDate = new Date();
+            startDate.setDate(endDate.getDate() - 30);
+            document.getElementById('filterStartDate').value = formatInputDate(startDate);
+            document.getElementById('filterEndDate').value = formatInputDate(endDate);
 
             window.applyFilters();
         };
@@ -1294,6 +1305,7 @@
 
             populateMulti('originMenu', 'originLabel', '_origin');
             populateMulti('destMenu', 'destLabel', '_dest');
+            populateMulti('vendorMenu', 'vendorLabel', '_vendor');
 
             // Populate delete destinasi dropdown
             const deleteDestSelect = document.getElementById('deleteDestInput');
@@ -1314,7 +1326,7 @@
 
         window.toggleMulti = (id) => {
             const el = document.getElementById(id);
-            ['originMenu', 'destMenu'].forEach(m => {
+            ['originMenu', 'destMenu', 'vendorMenu'].forEach(m => {
                 if(m !== id) document.getElementById(m).classList.add('hidden');
             });
             el.classList.toggle('hidden');
@@ -1324,6 +1336,7 @@
             if (!e.target.closest('.relative')) {
                 document.getElementById('originMenu').classList.add('hidden');
                 document.getElementById('destMenu').classList.add('hidden');
+                document.getElementById('vendorMenu').classList.add('hidden');
             }
         });
 
@@ -1386,23 +1399,25 @@
         };
 
         window.resetFilters = function() {
-            ['originMenu', 'destMenu'].forEach(id => {
+            ['originMenu', 'destMenu', 'vendorMenu'].forEach(id => {
                 const inputs = document.querySelectorAll(`#${id} input`);
                 inputs.forEach(i => i.checked = true);
-                const labelId = id === 'originMenu' ? 'originLabel' : 'destLabel';
+                const labelId = id === 'originMenu' ? 'originLabel' : (id === 'destMenu' ? 'destLabel' : 'vendorLabel');
                 window.updateMultiLabel(id, labelId);
             });
             
             document.getElementById('globalSearch').value = '';
             window.selectedService = 'ALL';
             window.updateToggleVisuals();
-            const dates = window.rawData.map(d => d._date).sort((a,b) => a-b);
-            if(dates.length) {
-                document.getElementById('filterStartDate').value = formatInputDate(dates[0]);
-                document.getElementById('filterEndDate').value = formatInputDate(dates[dates.length-1]);
-            }
+            
+            const endDate = new Date();
+            const startDate = new Date();
+            startDate.setDate(endDate.getDate() - 30);
+            document.getElementById('filterStartDate').value = formatInputDate(startDate);
+            document.getElementById('filterEndDate').value = formatInputDate(endDate);
+            
             window.applyFilters();
-            window.showToast("Reset Complete", "info");
+            window.showToast("Reset Selesai", "info");
         };
 
         window.applyFilters = function() {
@@ -1422,6 +1437,7 @@
 
             const fOrg = window.getSelectedValues('originMenu');
             const fDst = window.getSelectedValues('destMenu');
+            const fVen = window.getSelectedValues('vendorMenu');
             const search = document.getElementById('globalSearch').value.toUpperCase();
 
             window.filteredData = window.rawData.filter(d => {
@@ -1430,6 +1446,7 @@
                 const dateOk = (!sDate || d._date >= sDate) && (!eDate || d._date <= eDate);
                 const orgOk = fOrg.includes('ALL') || fOrg.includes(d._origin);
                 const dstOk = fDst.includes('ALL') || fDst.includes(d._dest);
+                const venOk = fVen.includes('ALL') || fVen.includes(d._vendor);
                 const svcOk = window.selectedService === 'ALL' || d._service === window.selectedService;
                 
                 let searchOk = true;
@@ -1441,7 +1458,7 @@
                     searchOk = haystack.includes(search);
                 }
                 
-                return dateOk && orgOk && dstOk && svcOk && searchOk;
+                return dateOk && orgOk && dstOk && venOk && svcOk && searchOk;
             });
 
             window.currentPage = 1;
@@ -1505,13 +1522,15 @@
                 
                 const fOrg = window.getSelectedValues('originMenu');
                 const fDst = window.getSelectedValues('destMenu');
+                const fVen = window.getSelectedValues('vendorMenu');
 
                 const prevData = window.rawData.filter(d => {
                      const dateOk = d._date >= prevStartDate && d._date <= prevEndDate;
                      const orgOk = fOrg.includes('ALL') || fOrg.includes(d._origin);
                      const dstOk = fDst.includes('ALL') || fDst.includes(d._dest);
+                     const venOk = fVen.includes('ALL') || fVen.includes(d._vendor);
                      const svcOk = window.selectedService === 'ALL' || d._service === window.selectedService;
-                     return dateOk && orgOk && dstOk && svcOk;
+                     return dateOk && orgOk && dstOk && venOk && svcOk;
                 });
                 
                 prevWeight = prevData.reduce((s,d)=>s+d._weight,0);
