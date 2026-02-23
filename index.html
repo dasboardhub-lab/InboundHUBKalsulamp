@@ -579,7 +579,7 @@
                         <!-- Left: Search & Services -->
                         <div class="w-full xl:flex-1 flex flex-col md:flex-row gap-4 items-end">
                             <div class="relative w-full md:w-64 group">
-                                <span class="input-label">Search</span>
+                                <span class="input-label">Pencarian Global (SMU, Berangkat, Vendor)</span>
                                 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-[34px] text-slate-400 text-xs group-focus-within:text-indigo-500 transition-colors"></i>
                                 <input type="text" id="globalSearch" placeholder="Cari semua data..." class="fresh-input w-full pl-9 bg-white" oninput="window.applyFilters()">
                             </div>
@@ -707,7 +707,7 @@
             <!-- 3. VOLUME CHART -->
             <div class="fresh-card p-6">
                 <div class="flex justify-between items-center mb-6">
-                    <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600"><i class="fa-solid fa-chart-area"></i></div><h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Volume Trend</h3></div>
+                    <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600"><i class="fa-solid fa-chart-area"></i></div><h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Volume Trend (Total Pcs)</h3></div>
                     <div class="flex bg-slate-100 p-1 rounded-xl">
                         <button id="btnDaily" onclick="window.setMainChartMode('daily')" class="px-6 py-2 rounded-lg text-[10px] font-bold transition-all bg-slate-900 text-white shadow-md">Daily</button>
                         <button id="btnMonthly" onclick="window.setMainChartMode('monthly')" class="px-6 py-2 rounded-lg text-[10px] font-bold transition-all bg-white text-slate-600 hover:bg-slate-50">Monthly</button>
@@ -767,13 +767,13 @@
             
             <!-- 5a. SLA BREAKDOWN -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-                <div class="fresh-card overflow-hidden lg:col-span-8">
+                <div class="fresh-card overflow-hidden lg:col-span-8 flex flex-col">
                     <div class="px-5 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span><h3 class="text-[11px] font-bold text-slate-600 uppercase">SLA by Vendor</h3></div>
-                    <div class="overflow-x-auto custom-scrollbar max-h-64"><table class="fresh-table w-full" id="slaVendorTable"></table></div>
+                    <div class="overflow-auto custom-scrollbar max-h-[400px]"><table class="fresh-table w-full relative" id="slaVendorTable"></table></div>
                 </div>
-                <div class="fresh-card overflow-hidden lg:col-span-4">
+                <div class="fresh-card overflow-hidden lg:col-span-4 flex flex-col">
                     <div class="px-5 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span><h3 class="text-[11px] font-bold text-slate-600 uppercase">SLA by Destination</h3></div>
-                    <div class="overflow-x-auto custom-scrollbar max-h-64"><table class="fresh-table w-full" id="slaDestTable"></table></div>
+                    <div class="overflow-auto custom-scrollbar max-h-[400px]"><table class="fresh-table w-full relative" id="slaDestTable"></table></div>
                 </div>
             </div>
 
@@ -1215,11 +1215,12 @@
             window.populateFilters();
             window.renderRejectedTable();
             
-            const dates = window.rawData.map(d => d._date).sort((a,b) => a-b);
-            if (dates.length > 0) {
-                document.getElementById('filterStartDate').value = formatInputDate(dates[0]);
-                document.getElementById('filterEndDate').value = formatInputDate(dates[dates.length-1]);
-            }
+            // Setel filter tanggal bawaan: 30 Hari Terakhir dari hari ini
+            const endDate = new Date();
+            const startDate = new Date();
+            startDate.setDate(endDate.getDate() - 30);
+            document.getElementById('filterStartDate').value = formatInputDate(startDate);
+            document.getElementById('filterEndDate').value = formatInputDate(endDate);
 
             window.applyFilters();
         };
@@ -1414,11 +1415,14 @@
             document.getElementById('globalSearch').value = '';
             window.selectedService = 'ALL';
             window.updateToggleVisuals();
-            const dates = window.rawData.map(d => d._date).sort((a,b) => a-b);
-            if(dates.length) {
-                document.getElementById('filterStartDate').value = formatInputDate(dates[0]);
-                document.getElementById('filterEndDate').value = formatInputDate(dates[dates.length-1]);
-            }
+            
+            // Setel filter tanggal bawaan: 30 Hari Terakhir dari hari ini
+            const endDate = new Date();
+            const startDate = new Date();
+            startDate.setDate(endDate.getDate() - 30);
+            document.getElementById('filterStartDate').value = formatInputDate(startDate);
+            document.getElementById('filterEndDate').value = formatInputDate(endDate);
+            
             window.applyFilters();
             window.showToast("Reset Complete", "info");
         };
@@ -2200,9 +2204,14 @@
                         <th class="text-center text-indigo-600 bg-indigo-50">Avg</th>
                     </tr></thead><tbody>`;
 
+            // Hitung Grand Total dari keseluruhan data terlebih dahulu
+            Object.keys(agg).forEach(k => {
+                const d = agg[k];
+                grandU3 += d.u3; grandB35 += d.b35; grandO5 += d.o5; grandTot += d.tot; grandSum += d.sum;
+            });
+
             Object.keys(agg).sort((a,b) => agg[b].tot - agg[a].tot).forEach(k => { 
                 const d = agg[k]; 
-                grandU3 += d.u3; grandB35 += d.b35; grandO5 += d.o5; grandTot += d.tot; grandSum += d.sum;
                 h += `<tr class="hover:bg-slate-50 border-b border-slate-100 last:border-0">
                         <td class="font-bold text-slate-700">${k}</td>
                         <td class="text-center text-emerald-600 font-mono">${formatNumber(d.u3)}</td>
