@@ -446,8 +446,8 @@
                 <input type="password" id="passwordInput" class="w-full text-center py-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-indigo-500 outline-none transition-all text-sm font-mono tracking-[0.5em]" placeholder="••••••" onkeypress="window.handleEnter(event)">
             </div>
             <div class="grid grid-cols-2 gap-3">
-                <button onclick="window.closePasswordModal()" class="py-2.5 rounded-xl border border-slate-200 text-slate-500 text-xs font-bold hover:bg-slate-50">Cancel</button>
-                <button onclick="window.submitPassword()" class="py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 shadow-lg">Verify</button>
+                <button onclick="window.closePasswordModal()" class="py-2.5 rounded-xl border border-slate-200 text-slate-500 text-xs font-bold hover:bg-slate-50">Batal</button>
+                <button onclick="window.submitPassword()" class="py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 shadow-lg">Verifikasi</button>
             </div>
         </div>
     </div>
@@ -565,8 +565,8 @@
             <div class="w-24 h-24 bg-white rounded-3xl flex items-center justify-center border-2 border-dashed border-indigo-200 shadow-xl shadow-indigo-100 mx-auto mb-6">
                 <i class="fa-solid fa-satellite-dish text-3xl text-indigo-300 animate-pulse"></i>
             </div>
-            <h2 class="text-lg font-bold text-slate-800">Connecting to Cloud...</h2>
-            <p class="text-xs text-slate-500 mt-2 font-medium">Fetching inbound data from database.</p>
+            <h2 class="text-lg font-bold text-slate-800">Menghubungkan ke Cloud...</h2>
+            <p class="text-xs text-slate-500 mt-2 font-medium">Mengambil data dari database.</p>
         </div>
 
         <!-- DASHBOARD CONTENT -->
@@ -574,70 +574,71 @@
             
             <!-- 1. FILTERS & CONTROLS (STICKY BOX) -->
             <div class="sticky-filter-wrapper">
-                <div class="fresh-card p-3 sm:p-4">
-                    <div class="grid grid-cols-12 md:flex md:flex-row md:flex-nowrap gap-3 items-end w-full">
-                        
-                        <!-- Search -->
-                        <div class="col-span-6 md:w-36 lg:w-48 shrink-0 relative group">
-                            <span class="input-label truncate">Pencarian Global</span>
-                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-[34px] text-slate-400 text-[10px] group-focus-within:text-indigo-500 transition-colors"></i>
-                            <input type="text" id="globalSearch" placeholder="Cari data..." class="fresh-input w-full pl-8 bg-white text-[11px]" oninput="window.applyFilters()">
-                        </div>
-
-                        <!-- Date Range -->
-                        <div class="col-span-6 md:w-auto shrink-0">
-                            <span class="input-label truncate">Rentang Tanggal</span>
-                            <div class="flex items-center bg-white rounded-xl border border-slate-200 p-1 shadow-sm h-[38px] justify-between">
-                                <input type="date" id="filterStartDate" class="text-[10px] sm:text-[11px] font-semibold text-slate-600 px-0.5 outline-none w-[45%] md:w-24 bg-transparent" onchange="window.applyFilters()">
-                                <span class="text-slate-300 text-[9px] mx-0.5 font-bold">SD</span>
-                                <input type="date" id="filterEndDate" class="text-[10px] sm:text-[11px] font-semibold text-slate-600 px-0.5 outline-none w-[45%] md:w-24 bg-transparent" onchange="window.applyFilters()">
+                <div class="fresh-card p-5">
+                    <div class="flex flex-col xl:flex-row gap-5 justify-between items-start xl:items-center">
+                        <!-- Left: Search & Services -->
+                        <div class="w-full xl:flex-1 flex flex-col md:flex-row gap-4 items-end">
+                            <div class="relative w-full md:w-64 group">
+                                <span class="input-label">Pencarian Global (SMU, Berangkat, Vendor)</span>
+                                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-[34px] text-slate-400 text-xs group-focus-within:text-indigo-500 transition-colors"></i>
+                                <input type="text" id="globalSearch" placeholder="Cari semua data..." class="fresh-input w-full pl-9 bg-white" oninput="window.applyFilters()">
+                            </div>
+                            <div class="w-full">
+                                <span class="input-label">Layanan</span>
+                                <div class="flex items-center gap-1 overflow-x-auto no-scrollbar pb-1 h-[38px]" id="serviceToggleContainer"></div>
                             </div>
                         </div>
 
-                        <!-- Origin -->
-                        <div class="col-span-3 md:w-24 lg:w-28 shrink-0 relative">
-                            <span class="input-label truncate">Origin</span>
-                            <button onclick="window.toggleMulti('originMenu')" class="fresh-input w-full text-left flex justify-between items-center bg-white h-[38px] relative z-10 group px-2 sm:px-3">
-                                <span id="originLabel" class="truncate text-[10px] sm:text-[11px] text-slate-600">Semua</span>
-                                <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 group-hover:text-indigo-500"></i>
-                            </button>
-                            <div id="originMenu" class="hidden absolute top-full left-0 w-48 bg-white border border-slate-200 shadow-xl rounded-xl mt-1 z-[60] max-h-60 overflow-y-auto p-2 flex flex-col gap-1"></div>
-                        </div>
+                        <!-- Right: Filters -->
+                        <div class="w-full xl:w-auto flex flex-wrap gap-3 justify-end items-end">
+                            <!-- Date Range -->
+                            <div>
+                                <span class="input-label">Rentang Tanggal</span>
+                                <div class="flex items-center bg-white rounded-xl border border-slate-200 p-1 shadow-sm h-[38px] justify-between">
+                                    <input type="date" id="filterStartDate" class="text-[10px] sm:text-[11px] font-semibold text-slate-600 px-0.5 outline-none w-[45%] md:w-24 bg-transparent" onchange="window.applyFilters()">
+                                    <span class="text-slate-300 text-[9px] mx-0.5 font-bold">SD</span>
+                                    <input type="date" id="filterEndDate" class="text-[10px] sm:text-[11px] font-semibold text-slate-600 px-0.5 outline-none w-[45%] md:w-24 bg-transparent" onchange="window.applyFilters()">
+                                </div>
+                            </div>
 
-                        <!-- Destinasi -->
-                        <div class="col-span-3 md:w-24 lg:w-28 shrink-0 relative">
-                            <span class="input-label truncate">Destinasi</span>
-                            <button onclick="window.toggleMulti('destMenu')" class="fresh-input w-full text-left flex justify-between items-center bg-white h-[38px] relative z-10 group px-2 sm:px-3">
-                                <span id="destLabel" class="truncate text-[10px] sm:text-[11px] text-slate-600">Semua</span>
-                                <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 group-hover:text-indigo-500"></i>
-                            </button>
-                            <div id="destMenu" class="hidden absolute top-full right-0 left-auto md:left-0 md:right-auto w-48 bg-white border border-slate-200 shadow-xl rounded-xl mt-1 z-[60] max-h-60 overflow-y-auto p-2 flex flex-col gap-1"></div>
-                        </div>
+                            <!-- Origin -->
+                            <div class="relative w-24 lg:w-28 shrink-0">
+                                <span class="input-label truncate">Origin</span>
+                                <button onclick="window.toggleMulti('originMenu')" class="fresh-input w-full text-left flex justify-between items-center bg-white h-[38px] relative z-10 group px-2 sm:px-3">
+                                    <span id="originLabel" class="truncate text-[10px] sm:text-[11px] text-slate-600">Semua</span>
+                                    <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 group-hover:text-indigo-500"></i>
+                                </button>
+                                <div id="originMenu" class="hidden absolute top-full left-0 w-48 bg-white border border-slate-200 shadow-xl rounded-xl mt-1 z-[60] max-h-60 overflow-y-auto p-2 flex flex-col gap-1"></div>
+                            </div>
 
-                        <!-- Vendor -->
-                        <div class="col-span-3 md:w-24 lg:w-28 shrink-0 relative">
-                            <span class="input-label truncate">Vendor</span>
-                            <button onclick="window.toggleMulti('vendorMenu')" class="fresh-input w-full text-left flex justify-between items-center bg-white h-[38px] relative z-10 group px-2 sm:px-3">
-                                <span id="vendorLabel" class="truncate text-[10px] sm:text-[11px] text-slate-600">Semua</span>
-                                <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 group-hover:text-indigo-500"></i>
-                            </button>
-                            <div id="vendorMenu" class="hidden absolute top-full right-0 left-auto md:left-0 md:right-auto w-48 bg-white border border-slate-200 shadow-xl rounded-xl mt-1 z-[60] max-h-60 overflow-y-auto p-2 flex flex-col gap-1"></div>
-                        </div>
+                            <!-- Destinasi -->
+                            <div class="relative w-24 lg:w-28 shrink-0">
+                                <span class="input-label truncate">Destinasi</span>
+                                <button onclick="window.toggleMulti('destMenu')" class="fresh-input w-full text-left flex justify-between items-center bg-white h-[38px] relative z-10 group px-2 sm:px-3">
+                                    <span id="destLabel" class="truncate text-[10px] sm:text-[11px] text-slate-600">Semua</span>
+                                    <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 group-hover:text-indigo-500"></i>
+                                </button>
+                                <div id="destMenu" class="hidden absolute top-full right-0 left-auto md:left-0 md:right-auto w-48 bg-white border border-slate-200 shadow-xl rounded-xl mt-1 z-[60] max-h-60 overflow-y-auto p-2 flex flex-col gap-1"></div>
+                            </div>
 
-                        <!-- Layanan -->
-                        <div class="col-span-4 md:flex-1 min-w-[80px] overflow-hidden shrink-0">
-                            <span class="input-label truncate">Layanan</span>
-                            <div class="flex items-center gap-1 overflow-x-auto no-scrollbar pb-1 h-[38px]" id="serviceToggleContainer"></div>
-                        </div>
+                            <!-- Vendor -->
+                            <div class="relative w-24 lg:w-28 shrink-0">
+                                <span class="input-label truncate">Vendor</span>
+                                <button onclick="window.toggleMulti('vendorMenu')" class="fresh-input w-full text-left flex justify-between items-center bg-white h-[38px] relative z-10 group px-2 sm:px-3">
+                                    <span id="vendorLabel" class="truncate text-[10px] sm:text-[11px] text-slate-600">Semua</span>
+                                    <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 group-hover:text-indigo-500"></i>
+                                </button>
+                                <div id="vendorMenu" class="hidden absolute top-full right-0 left-auto md:left-0 md:right-auto w-48 bg-white border border-slate-200 shadow-xl rounded-xl mt-1 z-[60] max-h-60 overflow-y-auto p-2 flex flex-col gap-1"></div>
+                            </div>
 
-                        <!-- Reset -->
-                        <div class="col-span-2 md:w-[38px] shrink-0">
-                            <span class="input-label hidden md:block">&nbsp;</span>
-                            <button onclick="window.resetFilters()" class="w-full md:w-[38px] h-[38px] flex items-center justify-center bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:text-indigo-600 text-slate-400 transition-all shadow-sm" title="Reset Filters">
-                                <i class="fa-solid fa-arrows-rotate text-xs"></i>
-                            </button>
+                            <!-- Reset -->
+                            <div class="w-[38px] shrink-0">
+                                <span class="input-label hidden md:block">&nbsp;</span>
+                                <button onclick="window.resetFilters()" class="w-full md:w-[38px] h-[38px] flex items-center justify-center bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:text-indigo-600 text-slate-400 transition-all shadow-sm" title="Reset Filters">
+                                    <i class="fa-solid fa-arrows-rotate text-xs"></i>
+                                </button>
+                            </div>
                         </div>
-                        
                     </div>
                 </div>
             </div>
@@ -706,7 +707,7 @@
             <!-- 3. VOLUME CHART -->
             <div class="fresh-card p-6">
                 <div class="flex justify-between items-center mb-6">
-                    <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600"><i class="fa-solid fa-chart-area"></i></div><h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Volume Trend</h3></div>
+                    <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600"><i class="fa-solid fa-chart-area"></i></div><h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Volume Trend (Total Pcs)</h3></div>
                     <div class="flex bg-slate-100 p-1 rounded-xl">
                         <button id="btnDaily" onclick="window.setMainChartMode('daily')" class="px-6 py-2 rounded-lg text-[10px] font-bold transition-all bg-slate-900 text-white shadow-md">Daily</button>
                         <button id="btnMonthly" onclick="window.setMainChartMode('monthly')" class="px-6 py-2 rounded-lg text-[10px] font-bold transition-all bg-white text-slate-600 hover:bg-slate-50">Monthly</button>
@@ -722,7 +723,7 @@
                     <div class="flex justify-between items-center mb-6">
                         <div class="flex items-center gap-3">
                             <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600"><i class="fa-regular fa-clock"></i></div>
-                            <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Tren Jam Inbound</h3>
+                            <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Tren Jam Inbound (Qty Pcs)</h3>
                         </div>
                     </div>
                     <div class="h-60 w-full relative"><canvas id="timeChart"></canvas></div>
@@ -746,7 +747,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="fresh-card p-5 flex flex-col">
                     <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-4 flex items-center gap-2"><i class="fa-solid fa-building text-slate-300"></i> Top Vendor</h4>
-                    <div class="w-full relative transition-all duration-300"><canvas id="chartVendor"></canvas></div>
+                    <div class="flex-grow min-h-[180px] w-full relative transition-all duration-300"><canvas id="chartVendor"></canvas></div>
                 </div>
                 <div class="fresh-card p-5 flex flex-col">
                     <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-4 flex items-center gap-2">
@@ -756,21 +757,21 @@
                         </span> 
                         Origin Dist.
                     </h4>
-                    <div class="w-full relative transition-all duration-300"><canvas id="chartOrigin"></canvas></div>
+                    <div class="flex-grow min-h-[180px] w-full relative transition-all duration-300"><canvas id="chartOrigin"></canvas></div>
                 </div>
                 <div class="fresh-card p-5 flex flex-col">
                     <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-4 flex items-center gap-2"><i class="fa-solid fa-location-dot text-slate-300"></i> Destinasi Dist.</h4>
-                    <div class="w-full relative transition-all duration-300"><canvas id="chartDestinasi"></canvas></div>
+                    <div class="flex-grow min-h-[180px] w-full relative transition-all duration-300"><canvas id="chartDestinasi"></canvas></div>
                 </div>
             </div>
             
             <!-- 5a. SLA BREAKDOWN -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                <div class="fresh-card overflow-hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                <div class="fresh-card overflow-hidden lg:col-span-8">
                     <div class="px-5 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span><h3 class="text-[11px] font-bold text-slate-600 uppercase">SLA by Vendor</h3></div>
                     <div class="overflow-x-auto custom-scrollbar max-h-64"><table class="fresh-table w-full" id="slaVendorTable"></table></div>
                 </div>
-                <div class="fresh-card overflow-hidden">
+                <div class="fresh-card overflow-hidden lg:col-span-4">
                     <div class="px-5 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span><h3 class="text-[11px] font-bold text-slate-600 uppercase">SLA by Destination</h3></div>
                     <div class="overflow-x-auto custom-scrollbar max-h-64"><table class="fresh-table w-full" id="slaDestTable"></table></div>
                 </div>
@@ -822,14 +823,15 @@
                             <thead class="sticky top-0 z-30 shadow-sm">
                                 <tr>
                                     <th class="text-center group-col w-24">Tgl Terima</th>
+                                    <th class="text-center group-col bg-indigo-50/50 text-indigo-700 w-24">Destinasi</th>
                                     <th class="text-left group-col w-16">Jam</th>
-                                    <th class="text-center bg-indigo-50 text-indigo-700 w-24 border-r border-slate-300">Destinasi</th>
                                     <th class="text-left group-col w-20">Tgl PA</th>
                                     <th class="text-left group-col w-16">Batch</th>
                                     <th class="text-left group-col">Origin</th>
                                     <th class="text-left">SMU</th>
-                                    <th class="text-left">Flight/Kapal</th>
+                                    <th class="text-left">Berangkat</th>
                                     <th class="text-left w-20">Tgl Berangkat</th>
+                                    <th class="text-left group-col">Vendor</th>
                                     <th class="text-center w-16">SLA (H)</th>
                                     <th class="text-center w-16">Total MB</th>
                                     <th class="text-right w-16">Total Pcs</th>
@@ -851,7 +853,7 @@
                             Bagshield
                         </h3>
                         <button onclick="window.copyBagseals()" class="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-2 py-1 rounded border border-indigo-100 transition shadow-sm">
-                            <i class="fa-regular fa-copy mr-1"></i> Salin bagshild
+                            <i class="fa-regular fa-copy mr-1"></i> Salin
                         </button>
                     </div>
                     <div class="overflow-y-auto custom-scrollbar flex-grow p-0">
@@ -1213,12 +1215,11 @@
             window.populateFilters();
             window.renderRejectedTable();
             
-            // Setel filter tanggal bawaan: 30 Hari Terakhir
-            const endDate = new Date();
-            const startDate = new Date();
-            startDate.setDate(endDate.getDate() - 30);
-            document.getElementById('filterStartDate').value = formatInputDate(startDate);
-            document.getElementById('filterEndDate').value = formatInputDate(endDate);
+            const dates = window.rawData.map(d => d._date).sort((a,b) => a-b);
+            if (dates.length > 0) {
+                document.getElementById('filterStartDate').value = formatInputDate(dates[0]);
+                document.getElementById('filterEndDate').value = formatInputDate(dates[dates.length-1]);
+            }
 
             window.applyFilters();
         };
@@ -1251,8 +1252,8 @@
                 <th class="text-left text-red-600 bg-red-50">Service</th>
                 <th class="text-left text-red-600 bg-red-50">Destinasi</th>
                 <th class="text-left text-red-600 bg-red-50">SMU</th>
-                <th class="text-left text-red-600 bg-red-50">Flight</th>
-                <th class="text-left text-red-600 bg-red-50">Tgl Flight</th>
+                <th class="text-left text-red-600 bg-red-50">Berangkat</th>
+                <th class="text-left text-red-600 bg-red-50">Tgl Berangkat</th>
                 <th class="text-left text-red-600 bg-red-50">ETD</th>
                 <th class="text-center text-red-600 bg-red-50">No Bagseals</th>
                 <th class="text-right text-red-600 bg-red-50">Berat (Kg)</th>
@@ -1413,15 +1414,13 @@
             document.getElementById('globalSearch').value = '';
             window.selectedService = 'ALL';
             window.updateToggleVisuals();
-            
-            const endDate = new Date();
-            const startDate = new Date();
-            startDate.setDate(endDate.getDate() - 30);
-            document.getElementById('filterStartDate').value = formatInputDate(startDate);
-            document.getElementById('filterEndDate').value = formatInputDate(endDate);
-            
+            const dates = window.rawData.map(d => d._date).sort((a,b) => a-b);
+            if(dates.length) {
+                document.getElementById('filterStartDate').value = formatInputDate(dates[0]);
+                document.getElementById('filterEndDate').value = formatInputDate(dates[dates.length-1]);
+            }
             window.applyFilters();
-            window.showToast("Reset Selesai", "info");
+            window.showToast("Reset Complete", "info");
         };
 
         window.applyFilters = function() {
@@ -1467,11 +1466,11 @@
 
             window.currentPage = 1;
             window.matrixPage = 1; 
-            updateDashboard();
-        }
+            window.updateDashboard();
+        };
 
         // --- DASHBOARD UPDATER ---
-        function updateDashboard() {
+        window.updateDashboard = function() {
             const fd = window.filteredData;
             const w = fd.reduce((a,b) => a+b._weight, 0);
             const p = fd.reduce((a,b) => a+b._pcs, 0); 
@@ -1553,7 +1552,7 @@
             window.renderMatrixTable();
             window.aggregateAndRenderTable();
             window.renderBagsealTable(); 
-        }
+        };
 
         window.updateDiff = function(id, current, previous) {
             const el = document.getElementById(id);
@@ -1596,20 +1595,13 @@
             tbody.innerHTML = html;
         };
 
-        // --- NEW: COPY BAGSEALS FUNCTION ---
-        // Funktioun fir d'Bagseals an de Clipboard ze kopéieren (Fallback Method)
         window.copyBagseals = function() {
             const bagseals = window.filteredData.map(d => d._mb).join('\n');
-            
-            // Benotzt Textarea als Fallback fir iFrame Ëmfeld
             const textArea = document.createElement("textarea");
             textArea.value = bagseals;
-            
-            // Vermeiden datt d'Säit scrollt
             textArea.style.top = "0";
             textArea.style.left = "0";
             textArea.style.position = "fixed";
-
             document.body.appendChild(textArea);
             textArea.focus();
             textArea.select();
@@ -1624,11 +1616,9 @@
             } catch (err) {
                 window.showToast("Terjadi kesalahan saat menyalin", "error");
             }
-
             document.body.removeChild(textArea);
         };
 
-        // --- NEW: DOWNLOAD CSV FUNCTION ---
         window.downloadManifestCSV = function() {
             if (!window.filteredData || window.filteredData.length === 0) {
                 window.showToast("Tidak ada data untuk diunduh", "info");
@@ -1637,11 +1627,10 @@
 
             const headers = [
                 "Tanggal Diterima", "Jam", "Destinasi", "Tanggal PA", "Batch",
-                "Origin", "SMU", "Flight", "Tanggal Flight", "SLA (Hari)",
+                "Origin", "SMU", "Berangkat", "Tanggal Berangkat", "SLA (Hari)",
                 "No Bagseals", "Berat (Kg)", "Pcs", "Vendor", "Service", "Note"
             ];
 
-            // Mapping raw filtered data (which is strictly 1 row per Bagseal)
             const csvRows = window.filteredData.map(d => {
                 return [
                     formatDate(d._date),
@@ -1681,7 +1670,6 @@
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
 
-            // 1. PRE-AGGREGATE: Menggabungkan MB dan Pcs untuk data dengan rincian persis sama
             let aggregatedList = [];
             window.filteredData.forEach(row => {
                 const existing = aggregatedList.find(d =>
@@ -1694,6 +1682,7 @@
                     d._smu === row._smu &&
                     d._flight === row._flight &&
                     d._tglFlight === row._tglFlight &&
+                    d._vendor === row._vendor &&
                     d._sla === row._sla
                 );
                 if (existing) {
@@ -1705,13 +1694,9 @@
             });
             window.aggregatedData = aggregatedList;
 
-            // 2. PIVOT SORTING: Date (Terbaru ke Terlama) -> Jam (Kecil ke Besar) -> Destinasi -> Dst
             aggregatedList.sort((a,b) => {
-                // Tanggal: Terbaru ke Terlama (DESC)
                 if(a._date.getTime() !== b._date.getTime()) return b._date - a._date;
-                // Jam: Kecil ke Besar (ASC)
                 if(a._jam !== b._jam) return a._jam.localeCompare(b._jam);
-                // Sisanya
                 if(a._dest !== b._dest) return a._dest < b._dest ? -1 : 1; 
                 if((a._dateOrigin?.getTime()||0) !== (b._dateOrigin?.getTime()||0)) return (a._dateOrigin?.getTime()||0) - (b._dateOrigin?.getTime()||0);
                 if(a._batch !== b._batch) return a._batch.localeCompare(b._batch);
@@ -1720,11 +1705,9 @@
                 return a._flight.localeCompare(b._flight);
             });
 
-            // 3. PAGINATION (Menampilkan 100 Data per halaman)
             const start = (window.currentPage - 1) * window.rowsPerPage;
             const pageData = aggregatedList.slice(start, start + window.rowsPerPage);
             
-            // 4. MEMBUAT DAFTAR BARIS RENDER (Menyisipkan Baris Total)
             let renderRows = [];
             for (let i = 0; i < pageData.length; i++) {
                 renderRows.push({ type: 'data', data: pageData[i], date: pageData[i]._date, jam: pageData[i]._jam });
@@ -1732,7 +1715,6 @@
                 const isLastInJam = (i === pageData.length - 1) || (pageData[i]._jam !== pageData[i+1]._jam) || (pageData[i]._date.getTime() !== pageData[i+1]._date.getTime());
                 const isLastInDate = (i === pageData.length - 1) || (pageData[i]._date.getTime() !== pageData[i+1]._date.getTime());
 
-                // Inject baris Total Jam
                 if (isLastInJam) {
                     const trueJamData = aggregatedList.filter(x => x._date.getTime() === pageData[i]._date.getTime() && x._jam === pageData[i]._jam);
                     const sumMb = trueJamData.reduce((s, x) => s + x._mb_count, 0);
@@ -1740,7 +1722,6 @@
                     renderRows.push({ type: 'total_jam', date: pageData[i]._date, jam: pageData[i]._jam, mb: sumMb, pcs: sumPcs });
                 }
 
-                // Inject baris Total Tanggal
                 if (isLastInDate) {
                     const trueDateData = aggregatedList.filter(x => x._date.getTime() === pageData[i]._date.getTime());
                     const sumMb = trueDateData.reduce((s, x) => s + x._mb_count, 0);
@@ -1749,21 +1730,18 @@
                 }
             }
 
-            // 5. MENGHITUNG ROW SPAN UNTUK PIVOT MERGING
             renderRows.forEach(r => {
                 r.spanDate = -1; r.spanJam = -1; r.spanDest = -1; r.spanPa = -1;
                 r.spanBatch = -1; r.spanOrigin = -1; r.spanSmu = -1; r.spanFlight = -1;
-                r.spanTglFlight = -1; r.spanSla = -1;
+                r.spanTglFlight = -1; r.spanVendor = -1; r.spanSla = -1;
             });
 
-            // Set default ke 0 (hidden) untuk baris total agar rowspan tidak aktif
             renderRows.forEach(r => {
                 if(r.type === 'total_date') { r.spanDate = 0; }
                 if(r.type === 'total_jam') { r.spanJam = 0; }
             });
 
             for (let i = 0; i < renderRows.length; i++) {
-                // Span Kolom Tanggal (Membentang melewati baris Total Jam)
                 if (renderRows[i].type !== 'total_date' && renderRows[i].spanDate === -1) {
                     let count = 1;
                     for (let j = i + 1; j < renderRows.length; j++) {
@@ -1775,7 +1753,6 @@
                     renderRows[i].spanDate = count;
                 }
 
-                // Span Kolom Lainnya (Hanya membentang di baris data yang persis)
                 if (renderRows[i].type === 'data') {
                     const calcDataSpan = (field, matchFn) => {
                         if (renderRows[i]['span'+field] === -1) {
@@ -1798,7 +1775,8 @@
                     const pmSmu = (a, b) => pmOrigin(a,b) && a._smu===b._smu;
                     const pmFlight = (a, b) => pmSmu(a,b) && a._flight===b._flight;
                     const pmTglFlight = (a, b) => pmFlight(a,b) && a._tglFlight===b._tglFlight;
-                    const pmSla = (a, b) => pmSmu(a,b) && a._sla===b._sla;
+                    const pmVendor = (a, b) => pmTglFlight(a,b) && a._vendor===b._vendor;
+                    const pmSla = (a, b) => pmVendor(a,b) && a._sla===b._sla;
 
                     calcDataSpan('Jam', pmJam);
                     calcDataSpan('Dest', pmDest);
@@ -1808,25 +1786,25 @@
                     calcDataSpan('Smu', pmSmu);
                     calcDataSpan('Flight', pmFlight);
                     calcDataSpan('TglFlight', pmTglFlight);
+                    calcDataSpan('Vendor', pmVendor);
                     calcDataSpan('Sla', pmSla);
                 }
             }
 
-            // 6. RENDER TABEL HTML
             renderRows.forEach(r => {
                 const tr = document.createElement('tr');
                 
                 if (r.type === 'total_date') {
                     tr.className = "bg-indigo-100 font-black text-indigo-900 border-b-2 border-indigo-300 shadow-sm";
                     tr.innerHTML = `
-                        <td colspan="10" class="text-right py-2 px-4 uppercase text-[11px] tracking-wide border-r border-indigo-200">Total Keseluruhan Tanggal ${formatDate(r.date)}</td>
+                        <td colspan="11" class="text-right py-2 px-4 uppercase text-[11px] tracking-wide border-r border-indigo-200">Total Keseluruhan Tanggal ${formatDate(r.date)}</td>
                         <td class="text-center font-mono text-indigo-800 border-r border-indigo-200">${formatNumber(r.mb)}</td>
                         <td class="text-right text-indigo-900 px-4">${formatNumber(r.pcs)}</td>
                     `;
                 } else if (r.type === 'total_jam') {
                     tr.className = "bg-slate-100 font-bold text-slate-700 border-y border-slate-300";
                     tr.innerHTML = `
-                        <td colspan="9" class="text-right py-1.5 px-4 uppercase text-[10px] tracking-wider border-r border-slate-300 text-slate-500">Total Jam ${r.jam}</td>
+                        <td colspan="10" class="text-right py-1.5 px-4 uppercase text-[10px] tracking-wider border-r border-slate-300 text-slate-500">Total Jam ${r.jam}</td>
                         <td class="text-center font-mono text-slate-700 border-r border-slate-300">${formatNumber(r.mb)}</td>
                         <td class="text-right text-slate-800 px-4">${formatNumber(r.pcs)}</td>
                     `;
@@ -1852,13 +1830,13 @@
                     addTd(d._smu, r.spanSmu, "text-slate-600 font-mono text-[11px] font-medium border-r border-slate-300 valign-middle bg-white group-col whitespace-nowrap");
                     addTd(d._flight, r.spanFlight, "text-left text-slate-900 font-bold border-r border-slate-300 bg-white group-col whitespace-nowrap");
                     addTd(d._tglFlight, r.spanTglFlight, "text-left text-slate-500 border-r border-slate-300 bg-white group-col whitespace-nowrap");
+                    addTd(d._vendor, r.spanVendor, "text-left text-slate-700 font-bold border-r border-slate-300 bg-white group-col whitespace-nowrap");
                     
                     if (r.spanSla > 0) {
                         const slaColor = d._sla > 3 ? 'text-rose-600 font-extrabold bg-rose-50' : 'text-emerald-600 font-extrabold bg-emerald-50';
                         addTd(d._sla, r.spanSla, `text-center border-r border-slate-300 group-col ${slaColor}`);
                     }
 
-                    // MB & Pcs merged cleanly
                     addTd(formatNumber(d._mb_count), 1, "text-center font-mono font-bold text-indigo-700 border-r border-slate-300 bg-indigo-50/30 group-col");
                     addTd(formatNumber(d._pcs), 1, "text-right font-black text-indigo-900 valign-middle bg-indigo-50/50 group-col");
                 }
@@ -1877,10 +1855,10 @@
             
             let dataToUse = window.filteredData;
 
-            // Jika mode monthly, abaikan filter rentang tanggal dan tampilkan 1 tahun berjalan
             if (window.currentChartMode === 'monthly') {
                 const fOrg = window.getSelectedValues('originMenu');
                 const fDst = window.getSelectedValues('destMenu');
+                const fVen = window.getSelectedValues('vendorMenu');
                 const search = document.getElementById('globalSearch').value.toUpperCase();
                 const currentYear = new Date().getFullYear();
 
@@ -1890,6 +1868,7 @@
                     const yearOk = d._date.getFullYear() === currentYear;
                     const orgOk = fOrg.includes('ALL') || fOrg.includes(d._origin);
                     const dstOk = fDst.includes('ALL') || fDst.includes(d._dest);
+                    const venOk = fVen.includes('ALL') || fVen.includes(d._vendor);
                     const svcOk = window.selectedService === 'ALL' || d._service === window.selectedService;
                     
                     let searchOk = true;
@@ -1901,7 +1880,7 @@
                         searchOk = haystack.includes(search);
                     }
                     
-                    return yearOk && orgOk && dstOk && svcOk && searchOk;
+                    return yearOk && orgOk && dstOk && venOk && svcOk && searchOk;
                 });
             }
 
@@ -1917,7 +1896,6 @@
                 agg[sortKey] = (agg[sortKey]||0) + d._pcs;
             });
             
-            // Memastikan 12 bulan selalu tampil di mode monthly untuk tahun berjalan
             if (window.currentChartMode === 'monthly') {
                 const currentYear = new Date().getFullYear();
                 for (let i = 1; i <= 12; i++) {
@@ -2023,7 +2001,6 @@
         window.renderBottomCharts = function() {
             const serviceColors = ['#10B981', '#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6'];
 
-            // 1. Ekstrak data dan cari yang terpanjang agar tinggi ketiganya seragam (Maksimal 15 Data)
             const aggVendor = {}; window.filteredData.forEach(d => aggVendor[d._vendor] = (aggVendor[d._vendor]||0) + d._pcs);
             const sVendor = Object.entries(aggVendor).sort((a,b)=>b[1]-a[1]).slice(0, 15);
 
@@ -2033,15 +2010,13 @@
             const aggDest = {}; window.filteredData.forEach(d => aggDest[d._dest] = (aggDest[d._dest]||0) + d._pcs);
             const sDest = Object.entries(aggDest).sort((a,b)=>b[1]-a[1]).slice(0, 15);
 
-            // 2. Tentukan tinggi wadah berdasarkan jumlah data terbanyak dari ketiga grafik
             const maxRows = Math.max(sVendor.length, sOrigin.length, sDest.length);
-            const dynamicHeight = Math.max(250, maxRows * 30); // Minimal 250px, selebihnya memanjang proporsional
+            const dynamicHeight = Math.max(250, maxRows * 30); 
 
             const renderBar = (id, dataArr, c) => {
                 if(window.chartInstances[id]) window.chartInstances[id].destroy();
                 const ctx = document.getElementById(id).getContext('2d');
                 
-                // Tinggi disamakan untuk semua agar saling menyesuaikan grid
                 ctx.canvas.parentNode.style.height = `${dynamicHeight}px`;
 
                 window.chartInstances[id] = new Chart(ctx, { 
@@ -2052,16 +2027,14 @@
                             data: dataArr.map(e=>e[1]), 
                             backgroundColor: c, 
                             borderRadius: 6,
-                            maxBarThickness: 60 // Melebar ke atas/bawah jika datanya sedikit (Misal cuma 3 vendor)
+                            maxBarThickness: 60 
                         }] 
                     }, 
                     options: { 
                         indexAxis: 'y', 
                         responsive: true, 
                         maintainAspectRatio: false, 
-                        layout: {
-                            padding: { right: 40 }
-                        },
+                        layout: { padding: { right: 40 } },
                         scales: { 
                             x: { display: false }, 
                             y: { grid: { display: false }, ticks: { font: { size: 10 } } } 
@@ -2097,11 +2070,9 @@
                     datasets: [{
                         data: sS.map(e => e[1]),
                         backgroundColor: serviceColors,
-                        // --- KODE PENGATURAN SERVICE SHARE ---
-                        borderWidth: 3,           // Mengatur ketebalan garis pembatas antar pilihan
-                        borderColor: '#ffffff',   // Warna garis pembatas (putih, menyatu dengan background)
-                        borderRadius: 15           // Mengatur seberapa melengkung sudut grafiknya
-                        // -------------------------------------
+                        borderWidth: 3,           
+                        borderColor: '#ffffff',   
+                        borderRadius: 15           
                     }]
                 },
                 options: {
@@ -2142,7 +2113,7 @@
         };
 
         window.renderSlaMatrices = function() {
-            // 1. SLA by VENDOR (Kolom = Vendor, Baris = Detail SLA)
+            // 1. SLA by VENDOR 
             const tVendor = document.getElementById('slaVendorTable');
             if(tVendor) tVendor.innerHTML = '';
             
@@ -2152,7 +2123,6 @@
                 let grandTotal = 0;
                 const slasSet = new Set();
 
-                // Kalkulasi Pcs ke dalam matriks dan hitung total vendor terlebih dahulu
                 window.filteredData.forEach(d => {
                     slasSet.add(d._sla);
                     if (!matrix[d._sla]) matrix[d._sla] = { total: 0 };
@@ -2163,25 +2133,21 @@
                 });
 
                 const slas = [...slasSet].sort((a,b) => a - b);
-                // Mengurutkan vendor berdasarkan total terbesar ke terkecil (Penting: mengubah urutan ke kiri-kanan)
                 const vendors = Object.keys(vendorTotals).sort((a, b) => vendorTotals[b] - vendorTotals[a]);
 
-                // Header
                 let hV = `<thead class="sticky top-0 bg-white z-10 shadow-sm"><tr>
                             <th class="text-center text-slate-500 w-16 border-r border-slate-200">SLA</th>`;
                 vendors.forEach(v => hV += `<th class="text-center text-slate-600 bg-slate-50 border-r border-slate-200 px-3 min-w-[80px]">${v}</th>`);
                 hV += `<th class="text-center text-slate-800 bg-slate-100 font-bold px-4">TOTAL</th></tr></thead><tbody>`;
 
-                // Body (Baris berdasarkan rentang SLA tunggal)
                 slas.forEach(sla => {
                     hV += `<tr class="hover:bg-slate-50 border-b border-slate-100 last:border-0">
                             <td class="text-center font-bold text-indigo-600 bg-indigo-50/50 border-r border-slate-200">${sla}</td>`;
                     vendors.forEach(v => {
-                        const val = matrix[sla][v] || 0; // Fallback ke 0 jika tidak ada
+                        const val = matrix[sla][v] || 0; 
                         hV += `<td class="text-center font-mono border-r border-slate-100 ${val > 0 ? 'text-slate-700' : 'text-slate-300'}">${val > 0 ? formatNumber(val) : '-'}</td>`;
                     });
                     
-                    // Kalkulasi persentase untuk kolom total di tiap baris SLA
                     const rowTotal = matrix[sla].total;
                     const rowPct = grandTotal > 0 ? ((rowTotal / grandTotal) * 100).toFixed(1) : 0;
                     
@@ -2191,7 +2157,6 @@
                            </td></tr>`;
                 });
 
-                // Footer (Total & Persentase)
                 hV += `</tbody><tfoot class="sticky bottom-0 bg-slate-100 shadow-[0_-2px_5px_-2px_rgba(0,0,0,0.05)] border-t-2 border-slate-300">
                         <tr><td class="text-center font-black text-slate-800 uppercase text-[10px] py-2 border-r border-slate-300">TOT</td>`;
                 vendors.forEach(v => {
@@ -2210,7 +2175,7 @@
                 tVendor.innerHTML = `<tr><td class="p-4 text-center text-slate-400">Tidak ada data</td></tr>`;
             }
 
-            // 2. SLA by DESTINASI (Kolom = Range SLA, Baris = Destinasi)
+            // 2. SLA by DESTINASI 
             const tDest = document.getElementById('slaDestTable'); 
             if(tDest) tDest.innerHTML = '';
             const agg = {}; 
