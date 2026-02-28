@@ -65,55 +65,23 @@
         .btn-gradient { 
             background: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%); 
             color: white; 
-            padding: 8px 16px; 
-            border-radius: 12px; 
-            font-weight: 600; 
-            font-size: 12px; 
             transition: all 0.3s; 
             box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25); 
-            border: 1px solid rgba(255,255,255,0.1); 
         }
-        .btn-gradient:hover { 
-            transform: translateY(-1px); 
-            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35); 
-            filter: brightness(1.1); 
-        }
-
         .btn-danger { 
             background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); 
             color: white; 
-            padding: 8px 16px; 
-            border-radius: 12px; 
-            font-weight: 600; 
-            font-size: 12px; 
             transition: all 0.3s; 
             box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25); 
-            border: 1px solid rgba(255,255,255,0.1); 
         }
-        .btn-danger:hover { 
-            transform: translateY(-1px); 
-            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35); 
-            filter: brightness(1.1); 
-        }
-
         .btn-warning { 
             background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); 
             color: white; 
-            padding: 8px 16px; 
-            border-radius: 12px; 
-            font-weight: 600; 
-            font-size: 12px; 
             transition: all 0.3s; 
             box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25); 
-            border: 1px solid rgba(255,255,255,0.1); 
-        }
-        .btn-warning:hover { 
-            transform: translateY(-1px); 
-            box-shadow: 0 6px 16px rgba(245, 158, 11, 0.35); 
-            filter: brightness(1.1); 
         }
 
-        /* Header Icon Buttons Hover Effect */
+        /* Header Icon Buttons - Paten dan stabil */
         .btn-header-icon {
             padding: 0 !important;
             width: 38px;
@@ -121,23 +89,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            border-radius: 12px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
-            white-space: nowrap;
+            flex-shrink: 0;
+            border: 1px solid rgba(255,255,255,0.1);
         }
         .btn-header-icon:hover {
-            width: auto;
-            padding: 0 16px !important;
-        }
-        .icon-btn-text {
-            max-width: 0;
-            opacity: 0;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .btn-header-icon:hover .icon-btn-text {
-            max-width: 150px;
-            opacity: 1;
-            margin-left: 8px;
+            transform: translateY(-1px);
+            filter: brightness(1.1);
         }
 
         /* Toggles */
@@ -187,6 +147,9 @@
         .valign-middle { vertical-align: middle !important; }
         .fresh-table tr:hover td { background-color: #F1F5F9; }
         .group-col { background-color: #FFFFFF; border-right: 1px solid #cbd5e1; }
+        
+        .border-date-group { border-top: 3px solid #1e293b !important; }
+        .border-dest-group { border-top: 2px solid #64748b !important; }
         .thick-date-border { border-top: 4px solid #334155 !important; }
 
         /* Animations */
@@ -196,6 +159,7 @@
         @keyframes fadeInUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         
         .loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
         .input-label { display: block; font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 4px; margin-left: 2px; }
         
         /* Sticky Filter Background Fix */
@@ -282,7 +246,6 @@
         <div id="uploadLoader" class="hidden w-full">
             <div class="chip-main-container">
               <svg class="chip-loader" viewBox="0 0 256 256" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
-                <!-- Paths BG -->
                 <path class="trace-bg" d="M30,30 L80,80 L80,100" />
                 <path class="trace-bg" d="M226,30 L176,80 L176,100" />
                 <path class="trace-bg" d="M30,226 L80,176 L80,156" />
@@ -291,7 +254,6 @@
                 <path class="trace-bg" d="M128,246 L128,156" />
                 <path class="trace-bg" d="M10,128 L100,128" />
                 <path class="trace-bg" d="M246,128 L156,128" />
-                <!-- Paths Flow -->
                 <path class="trace-flow blue" d="M30,30 L80,80 L80,100" />
                 <path class="trace-flow yellow" d="M226,30 L176,80 L176,100" />
                 <path class="trace-flow green" d="M30,226 L80,176 L80,156" />
@@ -300,7 +262,6 @@
                 <path class="trace-flow blue" d="M128,246 L128,156" />
                 <path class="trace-flow red" d="M10,128 L100,128" />
                 <path class="trace-flow green" d="M246,128 L156,128" />
-                <!-- Pins -->
                 <line x1="110" y1="100" x2="110" y2="85" class="chip-pin" />
                 <line x1="146" y1="100" x2="146" y2="85" class="chip-pin" />
                 <line x1="110" y1="156" x2="110" y2="171" class="chip-pin" />
@@ -309,9 +270,7 @@
                 <line x1="100" y1="146" x2="85" y2="146" class="chip-pin" />
                 <line x1="156" y1="110" x2="171" y2="110" class="chip-pin" />
                 <line x1="156" y1="146" x2="171" y2="146" class="chip-pin" />
-                <!-- Chip Body -->
                 <rect x="96" y="96" width="64" height="64" fill="#0f172a" class="chip-body" />
-                <!-- Text -->
                 <text x="128" y="133" fill="#ffffff" font-size="16" text-anchor="middle" font-family="monospace" class="chip-text">UP</text>
               </svg>
             </div>
@@ -437,32 +396,24 @@
                 
                 <div class="flex items-center gap-2">
                     <button onclick="window.openPasswordModal('upload_inbound')" class="btn-gradient btn-header-icon group" title="Update Data Inbound">
-                        <i class="fa-solid fa-database group-hover:rotate-12 transition-transform text-sm"></i>
-                        <span class="icon-btn-text">Update Data</span>
+                        <i class="fa-solid fa-database group-hover:rotate-12 transition-transform text-[15px]"></i>
                     </button>
 
-                    <button onclick="window.openPasswordModal('upload_bagshield')" class="btn-warning btn-header-icon group" title="Tambah Data Bagshield">
-                        <i class="fa-solid fa-box-archive group-hover:rotate-12 transition-transform text-sm"></i>
-                        <span class="icon-btn-text">Data Bagshield</span>
-                    </button>
-
-                    <button onclick="window.openPasswordModal('upload_status')" class="btn-gradient !from-emerald-500 !to-teal-500 btn-header-icon group" title="Upload Status AWB">
-                        <i class="fa-solid fa-clock group-hover:rotate-12 transition-transform text-sm"></i>
-                        <span class="icon-btn-text">Status AWB</span>
+                    <!-- Tombol Upload Gabungan AWB -->
+                    <button onclick="window.openPasswordModal('upload_awb')" class="btn-warning btn-header-icon group" title="Upload Data Gabungan AWB (CSV)">
+                        <i class="fa-solid fa-box-open group-hover:rotate-12 transition-transform text-[15px]"></i>
                     </button>
 
                     <!-- Divider -->
                     <div class="h-5 w-[2px] bg-slate-200 mx-1 rounded-full"></div>
 
                     <button onclick="window.openDeleteModal()" class="btn-danger btn-header-icon group" title="Hapus Data">
-                        <i class="fa-solid fa-trash-can group-hover:rotate-12 transition-transform text-sm"></i>
-                        <span class="icon-btn-text">Hapus Data</span>
+                        <i class="fa-solid fa-trash-can group-hover:rotate-12 transition-transform text-[15px]"></i>
                     </button>
                 </div>
                 
                 <input type="file" id="csvFile" accept=".csv" class="hidden">
-                <input type="file" id="csvBagshieldFile" accept=".csv" class="hidden">
-                <input type="file" id="csvStatusFile" accept=".csv" class="hidden">
+                <input type="file" id="csvAwbFile" accept=".csv" class="hidden">
             </div>
         </div>
     </header>
@@ -804,10 +755,10 @@
         window.filteredData = [];
         window.aggregatedData = [];
         window.rejectedData = []; 
-        window.pendingBagshieldData = [];
-        window.pendingStatusData = [];
-        window.awbStatusData = [];
-        window.bagshieldMap = {};
+        
+        window.awbData = []; // Data Gabungan AWB
+        window.pendingAwbData = [];
+        
         window.currentUploadMode = '';
         window.chartInstances = {};
         window.currentChartMode = 'daily';
@@ -993,12 +944,9 @@
                 if(window.currentAction === 'upload_inbound' || window.currentAction === 'upload') {
                     window.showToast("Authorized", "success");
                     setTimeout(() => document.getElementById('csvFile').click(), 500);
-                } else if(window.currentAction === 'upload_bagshield') {
+                } else if(window.currentAction === 'upload_awb') {
                     window.showToast("Authorized", "success");
-                    setTimeout(() => document.getElementById('csvBagshieldFile').click(), 500);
-                } else if(window.currentAction === 'upload_status') {
-                    window.showToast("Authorized", "success");
-                    setTimeout(() => document.getElementById('csvStatusFile').click(), 500);
+                    setTimeout(() => document.getElementById('csvAwbFile').click(), 500);
                 } else if(window.currentAction === 'delete') {
                     const date = document.getElementById('deleteDateInput').value;
                     const dest = document.getElementById('deleteDestInput').value;
@@ -1490,17 +1438,23 @@
             const agg = {};
             let grandAfter = 0, grandLast = 0, grandSame = 0, grandOver = 0, grandTot = 0;
 
-            (window.awbStatusData || []).forEach(awbStat => {
-                const awb = awbStat.awb_no;
-                const eddStr = awbStat.expect_delivery_tm;
+            (window.awbData || []).forEach(awbRow => {
+                const container = awbRow.container_no;
+                const eddStr = awbRow.expect_delivery_tm;
 
-                const container = window.bagshieldMap ? window.bagshieldMap[awb] : null;
                 if (container && eddStr) {
                     const inboundInfo = containerDateMap[container];
                     if (inboundInfo) {
-                        const eddDateStr = eddStr.split(' ')[0];
-                        if(eddDateStr && eddDateStr.length >= 10) {
-                            const eddDate = new Date(eddDateStr);
+                        let eddDate = null;
+                        if(eddStr.includes('/')) {
+                            // Split format: DD/MM/YYYY HH:MM
+                            const p = eddStr.split(' ')[0].split('/');
+                            if(p.length === 3) eddDate = new Date(p[2], p[1]-1, p[0]);
+                        } else if(eddStr.includes('-')) {
+                            eddDate = new Date(eddStr.split(' ')[0]);
+                        }
+
+                        if(eddDate && !isNaN(eddDate)) {
                             eddDate.setHours(0,0,0,0);
                             const rcvDate = new Date(inboundInfo.date);
                             rcvDate.setHours(0,0,0,0);
@@ -2345,24 +2299,17 @@
             try {
                 if(window.showLoading) window.showLoading(true, "Memuat Data...");
                 
-                const [qsInbound, qsBagshield, qsStatus] = await Promise.all([
+                // Fetch hanya dari 2 Koleksi sekarang! (Lebih hemat kuota Reads)
+                const [qsInbound, qsAwb] = await Promise.all([
                     getDocs(collection(db, "inbound_data")),
-                    getDocs(collection(db, "bagshield_data")),
-                    getDocs(collection(db, "awb_status"))
+                    getDocs(collection(db, "awb_data"))
                 ]);
 
-                window.bagshieldMap = {};
-                if (qsBagshield && !qsBagshield.empty) {
-                    qsBagshield.forEach(doc => {
-                        const d = doc.data();
-                        if (d.awb) window.bagshieldMap[d.awb] = d.container_no;
-                    });
-                }
-
-                window.awbStatusData = [];
-                if (qsStatus && !qsStatus.empty) {
-                    qsStatus.forEach(doc => {
-                        window.awbStatusData.push(doc.data());
+                // Simpan data AWB gabungan ke memori
+                window.awbData = [];
+                if (qsAwb && !qsAwb.empty) {
+                    qsAwb.forEach(doc => {
+                        window.awbData.push(doc.data());
                     });
                 }
 
@@ -2487,68 +2434,37 @@
             });
         };
 
-        window.uploadBagshieldCSVToFirestore = function(file) {
-            window.showLoading(true, "Menganalisis file Bagshield...", "upload");
+        // NEW: Fungsi Upload AWB Gabungan
+        window.uploadAwbCSVToFirestore = function(file) {
+            window.showLoading(true, "Menganalisis file Data AWB Gabungan...", "upload");
+            // Pemisah otomatis atau default koma (,) untuk file CSV yang baru
             Papa.parse(file, {
                 header: true, 
                 skipEmptyLines: true, 
-                delimiter: "|", 
                 complete: async function(results) {
                     const data = results.data;
-                    window.pendingBagshieldData = [];
+                    window.pendingAwbData = [];
                     
                     for (const row of data) {
                         const container_no = String(row['container_no'] || '').trim();
-                        const awb = String(row['awb'] || '').trim();
-                        
-                        if (!container_no || !awb) continue;
-                        
-                        window.pendingBagshieldData.push({ container_no, awb });
-                    }
-                    
-                    if(window.showLoading) window.showLoading(false);
-                    document.getElementById('csvBagshieldFile').value = '';
-                    
-                    if(window.pendingBagshieldData.length === 0) {
-                        window.showToast("Tidak ada data (container_no & awb) ditemukan", "error");
-                        return;
-                    }
-                    
-                    window.currentUploadMode = 'bagshield';
-                    window.openPreviewModal(window.pendingBagshieldData.length, 0);
-                }
-            });
-        };
-
-        window.uploadStatusCSVToFirestore = function(file) {
-            window.showLoading(true, "Menganalisis file Status AWB...", "upload");
-            Papa.parse(file, {
-                header: true, 
-                skipEmptyLines: true, 
-                delimiter: "|", 
-                complete: async function(results) {
-                    const data = results.data;
-                    window.pendingStatusData = [];
-                    
-                    for (const row of data) {
                         const awb_no = String(row['awb_no'] || '').trim();
                         const expect_delivery_tm = String(row['expect_delivery_tm'] || '').trim();
                         
-                        if (!awb_no) continue;
+                        if (!container_no || !awb_no) continue; // Skip baris tidak valid
                         
-                        window.pendingStatusData.push({ awb_no, expect_delivery_tm });
+                        window.pendingAwbData.push({ container_no, awb_no, expect_delivery_tm });
                     }
                     
                     if(window.showLoading) window.showLoading(false);
-                    document.getElementById('csvStatusFile').value = '';
+                    document.getElementById('csvAwbFile').value = '';
                     
-                    if(window.pendingStatusData.length === 0) {
-                        window.showToast("Tidak ada data awb_no ditemukan", "error");
+                    if(window.pendingAwbData.length === 0) {
+                        window.showToast("Tidak ada data ditemukan dalam file", "error");
                         return;
                     }
                     
-                    window.currentUploadMode = 'status';
-                    window.openPreviewModal(window.pendingStatusData.length, 0);
+                    window.currentUploadMode = 'awb';
+                    window.openPreviewModal(window.pendingAwbData.length, 0);
                 }
             });
         };
@@ -2556,50 +2472,20 @@
         window.confirmUpload = async function() {
             window.closePreviewModal();
             
-            if (window.currentUploadMode === 'bagshield') {
-                if (!window.pendingBagshieldData || window.pendingBagshieldData.length === 0) return;
+            // Proses Jika Mode AWB
+            if (window.currentUploadMode === 'awb') {
+                if (!window.pendingAwbData || window.pendingAwbData.length === 0) return;
                 
-                if(window.showLoading) window.showLoading(true, "Menyimpan Bagshield...", "upload");
+                if(window.showLoading) window.showLoading(true, "Menyimpan Data AWB...", "upload");
                 const batchSize = 450; 
                 let batches = [];
                 let currentBatch = writeBatch(db);
                 let count = 0;
 
-                for (const item of window.pendingBagshieldData) {
-                    const id = `${item.container_no}_${item.awb}`; 
-                    const docRef = doc(db, "bagshield_data", id);
-                    currentBatch.set(docRef, item, { merge: true }); 
-                    count++;
-                    if (count % batchSize === 0) { batches.push(currentBatch.commit()); currentBatch = writeBatch(db); }
-                }
-                if (count % batchSize !== 0) batches.push(currentBatch.commit());
-
-                try {
-                    await Promise.all(batches);
-                    if(window.showLoading) window.showLoading(false);
-                    window.pendingBagshieldData = []; 
-                    window.openSuccessModal(count);
-                    window.loadDataFromFirestore();
-                } catch (e) {
-                    console.error(e);
-                    if(window.showLoading) window.showLoading(false);
-                    window.showToast("Upload Bagshield Gagal", "error");
-                }
-                return;
-            }
-
-            if (window.currentUploadMode === 'status') {
-                if (!window.pendingStatusData || window.pendingStatusData.length === 0) return;
-                
-                if(window.showLoading) window.showLoading(true, "Menyimpan Status AWB...", "upload");
-                const batchSize = 450; 
-                let batches = [];
-                let currentBatch = writeBatch(db);
-                let count = 0;
-
-                for (const item of window.pendingStatusData) {
+                for (const item of window.pendingAwbData) {
                     const id = item.awb_no; 
-                    const docRef = doc(db, "awb_status", id);
+                    const docRef = doc(db, "awb_data", id);
+                    // Menimpa / memperbarui data yang sudah ada berdasar awb_no
                     currentBatch.set(docRef, item, { merge: true }); 
                     count++;
                     if (count % batchSize === 0) { batches.push(currentBatch.commit()); currentBatch = writeBatch(db); }
@@ -2609,17 +2495,18 @@
                 try {
                     await Promise.all(batches);
                     if(window.showLoading) window.showLoading(false);
-                    window.pendingStatusData = []; 
+                    window.pendingAwbData = []; 
                     window.openSuccessModal(count);
                     window.loadDataFromFirestore();
                 } catch (e) {
                     console.error(e);
                     if(window.showLoading) window.showLoading(false);
-                    window.showToast("Upload Status Gagal", "error");
+                    window.showToast("Upload Data AWB Gagal", "error");
                 }
                 return;
             }
 
+            // Proses Jika Mode Inbound (Update Data Biasa)
             if (window.pendingUploadData.length === 0) {
                 window.showToast("Tidak ada data baru untuk diunggah", "info");
                 return;
@@ -2658,17 +2545,15 @@
             }
         };
 
+        // Event Listeners Input File
         document.getElementById('csvFile').addEventListener('change', function(e) {
             if(e.target.files.length > 0) window.uploadCSVToFirestore(e.target.files[0]);
         });
 
-        document.getElementById('csvBagshieldFile').addEventListener('change', function(e) {
-            if(e.target.files.length > 0) window.uploadBagshieldCSVToFirestore(e.target.files[0]);
+        document.getElementById('csvAwbFile').addEventListener('change', function(e) {
+            if(e.target.files.length > 0) window.uploadAwbCSVToFirestore(e.target.files[0]);
         });
 
-        document.getElementById('csvStatusFile').addEventListener('change', function(e) {
-            if(e.target.files.length > 0) window.uploadStatusCSVToFirestore(e.target.files[0]);
-        });
     </script>
 </body>
 </html>
