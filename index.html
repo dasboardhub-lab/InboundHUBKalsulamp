@@ -152,12 +152,11 @@
         }
         .fresh-table td { 
             padding: 12px 16px; 
-            border-bottom: 1px solid #cbd5e1; /* Default Border */
+            border-bottom: 1px solid #cbd5e1; 
             color: #334155; 
             vertical-align: top; 
         }
         
-        /* Specific Styles for Merged Cells */
         .valign-middle {
             vertical-align: middle !important;
         }
@@ -165,9 +164,8 @@
         .fresh-table tr:hover td { background-color: #F1F5F9; }
         .group-col { background-color: #FFFFFF; border-right: 1px solid #cbd5e1; }
         
-        /* BORDERS: Specific Thickness Logic */
-        .border-date-group { border-top: 3px solid #1e293b !important; } /* Hitam/Gelap Tebal untuk Tanggal */
-        .border-dest-group { border-top: 2px solid #64748b !important; } /* Abu Tebal untuk Destinasi */
+        .border-date-group { border-top: 3px solid #1e293b !important; }
+        .border-dest-group { border-top: 2px solid #64748b !important; }
         .thick-date-border { border-top: 4px solid #334155 !important; }
 
         /* Animations */
@@ -180,13 +178,12 @@
         
         .input-label { display: block; font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 4px; margin-left: 2px; }
         
-        /* Sticky Filter Background Fix */
         .sticky-filter-wrapper {
             position: sticky;
-            top: 72px; /* Adjust based on header height */
+            top: 72px; 
             z-index: 30;
-            background-color: #F0F4F8; /* Matches body background */
-            margin-left: -1rem; /* Counteract container padding */
+            background-color: #F0F4F8; 
+            margin-left: -1rem; 
             margin-right: -1rem;
             padding-left: 1rem;
             padding-right: 1rem;
@@ -196,148 +193,25 @@
             backdrop-filter: blur(8px);
         }
 
-        /* From Uiverse.io by vinodjangid07 */ 
-        .loader {
-          width: fit-content;
-          height: fit-content;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .truckWrapper {
-          width: 200px;
-          height: 100px;
-          display: flex;
-          flex-direction: column;
-          position: relative;
-          align-items: center;
-          justify-content: flex-end;
-          overflow-x: hidden;
-        }
-        /* truck upper body */
-        .truckBody {
-          width: 130px;
-          height: fit-content;
-          margin-bottom: 6px;
-          animation: motion 1s linear infinite;
-        }
-        /* truck suspension animation*/
-        @keyframes motion {
-          0% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(3px);
-          }
-          100% {
-            transform: translateY(0px);
-          }
-        }
-        /* truck's tires */
-        .truckTires {
-          width: 130px;
-          height: fit-content;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 0px 10px 0px 15px;
-          position: absolute;
-          bottom: 0;
-        }
-        .truckTires svg {
-          width: 24px;
-        }
-
-        .road {
-          width: 100%;
-          height: 1.5px;
-          background-color: #282828;
-          position: relative;
-          bottom: 0;
-          align-self: flex-end;
-          border-radius: 3px;
-        }
-        .road::before {
-          content: "";
-          position: absolute;
-          width: 20px;
-          height: 100%;
-          background-color: #282828;
-          right: -50%;
-          border-radius: 3px;
-          animation: roadAnimation 1.4s linear infinite;
-          border-left: 10px solid white;
-        }
-        .road::after {
-          content: "";
-          position: absolute;
-          width: 10px;
-          height: 100%;
-          background-color: #282828;
-          right: -65%;
-          border-radius: 3px;
-          animation: roadAnimation 1.4s linear infinite;
-          border-left: 4px solid white;
-        }
-
-        .lampPost {
-          position: absolute;
-          bottom: 0;
-          right: -90%;
-          height: 90px;
-          animation: roadAnimation 1.4s linear infinite;
-        }
-
-        @keyframes roadAnimation {
-          0% {
-            transform: translateX(0px);
-          }
-          100% {
-            transform: translateX(-350px);
-          }
-        }
-
-        /* --- NEW: Upload Loader (Chip) --- */
-        .chip-main-container {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          width: 100%;
-        }
-
-        .chip-loader {
-          width: 120px;
-        }
-
-        .trace-bg {
-          stroke: #CBD5E1;
-          stroke-width: 1.8;
-          fill: none;
-        }
-
-        .trace-flow {
-          stroke-width: 1.8;
-          fill: none;
-          stroke-dasharray: 40 400;
-          stroke-dashoffset: 438;
-          filter: drop-shadow(0 0 6px currentColor);
-          animation: flow 3s cubic-bezier(0.5, 0, 0.9, 1) infinite;
-        }
-
-        .yellow { stroke: #ffea00; color: #ffea00; }
-        .blue { stroke: #00ccff; color: #00ccff; }
-        .green { stroke: #00ff15; color: #00ff15; }
-        .purple { stroke: #9900ff; color: #9900ff; }
-        .red { stroke: #ff3300; color: #ff3300; }
-
-        @keyframes flow {
-          to { stroke-dashoffset: 0; }
-        }
-
-        .chip-body { rx: 12; ry: 12; }
-        .chip-text { font-weight: bold; letter-spacing: 1px; }
-        .chip-pin { stroke: #94A3B8; stroke-width: 1.5; filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.2)); }
+        /* Custom Loaders */
+        .loader { width: fit-content; height: fit-content; display: flex; align-items: center; justify-content: center; }
+        .truckWrapper { width: 200px; height: 100px; display: flex; flex-direction: column; position: relative; align-items: center; justify-content: flex-end; overflow-x: hidden; }
+        .truckBody { width: 130px; height: fit-content; margin-bottom: 6px; animation: motion 1s linear infinite; }
+        @keyframes motion { 0% { transform: translateY(0px); } 50% { transform: translateY(3px); } 100% { transform: translateY(0px); } }
+        .truckTires { width: 130px; height: fit-content; display: flex; align-items: center; justify-content: space-between; padding: 0px 10px 0px 15px; position: absolute; bottom: 0; }
+        .truckTires svg { width: 24px; }
+        .road { width: 100%; height: 1.5px; background-color: #282828; position: relative; bottom: 0; align-self: flex-end; border-radius: 3px; }
+        .road::before { content: ""; position: absolute; width: 20px; height: 100%; background-color: #282828; right: -50%; border-radius: 3px; animation: roadAnimation 1.4s linear infinite; border-left: 10px solid white; }
+        .road::after { content: ""; position: absolute; width: 10px; height: 100%; background-color: #282828; right: -65%; border-radius: 3px; animation: roadAnimation 1.4s linear infinite; border-left: 4px solid white; }
+        .lampPost { position: absolute; bottom: 0; right: -90%; height: 90px; animation: roadAnimation 1.4s linear infinite; }
+        @keyframes roadAnimation { 0% { transform: translateX(0px); } 100% { transform: translateX(-350px); } }
+        .chip-main-container { display: flex; justify-content: center; align-items: center; width: 100%; }
+        .chip-loader { width: 120px; }
+        .trace-bg { stroke: #CBD5E1; stroke-width: 1.8; fill: none; }
+        .trace-flow { stroke-width: 1.8; fill: none; stroke-dasharray: 40 400; stroke-dashoffset: 438; filter: drop-shadow(0 0 6px currentColor); animation: flow 3s cubic-bezier(0.5, 0, 0.9, 1) infinite; }
+        .yellow { stroke: #ffea00; color: #ffea00; } .blue { stroke: #00ccff; color: #00ccff; } .green { stroke: #00ff15; color: #00ff15; } .purple { stroke: #9900ff; color: #9900ff; } .red { stroke: #ff3300; color: #ff3300; }
+        @keyframes flow { to { stroke-dashoffset: 0; } }
+        .chip-body { rx: 12; ry: 12; } .chip-text { font-weight: bold; letter-spacing: 1px; } .chip-pin { stroke: #94A3B8; stroke-width: 1.5; filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.2)); }
     </style>
 </head>
 <body class="flex flex-col min-h-screen selection:bg-indigo-100 selection:text-indigo-700">
@@ -595,9 +469,9 @@
                             <div>
                                 <span class="input-label">Rentang Tanggal</span>
                                 <div class="flex items-center bg-white rounded-xl border border-slate-200 p-1 shadow-sm h-[38px] justify-between">
-                                    <input type="date" id="filterStartDate" class="text-[10px] sm:text-[11px] font-semibold text-slate-600 px-0.5 outline-none w-[45%] md:w-24 bg-transparent" onchange="window.applyFilters()">
+                                    <input type="date" id="filterStartDate" class="text-[10px] sm:text-[11px] font-semibold text-slate-600 px-0.5 outline-none w-[45%] md:w-24 bg-transparent" onchange="window.applyFilters()" oninput="window.applyFilters()">
                                     <span class="text-slate-300 text-[9px] mx-0.5 font-bold">SD</span>
-                                    <input type="date" id="filterEndDate" class="text-[10px] sm:text-[11px] font-semibold text-slate-600 px-0.5 outline-none w-[45%] md:w-24 bg-transparent" onchange="window.applyFilters()">
+                                    <input type="date" id="filterEndDate" class="text-[10px] sm:text-[11px] font-semibold text-slate-600 px-0.5 outline-none w-[45%] md:w-24 bg-transparent" onchange="window.applyFilters()" oninput="window.applyFilters()">
                                 </div>
                             </div>
 
@@ -796,10 +670,10 @@
                 </div>
             </div>
 
-            <!-- 6. DETAIL DATA TABLE (SPLIT LAYOUT) -->
-            <div class="grid grid-cols-12 gap-6 mb-10">
-                <!-- Left Column: Bagseals & Notes -->
-                <div class="col-span-12 lg:col-span-10 fresh-card overflow-hidden flex flex-col">
+            <!-- 6. DETAIL DATA TABLE (FULL WIDTH) -->
+            <div class="grid grid-cols-1 gap-6 mb-10">
+                <!-- Manifest Summary -->
+                <div class="fresh-card overflow-hidden flex flex-col">
                     <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-white">
                         <h3 class="text-[11px] font-bold text-slate-700 uppercase flex items-center gap-2">
                             <span class="bg-indigo-100 p-1.5 rounded-lg text-indigo-600"><i class="fa-solid fa-list-check"></i></span>
@@ -844,24 +718,6 @@
                         Showing <span id="showingCount" class="text-slate-600">0</span> of <span id="totalCount" class="text-slate-600 font-bold">0</span> records
                     </div>
                 </div>
-
-                <!-- Right Column: Bagseals List -->
-                <div class="col-span-12 lg:col-span-2 fresh-card overflow-hidden flex flex-col max-h-[800px]">
-                    <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-white sticky top-0 z-10">
-                        <h3 class="text-[11px] font-bold text-slate-700 uppercase flex items-center gap-2">
-                            <span class="bg-indigo-100 p-1.5 rounded-lg text-indigo-600"><i class="fa-solid fa-tags"></i></span>
-                            Bagshield
-                        </h3>
-                        <button onclick="window.copyBagseals()" class="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-2 py-1 rounded border border-indigo-100 transition shadow-sm">
-                            <i class="fa-regular fa-copy mr-1"></i> Salin
-                        </button>
-                    </div>
-                    <div class="overflow-y-auto custom-scrollbar flex-grow p-0">
-                        <table class="w-full text-xs text-left" id="bagsealTable">
-                            <!-- JS Generated -->
-                        </table>
-                    </div>
-                </div>
             </div>
 
             <!-- 7. REJECTED TABLE (COLLAPSIBLE) MOVED TO BOTTOM -->
@@ -901,11 +757,9 @@
         window.chartInstances = {};
         window.currentChartMode = 'daily';
         
-        // Manifest Pagination - Reverted to 100 per page to save browser memory
         window.currentPage = 1;
         window.rowsPerPage = 100;
 
-        // Matrix Pagination
         window.matrixPage = 1;
         window.matrixRowsPerPage = 7;
 
@@ -945,7 +799,6 @@
             return null;
         };
         
-        // SAFE FORMAT DATE - Menambahkan pengecekan null untuk menghindari error saat _dateOrigin kosong
         const formatDate = (d) => {
             if (d instanceof Date && !isNaN(d)) {
                 return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
@@ -956,13 +809,9 @@
         const formatInputDate = (d) => window.toLocalISOString(d);
         const formatNumber = (num) => num ? num.toLocaleString('id-ID') : '0';
 
-        // Helper untuk format Jam menjadi pasti HH:mm
         const formatTimeHHMM = (timeStr) => {
             if (!timeStr) return '-';
-            
-            // Mengganti salah ketik titik koma (;) menjadi titik dua (:)
             let normalizedTimeStr = timeStr.toString().replace(';', ':');
-            
             const parts = normalizedTimeStr.split(':');
             if (parts.length >= 2) {
                 const h = parts[0].trim().padStart(2, '0');
@@ -972,11 +821,10 @@
             return normalizedTimeStr;
         };
 
-        // NEW HELPER: Get Monday of a given date (for Weekly Matrix)
         window.getMondayTime = (d) => {
             if (!(d instanceof Date) || isNaN(d)) return 0;
             const dt = new Date(d);
-            const day = dt.getDay() || 7; // Make Sunday (0) = 7
+            const day = dt.getDay() || 7; 
             dt.setHours(0,0,0,0);
             dt.setDate(dt.getDate() - day + 1);
             return dt.getTime();
@@ -1230,7 +1078,6 @@
             const table = document.getElementById('rejectedTable');
             const badge = document.getElementById('rejectedCountBadge');
 
-            // Update Badge Count & Style
             if (badge) {
                 badge.textContent = window.rejectedData.length + ' Data';
                 if (window.rejectedData.length === 0) {
@@ -1313,7 +1160,6 @@
             populateMulti('destMenu', 'destLabel', '_dest');
             populateMulti('vendorMenu', 'vendorLabel', '_vendor');
 
-            // Populate delete destinasi dropdown
             const deleteDestSelect = document.getElementById('deleteDestInput');
             if (deleteDestSelect) {
                 const currentVal = deleteDestSelect.value;
@@ -1416,7 +1262,6 @@
             window.selectedService = 'ALL';
             window.updateToggleVisuals();
             
-            // Setel filter tanggal bawaan: 30 Hari Terakhir dari hari ini
             const endDate = new Date();
             const startDate = new Date();
             startDate.setDate(endDate.getDate() - 30);
@@ -1424,7 +1269,7 @@
             document.getElementById('filterEndDate').value = formatInputDate(endDate);
             
             window.applyFilters();
-            window.showToast("Reset Complete", "info");
+            window.showToast("Reset Selesai", "info");
         };
 
         window.applyFilters = function() {
@@ -1480,7 +1325,6 @@
             const p = fd.reduce((a,b) => a+b._pcs, 0); 
             const m = fd.length;
             
-            // Dynamic Icon for Origin Dist based on selected Service
             const originIconContainer = document.getElementById('originDistIconContainer');
             if (originIconContainer) {
                 if (window.selectedService === 'REGULER') {
@@ -1555,7 +1399,6 @@
             window.renderSlaMatrices();
             window.renderMatrixTable();
             window.aggregateAndRenderTable();
-            window.renderBagsealTable(); 
         };
 
         window.updateDiff = function(id, current, previous) {
@@ -1570,57 +1413,6 @@
             el.innerText = `${sign}${diff.toFixed(1)}%`;
             if (diff >= 0) el.className = "text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-600";
             else el.className = "text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-50 text-rose-600";
-        };
-
-        window.renderBagsealTable = function() {
-            const tbody = document.getElementById('bagsealTable');
-            tbody.innerHTML = '';
-            
-            const limit = 200;
-            const dataToShow = window.filteredData.slice(0, limit);
-            
-            let html = `<thead class="bg-slate-50 sticky top-0 z-10 border-b border-slate-200">
-                <tr><th class="px-3 py-2 text-left font-bold text-slate-600">No Bagshield</th><th class="px-3 py-2 text-left font-bold text-slate-600">Note</th></tr>
-            </thead><tbody>`;
-
-            dataToShow.forEach(d => {
-                const note = d._note || '-';
-                html += `<tr class="border-b border-slate-50 last:border-0 hover:bg-slate-50">
-                    <td class="px-3 py-2 font-mono text-xs text-slate-700 select-all">${d._mb}</td>
-                    <td class="px-3 py-2 text-xs text-slate-500 italic">${note}</td>
-                </tr>`;
-            });
-            
-            if (window.filteredData.length > limit) {
-                html += `<tr><td colspan="2" class="text-center py-2 text-[10px] text-slate-400">...and ${window.filteredData.length - limit} more (use search/filter)</td></tr>`;
-            }
-            
-            html += '</tbody>';
-            tbody.innerHTML = html;
-        };
-
-        window.copyBagseals = function() {
-            const bagseals = window.filteredData.map(d => d._mb).join('\n');
-            const textArea = document.createElement("textarea");
-            textArea.value = bagseals;
-            textArea.style.top = "0";
-            textArea.style.left = "0";
-            textArea.style.position = "fixed";
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-
-            try {
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    window.showToast("Disalin ke papan klip", "success");
-                } else {
-                    window.showToast("Terjadi kesalahan saat menyalin", "error");
-                }
-            } catch (err) {
-                window.showToast("Terjadi kesalahan saat menyalin", "error");
-            }
-            document.body.removeChild(textArea);
         };
 
         window.downloadManifestCSV = function() {
@@ -1801,14 +1593,14 @@
                 if (r.type === 'total_date') {
                     tr.className = "bg-indigo-100 font-black text-indigo-900 border-b-2 border-indigo-300 shadow-sm";
                     tr.innerHTML = `
-                        <td colspan="11" class="text-right py-2 px-4 uppercase text-[11px] tracking-wide border-r border-indigo-200">Total Keseluruhan Tanggal ${formatDate(r.date)}</td>
+                        <td colspan="10" class="text-right py-2 px-4 uppercase text-[11px] tracking-wide border-r border-indigo-200">Total Keseluruhan Tanggal ${formatDate(r.date)}</td>
                         <td class="text-center font-mono text-indigo-800 border-r border-indigo-200">${formatNumber(r.mb)}</td>
                         <td class="text-right text-indigo-900 px-4">${formatNumber(r.pcs)}</td>
                     `;
                 } else if (r.type === 'total_jam') {
                     tr.className = "bg-slate-100 font-bold text-slate-700 border-y border-slate-300";
                     tr.innerHTML = `
-                        <td colspan="10" class="text-right py-1.5 px-4 uppercase text-[10px] tracking-wider border-r border-slate-300 text-slate-500">Total Jam ${r.jam}</td>
+                        <td colspan="9" class="text-right py-1.5 px-4 uppercase text-[10px] tracking-wider border-r border-slate-300 text-slate-500">Total Jam ${r.jam}</td>
                         <td class="text-center font-mono text-slate-700 border-r border-slate-300">${formatNumber(r.mb)}</td>
                         <td class="text-right text-slate-800 px-4">${formatNumber(r.pcs)}</td>
                     `;
@@ -2204,14 +1996,9 @@
                         <th class="text-center text-indigo-600 bg-indigo-50">Avg</th>
                     </tr></thead><tbody>`;
 
-            // Hitung Grand Total dari keseluruhan data terlebih dahulu
-            Object.keys(agg).forEach(k => {
-                const d = agg[k];
-                grandU3 += d.u3; grandB35 += d.b35; grandO5 += d.o5; grandTot += d.tot; grandSum += d.sum;
-            });
-
             Object.keys(agg).sort((a,b) => agg[b].tot - agg[a].tot).forEach(k => { 
                 const d = agg[k]; 
+                grandU3 += d.u3; grandB35 += d.b35; grandO5 += d.o5; grandTot += d.tot; grandSum += d.sum;
                 h += `<tr class="hover:bg-slate-50 border-b border-slate-100 last:border-0">
                         <td class="font-bold text-slate-700">${k}</td>
                         <td class="text-center text-emerald-600 font-mono">${formatNumber(d.u3)}</td>
@@ -2281,17 +2068,14 @@
 
             const daysName = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
 
-            // Get Data only for this week
             const weekStart = weekDates[0].getTime();
             const weekEnd = weekDates[6].getTime() + 24*60*60*1000 - 1; 
             const weekData = window.filteredData.filter(d => d._date.getTime() >= weekStart && d._date.getTime() <= weekEnd);
             
-            // Rows are Destinations that have data in this week
             const dests = [...new Set(weekData.map(d => d._dest))].sort();
 
             const table = document.getElementById('matrixTable');
             
-            // --- HEADER ---
             let h = `<thead><tr><th class="text-left sticky left-0 bg-white z-10 w-32 border-r border-slate-200 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">Destinasi</th>`;
             weekDates.forEach((d, i) => {
                 h += `<th class="text-center border-r border-slate-200 min-w-[80px]">
@@ -2307,7 +2091,6 @@
                  return;
             }
 
-            // --- BODY (Destinations) ---
             let grandTotals = [0,0,0,0,0,0,0];
             let grandTotalAll = 0;
 
@@ -2327,7 +2110,6 @@
                 h += r + `<td class="text-center font-black text-slate-900 bg-slate-50 border-l border-slate-200">${formatNumber(rowTotal)}</td></tr>`;
             });
 
-            // --- FOOTER (Grand Totals) ---
             let gRow = `<tr><td class="font-black text-slate-900 sticky left-0 bg-slate-100 border-r border-slate-300 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] whitespace-nowrap uppercase text-[10px]">TOTAL HARIAN</td>`;
             grandTotals.forEach(gt => {
                 gRow += `<td class="text-center font-black text-indigo-700 bg-indigo-50/50 border-r border-indigo-100/50">${gt>0?formatNumber(gt):'-'}</td>`;
@@ -2419,7 +2201,7 @@
 
             const toDelete = window.rawData.filter(d => {
                 if (!d._date || !(d._date instanceof Date) || isNaN(d._date)) return false;
-                const dDate = new Date(d._date); // _date ini berasal dari "Tanggal Diterima"
+                const dDate = new Date(d._date); 
                 dDate.setHours(0,0,0,0);
                 const matchDate = dDate.getTime() === targetDate.getTime();
                 const matchDest = destString === 'ALL' || d._dest === destString;
@@ -2469,7 +2251,6 @@
                 complete: async function(results) {
                     const data = results.data;
                     
-                    // GET EXISTING IDs (Tolak duplicate secara absolut menggunakan _firestoreId)
                     const existingIds = new Set();
                     if(window.rawData) {
                         window.rawData.forEach(d => { if(d._firestoreId) existingIds.add(String(d._firestoreId)); });
@@ -2487,37 +2268,29 @@
                         const dest = (row['Destinasi']||'').replace(/\s/g, '');
                         const date = (row['Tanggal DIterima']||'').replace(/[\/\s,]/g, ''); 
                         
-                        // ID yang dihasilkan ini adalah ID pasti yang digunakan di Firestore
                         const fallbackId = `${smu}_${dest}_${date}`.substring(0, 100);
                         const id = bagseal || fallbackId;
 
-                        if (!id) continue; // Skip jika datanya benar-benar blank/kosong
+                        if (!id) continue; 
 
-                        // Check Duplicate menggunakan ID pasti
                         if (existingIds.has(id)) {
                             duplicateCount++;
                             continue; 
                         }
                         
-                        // Tambahkan id ini ke Set() agar jika ada data duplikat di DALAM file CSV yang sama,
-                        // sistem juga akan langsung melewatinya.
                         existingIds.add(id);
 
-                        // Add to pending
                         window.pendingUploadData.push(row);
                     }
                     
                     if(window.showLoading) window.showLoading(false);
-                    // Reset input so the same file can be selected again if needed
                     document.getElementById('csvFile').value = '';
                     
-                    // Show Preview
                     window.openPreviewModal(window.pendingUploadData.length, duplicateCount);
                 }
             });
         };
 
-        // Triggered by the "Lanjutkan" button in the Preview Modal
         window.confirmUpload = async function() {
             window.closePreviewModal();
             
@@ -2549,7 +2322,7 @@
             try {
                 await Promise.all(batches);
                 if(window.showLoading) window.showLoading(false);
-                window.pendingUploadData = []; // Clear pending
+                window.pendingUploadData = []; 
                 window.openSuccessModal(count);
                 window.loadDataFromFirestore(); 
             } catch (e) {
@@ -2559,7 +2332,6 @@
             }
         };
 
-        // Trigger file input dialog
         document.getElementById('csvFile').addEventListener('change', function(e) {
             if(e.target.files.length > 0) window.uploadCSVToFirestore(e.target.files[0]);
         });
