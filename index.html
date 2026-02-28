@@ -113,6 +113,33 @@
             filter: brightness(1.1); 
         }
 
+        /* Header Icon Buttons Hover Effect */
+        .btn-header-icon {
+            padding: 0 !important;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .btn-header-icon:hover {
+            width: auto;
+            padding: 0 16px !important;
+        }
+        .icon-btn-text {
+            max-width: 0;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-header-icon:hover .icon-btn-text {
+            max-width: 150px;
+            opacity: 1;
+            margin-left: 8px;
+        }
+
         /* Toggles */
         .pill-toggle { 
             padding: 6px 14px; 
@@ -157,15 +184,9 @@
             vertical-align: top; 
         }
         
-        .valign-middle {
-            vertical-align: middle !important;
-        }
-
+        .valign-middle { vertical-align: middle !important; }
         .fresh-table tr:hover td { background-color: #F1F5F9; }
         .group-col { background-color: #FFFFFF; border-right: 1px solid #cbd5e1; }
-        
-        .border-date-group { border-top: 3px solid #1e293b !important; }
-        .border-dest-group { border-top: 2px solid #64748b !important; }
         .thick-date-border { border-top: 4px solid #334155 !important; }
 
         /* Animations */
@@ -175,9 +196,9 @@
         @keyframes fadeInUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         
         .loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        
         .input-label { display: block; font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 4px; margin-left: 2px; }
         
+        /* Sticky Filter Background Fix */
         .sticky-filter-wrapper {
             position: sticky;
             top: 72px; 
@@ -270,7 +291,6 @@
                 <path class="trace-bg" d="M128,246 L128,156" />
                 <path class="trace-bg" d="M10,128 L100,128" />
                 <path class="trace-bg" d="M246,128 L156,128" />
-
                 <!-- Paths Flow -->
                 <path class="trace-flow blue" d="M30,30 L80,80 L80,100" />
                 <path class="trace-flow yellow" d="M226,30 L176,80 L176,100" />
@@ -280,7 +300,6 @@
                 <path class="trace-flow blue" d="M128,246 L128,156" />
                 <path class="trace-flow red" d="M10,128 L100,128" />
                 <path class="trace-flow green" d="M246,128 L156,128" />
-
                 <!-- Pins -->
                 <line x1="110" y1="100" x2="110" y2="85" class="chip-pin" />
                 <line x1="146" y1="100" x2="146" y2="85" class="chip-pin" />
@@ -290,10 +309,8 @@
                 <line x1="100" y1="146" x2="85" y2="146" class="chip-pin" />
                 <line x1="156" y1="110" x2="171" y2="110" class="chip-pin" />
                 <line x1="156" y1="146" x2="171" y2="146" class="chip-pin" />
-
                 <!-- Chip Body -->
                 <rect x="96" y="96" width="64" height="64" fill="#0f172a" class="chip-body" />
-                
                 <!-- Text -->
                 <text x="128" y="133" fill="#ffffff" font-size="16" text-anchor="middle" font-family="monospace" class="chip-text">UP</text>
               </svg>
@@ -418,16 +435,34 @@
                 </div>
                 <div class="h-8 w-[1px] bg-slate-200 hidden md:block"></div>
                 
-                <button onclick="window.openDeleteModal()" class="btn-danger flex items-center gap-2 group">
-                    <i class="fa-solid fa-trash-can group-hover:rotate-12 transition-transform"></i>
-                    <span>Hapus Data</span>
-                </button>
+                <div class="flex items-center gap-2">
+                    <button onclick="window.openPasswordModal('upload_inbound')" class="btn-gradient btn-header-icon group" title="Update Data Inbound">
+                        <i class="fa-solid fa-database group-hover:rotate-12 transition-transform text-sm"></i>
+                        <span class="icon-btn-text">Update Data</span>
+                    </button>
 
-                <button onclick="window.openPasswordModal('upload')" class="btn-gradient flex items-center gap-2 group">
-                    <i class="fa-solid fa-database group-hover:rotate-12 transition-transform"></i>
-                    <span>Update Data</span>
-                </button>
+                    <button onclick="window.openPasswordModal('upload_bagshield')" class="btn-warning btn-header-icon group" title="Tambah Data Bagshield">
+                        <i class="fa-solid fa-box-archive group-hover:rotate-12 transition-transform text-sm"></i>
+                        <span class="icon-btn-text">Data Bagshield</span>
+                    </button>
+
+                    <button onclick="window.openPasswordModal('upload_status')" class="btn-gradient !from-emerald-500 !to-teal-500 btn-header-icon group" title="Upload Status AWB">
+                        <i class="fa-solid fa-clock group-hover:rotate-12 transition-transform text-sm"></i>
+                        <span class="icon-btn-text">Status AWB</span>
+                    </button>
+
+                    <!-- Divider -->
+                    <div class="h-5 w-[2px] bg-slate-200 mx-1 rounded-full"></div>
+
+                    <button onclick="window.openDeleteModal()" class="btn-danger btn-header-icon group" title="Hapus Data">
+                        <i class="fa-solid fa-trash-can group-hover:rotate-12 transition-transform text-sm"></i>
+                        <span class="icon-btn-text">Hapus Data</span>
+                    </button>
+                </div>
+                
                 <input type="file" id="csvFile" accept=".csv" class="hidden">
+                <input type="file" id="csvBagshieldFile" accept=".csv" class="hidden">
+                <input type="file" id="csvStatusFile" accept=".csv" class="hidden">
             </div>
         </div>
     </header>
@@ -720,8 +755,23 @@
                 </div>
             </div>
 
+            <!-- SLA EDD TABLE -->
+            <div class="fresh-card overflow-hidden mb-10 flex flex-col">
+                <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-white">
+                    <h3 class="text-[11px] font-bold text-slate-700 uppercase flex items-center gap-2">
+                        <span class="bg-indigo-100 p-1.5 rounded-lg text-indigo-600"><i class="fa-solid fa-clock-rotate-left"></i></span>
+                        SLA by EDD Status
+                    </h3>
+                </div>
+                <div class="overflow-auto custom-scrollbar max-h-[400px]">
+                    <table class="fresh-table w-full relative" id="slaEddTable">
+                        <!-- JS Generated -->
+                    </table>
+                </div>
+            </div>
+
             <!-- 7. REJECTED TABLE (COLLAPSIBLE) MOVED TO BOTTOM -->
-            <div class="fresh-card overflow-hidden border-l-4 border-red-500 transition-all duration-300">
+            <div class="fresh-card overflow-hidden border-l-4 border-red-500 transition-all duration-300 mb-10">
                 <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-red-50/20 cursor-pointer hover:bg-red-50/50 transition-colors" onclick="window.toggleRejectedTable()">
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center text-red-600">
@@ -754,6 +804,11 @@
         window.filteredData = [];
         window.aggregatedData = [];
         window.rejectedData = []; 
+        window.pendingBagshieldData = [];
+        window.pendingStatusData = [];
+        window.awbStatusData = [];
+        window.bagshieldMap = {};
+        window.currentUploadMode = '';
         window.chartInstances = {};
         window.currentChartMode = 'daily';
         
@@ -935,9 +990,15 @@
             const pwd = document.getElementById('passwordInput').value;
             if (pwd === "TAB123") {
                 window.closePasswordModal();
-                if(window.currentAction === 'upload') {
+                if(window.currentAction === 'upload_inbound' || window.currentAction === 'upload') {
                     window.showToast("Authorized", "success");
                     setTimeout(() => document.getElementById('csvFile').click(), 500);
+                } else if(window.currentAction === 'upload_bagshield') {
+                    window.showToast("Authorized", "success");
+                    setTimeout(() => document.getElementById('csvBagshieldFile').click(), 500);
+                } else if(window.currentAction === 'upload_status') {
+                    window.showToast("Authorized", "success");
+                    setTimeout(() => document.getElementById('csvStatusFile').click(), 500);
                 } else if(window.currentAction === 'delete') {
                     const date = document.getElementById('deleteDateInput').value;
                     const dest = document.getElementById('deleteDestInput').value;
@@ -1033,7 +1094,6 @@
                         sla = Math.ceil(diff / (1000 * 60 * 60 * 24));
                     }
 
-                    // KEY CHANGE: _pcs comes from 'Kuantitas Paket (Awb)'
                     validData.push({
                         ...row,
                         _date: tglTerima,
@@ -1045,7 +1105,7 @@
                         _dest: dest,
                         _service: service,
                         _batch: batch,
-                        _jam: formatTimeHHMM(row['JAM']), // Format jam otomatis HH:mm
+                        _jam: formatTimeHHMM(row['JAM']), 
                         _smu: row['SMU'] || '-',
                         _flight: cleanFlight,
                         _tglFlight: row['TANGGAL FLIGHT'] || '-',
@@ -1399,6 +1459,7 @@
             window.renderSlaMatrices();
             window.renderMatrixTable();
             window.aggregateAndRenderTable();
+            window.renderSlaEddTable();
         };
 
         window.updateDiff = function(id, current, previous) {
@@ -1413,6 +1474,121 @@
             el.innerText = `${sign}${diff.toFixed(1)}%`;
             if (diff >= 0) el.className = "text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-600";
             else el.className = "text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-50 text-rose-600";
+        };
+
+        window.renderSlaEddTable = function() {
+            const table = document.getElementById('slaEddTable');
+            if(!table) return;
+
+            const containerDateMap = {};
+            window.filteredData.forEach(d => {
+                if (d._mb && d._mb !== '-') {
+                    containerDateMap[d._mb] = { date: d._date, dest: d._dest };
+                }
+            });
+
+            const agg = {};
+            let grandAfter = 0, grandLast = 0, grandSame = 0, grandOver = 0, grandTot = 0;
+
+            (window.awbStatusData || []).forEach(awbStat => {
+                const awb = awbStat.awb_no;
+                const eddStr = awbStat.expect_delivery_tm;
+
+                const container = window.bagshieldMap ? window.bagshieldMap[awb] : null;
+                if (container && eddStr) {
+                    const inboundInfo = containerDateMap[container];
+                    if (inboundInfo) {
+                        const eddDateStr = eddStr.split(' ')[0];
+                        if(eddDateStr && eddDateStr.length >= 10) {
+                            const eddDate = new Date(eddDateStr);
+                            eddDate.setHours(0,0,0,0);
+                            const rcvDate = new Date(inboundInfo.date);
+                            rcvDate.setHours(0,0,0,0);
+
+                            const diffDays = Math.round((eddDate - rcvDate) / (1000 * 60 * 60 * 24));
+                            let status = "";
+                            if (diffDays < 0) status = "After EDD";
+                            else if (diffDays === 0) status = "Last Day";
+                            else if (diffDays === 1) status = "Same Day";
+                            else if (diffDays >= 2) status = ">2 Hari";
+
+                            const dest = inboundInfo.dest;
+                            if (!agg[dest]) agg[dest] = { after: 0, last: 0, same: 0, over: 0, tot: 0 };
+
+                            if (status === "After EDD") { agg[dest].after++; grandAfter++; }
+                            if (status === "Last Day") { agg[dest].last++; grandLast++; }
+                            if (status === "Same Day") { agg[dest].same++; grandSame++; }
+                            if (status === ">2 Hari") { agg[dest].over++; grandOver++; }
+                            
+                            if (status !== "") {
+                                agg[dest].tot++;
+                                grandTot++;
+                            }
+                        }
+                    }
+                }
+            });
+
+            let h = `<thead class="sticky top-0 bg-white z-10 shadow-sm border-b border-slate-200">
+                        <tr>
+                            <th class="text-left text-slate-500">Destinasi</th>
+                            <th class="text-center text-rose-600 bg-rose-50">After EDD</th>
+                            <th class="text-center text-amber-600 bg-amber-50">Last Day</th>
+                            <th class="text-center text-emerald-600 bg-emerald-50">Same Day</th>
+                            <th class="text-center text-indigo-600 bg-indigo-50">>2 Hari</th>
+                            <th class="text-center font-bold bg-slate-100 text-slate-800">Total</th>
+                        </tr>
+                    </thead><tbody>`;
+
+            if (Object.keys(agg).length === 0) {
+                table.innerHTML = h + `<tr><td colspan="6" class="text-center py-6 text-slate-400 font-medium">Tidak ada data SLA AWB yang cocok</td></tr></tbody>`;
+                return;
+            }
+
+            Object.keys(agg).sort((a,b) => agg[b].tot - agg[a].tot).forEach(k => {
+                const d = agg[k];
+                h += `<tr class="hover:bg-slate-50 border-b border-slate-100 last:border-0">
+                    <td class="font-bold text-slate-700 valign-middle">${k}</td>
+                    <td class="text-center text-rose-600 font-mono py-1.5">${formatNumber(d.after)}</td>
+                    <td class="text-center text-amber-600 font-mono py-1.5">${formatNumber(d.last)}</td>
+                    <td class="text-center text-emerald-600 font-mono py-1.5">${formatNumber(d.same)}</td>
+                    <td class="text-center text-indigo-600 font-mono py-1.5">${formatNumber(d.over)}</td>
+                    <td class="text-center font-bold bg-slate-50 font-mono text-slate-800 py-1.5">${formatNumber(d.tot)}</td>
+                </tr>`;
+            });
+
+            const gPctAfter = grandTot > 0 ? ((grandAfter / grandTot) * 100).toFixed(1) : 0;
+            const gPctLast = grandTot > 0 ? ((grandLast / grandTot) * 100).toFixed(1) : 0;
+            const gPctSame = grandTot > 0 ? ((grandSame / grandTot) * 100).toFixed(1) : 0;
+            const gPctOver = grandTot > 0 ? ((grandOver / grandTot) * 100).toFixed(1) : 0;
+
+            h += `</tbody><tfoot class="sticky bottom-0 bg-slate-100 shadow-[0_-2px_5px_-2px_rgba(0,0,0,0.05)] border-t-2 border-slate-300">
+                <tr>
+                    <td class="font-black text-slate-800 uppercase text-[10px] py-2 valign-middle">TOTAL</td>
+                    <td class="text-center py-2">
+                        <div class="font-black text-rose-700 font-mono">${formatNumber(grandAfter)}</div>
+                        <div class="text-[9px] font-bold text-slate-500">${gPctAfter}%</div>
+                    </td>
+                    <td class="text-center py-2">
+                        <div class="font-black text-amber-700 font-mono">${formatNumber(grandLast)}</div>
+                        <div class="text-[9px] font-bold text-slate-500">${gPctLast}%</div>
+                    </td>
+                    <td class="text-center py-2">
+                        <div class="font-black text-emerald-700 font-mono">${formatNumber(grandSame)}</div>
+                        <div class="text-[9px] font-bold text-slate-500">${gPctSame}%</div>
+                    </td>
+                    <td class="text-center py-2">
+                        <div class="font-black text-indigo-700 font-mono">${formatNumber(grandOver)}</div>
+                        <div class="text-[9px] font-bold text-slate-500">${gPctOver}%</div>
+                    </td>
+                    <td class="text-center py-2 bg-slate-200">
+                        <div class="font-black text-slate-900 font-mono">${formatNumber(grandTot)}</div>
+                        <div class="text-[9px] font-bold text-slate-600">100%</div>
+                    </td>
+                </tr>
+            </tfoot>`;
+            
+            table.innerHTML = h;
         };
 
         window.downloadManifestCSV = function() {
@@ -2167,16 +2343,35 @@
 
         window.loadDataFromFirestore = async function() {
             try {
-                if(window.showLoading) window.showLoading(true, "Syncing...");
+                if(window.showLoading) window.showLoading(true, "Memuat Data...");
                 
-                const qs = await getDocs(collection(db, "inbound_data"));
+                const [qsInbound, qsBagshield, qsStatus] = await Promise.all([
+                    getDocs(collection(db, "inbound_data")),
+                    getDocs(collection(db, "bagshield_data")),
+                    getDocs(collection(db, "awb_status"))
+                ]);
 
-                if (!qs || qs.empty) {
+                window.bagshieldMap = {};
+                if (qsBagshield && !qsBagshield.empty) {
+                    qsBagshield.forEach(doc => {
+                        const d = doc.data();
+                        if (d.awb) window.bagshieldMap[d.awb] = d.container_no;
+                    });
+                }
+
+                window.awbStatusData = [];
+                if (qsStatus && !qsStatus.empty) {
+                    qsStatus.forEach(doc => {
+                        window.awbStatusData.push(doc.data());
+                    });
+                }
+
+                if (!qsInbound || qsInbound.empty) {
                     if(window.showLoading) window.showLoading(false);
                     return; 
                 }
                 const docs = [];
-                qs.forEach((doc) => {
+                qsInbound.forEach((doc) => {
                     const data = doc.data();
                     data._firestoreId = doc.id; 
                     docs.push(data);
@@ -2286,7 +2481,74 @@
                     if(window.showLoading) window.showLoading(false);
                     document.getElementById('csvFile').value = '';
                     
+                    window.currentUploadMode = 'inbound';
                     window.openPreviewModal(window.pendingUploadData.length, duplicateCount);
+                }
+            });
+        };
+
+        window.uploadBagshieldCSVToFirestore = function(file) {
+            window.showLoading(true, "Menganalisis file Bagshield...", "upload");
+            Papa.parse(file, {
+                header: true, 
+                skipEmptyLines: true, 
+                delimiter: "|", 
+                complete: async function(results) {
+                    const data = results.data;
+                    window.pendingBagshieldData = [];
+                    
+                    for (const row of data) {
+                        const container_no = String(row['container_no'] || '').trim();
+                        const awb = String(row['awb'] || '').trim();
+                        
+                        if (!container_no || !awb) continue;
+                        
+                        window.pendingBagshieldData.push({ container_no, awb });
+                    }
+                    
+                    if(window.showLoading) window.showLoading(false);
+                    document.getElementById('csvBagshieldFile').value = '';
+                    
+                    if(window.pendingBagshieldData.length === 0) {
+                        window.showToast("Tidak ada data (container_no & awb) ditemukan", "error");
+                        return;
+                    }
+                    
+                    window.currentUploadMode = 'bagshield';
+                    window.openPreviewModal(window.pendingBagshieldData.length, 0);
+                }
+            });
+        };
+
+        window.uploadStatusCSVToFirestore = function(file) {
+            window.showLoading(true, "Menganalisis file Status AWB...", "upload");
+            Papa.parse(file, {
+                header: true, 
+                skipEmptyLines: true, 
+                delimiter: "|", 
+                complete: async function(results) {
+                    const data = results.data;
+                    window.pendingStatusData = [];
+                    
+                    for (const row of data) {
+                        const awb_no = String(row['awb_no'] || '').trim();
+                        const expect_delivery_tm = String(row['expect_delivery_tm'] || '').trim();
+                        
+                        if (!awb_no) continue;
+                        
+                        window.pendingStatusData.push({ awb_no, expect_delivery_tm });
+                    }
+                    
+                    if(window.showLoading) window.showLoading(false);
+                    document.getElementById('csvStatusFile').value = '';
+                    
+                    if(window.pendingStatusData.length === 0) {
+                        window.showToast("Tidak ada data awb_no ditemukan", "error");
+                        return;
+                    }
+                    
+                    window.currentUploadMode = 'status';
+                    window.openPreviewModal(window.pendingStatusData.length, 0);
                 }
             });
         };
@@ -2294,6 +2556,70 @@
         window.confirmUpload = async function() {
             window.closePreviewModal();
             
+            if (window.currentUploadMode === 'bagshield') {
+                if (!window.pendingBagshieldData || window.pendingBagshieldData.length === 0) return;
+                
+                if(window.showLoading) window.showLoading(true, "Menyimpan Bagshield...", "upload");
+                const batchSize = 450; 
+                let batches = [];
+                let currentBatch = writeBatch(db);
+                let count = 0;
+
+                for (const item of window.pendingBagshieldData) {
+                    const id = `${item.container_no}_${item.awb}`; 
+                    const docRef = doc(db, "bagshield_data", id);
+                    currentBatch.set(docRef, item, { merge: true }); 
+                    count++;
+                    if (count % batchSize === 0) { batches.push(currentBatch.commit()); currentBatch = writeBatch(db); }
+                }
+                if (count % batchSize !== 0) batches.push(currentBatch.commit());
+
+                try {
+                    await Promise.all(batches);
+                    if(window.showLoading) window.showLoading(false);
+                    window.pendingBagshieldData = []; 
+                    window.openSuccessModal(count);
+                    window.loadDataFromFirestore();
+                } catch (e) {
+                    console.error(e);
+                    if(window.showLoading) window.showLoading(false);
+                    window.showToast("Upload Bagshield Gagal", "error");
+                }
+                return;
+            }
+
+            if (window.currentUploadMode === 'status') {
+                if (!window.pendingStatusData || window.pendingStatusData.length === 0) return;
+                
+                if(window.showLoading) window.showLoading(true, "Menyimpan Status AWB...", "upload");
+                const batchSize = 450; 
+                let batches = [];
+                let currentBatch = writeBatch(db);
+                let count = 0;
+
+                for (const item of window.pendingStatusData) {
+                    const id = item.awb_no; 
+                    const docRef = doc(db, "awb_status", id);
+                    currentBatch.set(docRef, item, { merge: true }); 
+                    count++;
+                    if (count % batchSize === 0) { batches.push(currentBatch.commit()); currentBatch = writeBatch(db); }
+                }
+                if (count % batchSize !== 0) batches.push(currentBatch.commit());
+
+                try {
+                    await Promise.all(batches);
+                    if(window.showLoading) window.showLoading(false);
+                    window.pendingStatusData = []; 
+                    window.openSuccessModal(count);
+                    window.loadDataFromFirestore();
+                } catch (e) {
+                    console.error(e);
+                    if(window.showLoading) window.showLoading(false);
+                    window.showToast("Upload Status Gagal", "error");
+                }
+                return;
+            }
+
             if (window.pendingUploadData.length === 0) {
                 window.showToast("Tidak ada data baru untuk diunggah", "info");
                 return;
@@ -2334,6 +2660,14 @@
 
         document.getElementById('csvFile').addEventListener('change', function(e) {
             if(e.target.files.length > 0) window.uploadCSVToFirestore(e.target.files[0]);
+        });
+
+        document.getElementById('csvBagshieldFile').addEventListener('change', function(e) {
+            if(e.target.files.length > 0) window.uploadBagshieldCSVToFirestore(e.target.files[0]);
+        });
+
+        document.getElementById('csvStatusFile').addEventListener('change', function(e) {
+            if(e.target.files.length > 0) window.uploadStatusCSVToFirestore(e.target.files[0]);
         });
     </script>
 </body>
