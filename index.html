@@ -65,23 +65,55 @@
         .btn-gradient { 
             background: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%); 
             color: white; 
+            padding: 8px 16px; 
+            border-radius: 12px; 
+            font-weight: 600; 
+            font-size: 12px; 
             transition: all 0.3s; 
             box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25); 
+            border: 1px solid rgba(255,255,255,0.1); 
         }
+        .btn-gradient:hover { 
+            transform: translateY(-1px); 
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35); 
+            filter: brightness(1.1); 
+        }
+
         .btn-danger { 
             background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); 
             color: white; 
+            padding: 8px 16px; 
+            border-radius: 12px; 
+            font-weight: 600; 
+            font-size: 12px; 
             transition: all 0.3s; 
             box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25); 
+            border: 1px solid rgba(255,255,255,0.1); 
         }
+        .btn-danger:hover { 
+            transform: translateY(-1px); 
+            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35); 
+            filter: brightness(1.1); 
+        }
+
         .btn-warning { 
             background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); 
             color: white; 
+            padding: 8px 16px; 
+            border-radius: 12px; 
+            font-weight: 600; 
+            font-size: 12px; 
             transition: all 0.3s; 
             box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25); 
+            border: 1px solid rgba(255,255,255,0.1); 
+        }
+        .btn-warning:hover { 
+            transform: translateY(-1px); 
+            box-shadow: 0 6px 16px rgba(245, 158, 11, 0.35); 
+            filter: brightness(1.1); 
         }
 
-        /* Header Icon Buttons - Paten dan stabil */
+        /* Header Icon Buttons - Fix Ukuran Paten Tanpa Teks */
         .btn-header-icon {
             padding: 0 !important;
             width: 38px;
@@ -94,10 +126,12 @@
             overflow: hidden;
             flex-shrink: 0;
             border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
         }
         .btn-header-icon:hover {
-            transform: translateY(-1px);
+            transform: translateY(-2px);
             filter: brightness(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
         /* Toggles */
@@ -147,9 +181,6 @@
         .valign-middle { vertical-align: middle !important; }
         .fresh-table tr:hover td { background-color: #F1F5F9; }
         .group-col { background-color: #FFFFFF; border-right: 1px solid #cbd5e1; }
-        
-        .border-date-group { border-top: 3px solid #1e293b !important; }
-        .border-dest-group { border-top: 2px solid #64748b !important; }
         .thick-date-border { border-top: 4px solid #334155 !important; }
 
         /* Animations */
@@ -159,7 +190,6 @@
         @keyframes fadeInUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         
         .loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        
         .input-label { display: block; font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 4px; margin-left: 2px; }
         
         /* Sticky Filter Background Fix */
@@ -395,20 +425,19 @@
                 <div class="h-8 w-[1px] bg-slate-200 hidden md:block"></div>
                 
                 <div class="flex items-center gap-2">
-                    <button onclick="window.openPasswordModal('upload_inbound')" class="btn-gradient btn-header-icon group" title="Update Data Inbound">
-                        <i class="fa-solid fa-database group-hover:rotate-12 transition-transform text-[15px]"></i>
+                    <button onclick="window.openPasswordModal('upload_inbound')" class="btn-gradient btn-header-icon" title="Update Data Inbound">
+                        <i class="fa-solid fa-database text-[15px]"></i>
                     </button>
 
-                    <!-- Tombol Upload Gabungan AWB -->
-                    <button onclick="window.openPasswordModal('upload_awb')" class="btn-warning btn-header-icon group" title="Upload Data Gabungan AWB (CSV)">
-                        <i class="fa-solid fa-box-open group-hover:rotate-12 transition-transform text-[15px]"></i>
+                    <button onclick="window.openPasswordModal('upload_awb')" class="btn-warning btn-header-icon" title="Upload Data Gabungan AWB (CSV)">
+                        <i class="fa-solid fa-box-open text-[15px]"></i>
                     </button>
 
-                    <!-- Divider -->
+                    <!-- Divider Pembatas -->
                     <div class="h-5 w-[2px] bg-slate-200 mx-1 rounded-full"></div>
 
-                    <button onclick="window.openDeleteModal()" class="btn-danger btn-header-icon group" title="Hapus Data">
-                        <i class="fa-solid fa-trash-can group-hover:rotate-12 transition-transform text-[15px]"></i>
+                    <button onclick="window.openDeleteModal()" class="btn-danger btn-header-icon" title="Hapus Data">
+                        <i class="fa-solid fa-trash-can text-[15px]"></i>
                     </button>
                 </div>
                 
@@ -729,8 +758,8 @@
                             <i class="fa-solid fa-triangle-exclamation"></i>
                         </div>
                         <div>
-                            <h3 class="text-[11px] font-bold text-red-600 uppercase">Exception Monitoring: Tolakan Bandara</h3>
-                            <p class="text-[10px] text-slate-500 mt-0.5">Klik untuk melihat detail data yang tertolak</p>
+                            <h3 class="text-[11px] font-bold text-red-600 uppercase">Exception Monitoring: Unidentified Received Date</h3>
+                            <p class="text-[10px] text-slate-500 mt-0.5">Klik untuk melihat detail data (Tolakan/Kosong/Tidak Valid)</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
@@ -756,7 +785,7 @@
         window.aggregatedData = [];
         window.rejectedData = []; 
         
-        window.awbData = []; // Data Gabungan AWB
+        window.awbData = []; 
         window.pendingAwbData = [];
         
         window.currentUploadMode = '';
@@ -999,7 +1028,8 @@
             const rejectedData = [];
 
             data.forEach(row => {
-                const tglTerimaStr = row['Tanggal DIterima'] || '';
+                // Perbaikan: Membaca kolom "Tanggal Diterima" secara aman dari berbagai versi penulisan
+                const tglTerimaStr = String(row['Tanggal Diterima'] || row['Tanggal DIterima'] || '').trim();
                 
                 let vendor = (row['VENDOR'] || 'N/A').toUpperCase();
                 let origin = (row['Origin'] || 'N/A').toUpperCase();
@@ -1012,7 +1042,10 @@
                 let cleanFlight = rawFlight.toUpperCase();
                 if (service === 'REGULER') cleanFlight = rawFlight.replace(/[\s-]/g, '').toUpperCase();
                 
-                if (tglTerimaStr.toLowerCase().includes('tolakan')) {
+                const tglTerima = parseDate(tglTerimaStr);
+                
+                // Masukkan ke Exception Monitoring jika bukan tanggal yang valid (kosong atau berisi teks selain tanggal)
+                if (!tglTerima) {
                     rejectedData.push({
                         _tglPA: parseDate(row['Tanggal']),
                         _origin: origin,
@@ -1023,16 +1056,14 @@
                         _batch: batch,
                         _pcs: window.parseNum(row['Kuantitas Paket (Awb)']),
                         _weight: window.parseNum(row['Berat Total (kg)']),
-                        _note: row['Note'] || row['CATATAN'] || tglTerimaStr,
-                        _tglFlight: row['TANGGAL FLIGHT'],
-                        _etd: row['ETD'],
-                        _mb: row['No Bagseals'],
+                        _note: row['Note'] || row['CATATAN'] || (tglTerimaStr ? tglTerimaStr : 'Tidak ada tanggal terima'),
+                        _mb: row['No Bagseals'] || '-',
                         _service: service,
                         _firestoreId: row._firestoreId 
                     });
                     return; 
                 }
-                const tglTerima = parseDate(tglTerimaStr);
+
                 const tglOrigin = parseDate(row['Tanggal']); 
                 
                 if (tglTerima) {
@@ -1096,7 +1127,7 @@
             }
 
             if (window.rejectedData.length === 0) {
-                table.innerHTML = `<tr><td class="p-4 text-center text-slate-400 italic">Tidak ada data tolakan</td></tr>`;
+                table.innerHTML = `<tr><td class="p-4 text-center text-slate-400 italic">Tidak ada data Unidentified Received Date</td></tr>`;
                 return;
             }
 
@@ -1109,8 +1140,6 @@
                 <th class="text-left text-red-600 bg-red-50">Destinasi</th>
                 <th class="text-left text-red-600 bg-red-50">SMU</th>
                 <th class="text-left text-red-600 bg-red-50">Berangkat</th>
-                <th class="text-left text-red-600 bg-red-50">Tgl Berangkat</th>
-                <th class="text-left text-red-600 bg-red-50">ETD</th>
                 <th class="text-center text-red-600 bg-red-50">No Bagseals</th>
                 <th class="text-right text-red-600 bg-red-50">Berat (Kg)</th>
                 <th class="text-right text-red-600 bg-red-50">Pcs</th>
@@ -1128,8 +1157,6 @@
                     <td class="font-bold text-slate-700">${d._dest}</td>
                     <td class="font-mono text-xs">${d._smu}</td>
                     <td>${d._flight}</td>
-                    <td>${d._tglFlight}</td>
-                    <td>${d._etd}</td>
                     <td class="text-center font-mono text-xs">${d._mb}</td>
                     <td class="text-right">${formatNumber(d._weight)}</td>
                     <td class="text-right font-bold">${formatNumber(d._pcs)}</td>
@@ -1447,7 +1474,6 @@
                     if (inboundInfo) {
                         let eddDate = null;
                         if(eddStr.includes('/')) {
-                            // Split format: DD/MM/YYYY HH:MM
                             const p = eddStr.split(' ')[0].split('/');
                             if(p.length === 3) eddDate = new Date(p[2], p[1]-1, p[0]);
                         } else if(eddStr.includes('-')) {
@@ -2299,13 +2325,11 @@
             try {
                 if(window.showLoading) window.showLoading(true, "Memuat Data...");
                 
-                // Fetch hanya dari 2 Koleksi sekarang! (Lebih hemat kuota Reads)
                 const [qsInbound, qsAwb] = await Promise.all([
                     getDocs(collection(db, "inbound_data")),
                     getDocs(collection(db, "awb_data"))
                 ]);
 
-                // Simpan data AWB gabungan ke memori
                 window.awbData = [];
                 if (qsAwb && !qsAwb.empty) {
                     qsAwb.forEach(doc => {
@@ -2408,7 +2432,9 @@
                         const bagseal = String(row['No Bagseals'] || '').trim();
                         const smu = (row['SMU']||'').replace(/\s/g, '');
                         const dest = (row['Destinasi']||'').replace(/\s/g, '');
-                        const date = (row['Tanggal DIterima']||'').replace(/[\/\s,]/g, ''); 
+                        
+                        const dateStrRaw = String(row['Tanggal Diterima'] || row['Tanggal DIterima'] || '');
+                        const date = dateStrRaw.replace(/[\/\s,]/g, ''); 
                         
                         const fallbackId = `${smu}_${dest}_${date}`.substring(0, 100);
                         const id = bagseal || fallbackId;
@@ -2434,10 +2460,8 @@
             });
         };
 
-        // NEW: Fungsi Upload AWB Gabungan
         window.uploadAwbCSVToFirestore = function(file) {
-            window.showLoading(true, "Menganalisis file Data AWB Gabungan...", "upload");
-            // Pemisah otomatis atau default koma (,) untuk file CSV yang baru
+            window.showLoading(true, "Menganalisis file Data AWB...", "upload");
             Papa.parse(file, {
                 header: true, 
                 skipEmptyLines: true, 
@@ -2450,7 +2474,7 @@
                         const awb_no = String(row['awb_no'] || '').trim();
                         const expect_delivery_tm = String(row['expect_delivery_tm'] || '').trim();
                         
-                        if (!container_no || !awb_no) continue; // Skip baris tidak valid
+                        if (!container_no || !awb_no) continue;
                         
                         window.pendingAwbData.push({ container_no, awb_no, expect_delivery_tm });
                     }
@@ -2459,7 +2483,7 @@
                     document.getElementById('csvAwbFile').value = '';
                     
                     if(window.pendingAwbData.length === 0) {
-                        window.showToast("Tidak ada data ditemukan dalam file", "error");
+                        window.showToast("Tidak ada data valid ditemukan", "error");
                         return;
                     }
                     
@@ -2472,7 +2496,6 @@
         window.confirmUpload = async function() {
             window.closePreviewModal();
             
-            // Proses Jika Mode AWB
             if (window.currentUploadMode === 'awb') {
                 if (!window.pendingAwbData || window.pendingAwbData.length === 0) return;
                 
@@ -2485,7 +2508,6 @@
                 for (const item of window.pendingAwbData) {
                     const id = item.awb_no; 
                     const docRef = doc(db, "awb_data", id);
-                    // Menimpa / memperbarui data yang sudah ada berdasar awb_no
                     currentBatch.set(docRef, item, { merge: true }); 
                     count++;
                     if (count % batchSize === 0) { batches.push(currentBatch.commit()); currentBatch = writeBatch(db); }
@@ -2506,7 +2528,6 @@
                 return;
             }
 
-            // Proses Jika Mode Inbound (Update Data Biasa)
             if (window.pendingUploadData.length === 0) {
                 window.showToast("Tidak ada data baru untuk diunggah", "info");
                 return;
@@ -2522,7 +2543,10 @@
                 const bagseal = String(row['No Bagseals'] || '').trim();
                 const smu = (row['SMU']||'').replace(/\s/g, '');
                 const dest = (row['Destinasi']||'').replace(/\s/g, '');
-                const date = (row['Tanggal DIterima']||'').replace(/[\/\s,]/g, ''); 
+                
+                const dateStrRaw = String(row['Tanggal Diterima'] || row['Tanggal DIterima'] || '');
+                const date = dateStrRaw.replace(/[\/\s,]/g, ''); 
+                
                 const id = bagseal || `${smu}_${dest}_${date}`.substring(0, 100) || doc(collection(db, "inbound_data")).id; 
 
                 const docRef = doc(db, "inbound_data", id);
@@ -2545,7 +2569,6 @@
             }
         };
 
-        // Event Listeners Input File
         document.getElementById('csvFile').addEventListener('change', function(e) {
             if(e.target.files.length > 0) window.uploadCSVToFirestore(e.target.files[0]);
         });
