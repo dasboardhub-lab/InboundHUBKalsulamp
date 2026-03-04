@@ -743,7 +743,7 @@
                         SLA by EDD Status
                     </h3>
                 </div>
-                <div class="overflow-auto custom-scrollbar max-h-[400px]">
+                <div class="overflow-auto custom-scrollbar max-h-[650px]">
                     <table class="fresh-table w-full relative" id="slaEddTable">
                         <!-- JS Generated -->
                     </table>
@@ -2437,7 +2437,10 @@
                         const date = dateStrRaw.replace(/[\/\s,]/g, ''); 
                         
                         const fallbackId = `${smu}_${dest}_${date}`.substring(0, 100);
-                        const id = bagseal || fallbackId;
+                        let id = bagseal || fallbackId;
+
+                        // Sanitasi ID
+                        if (id) id = String(id).replace(/\//g, '_');
 
                         if (!id) continue; 
 
@@ -2468,6 +2471,15 @@
                 complete: async function(results) {
                     const data = results.data;
                     window.pendingAwbData = [];
+                    let duplicateCount = 0;
+                    
+                    // Buat Set dari data AWB yang sudah ada di database
+                    const existingAwbs = new Set();
+                    if (window.awbData) {
+                        window.awbData.forEach(d => { 
+                            if (d.awb_no) existingAwbs.add(String(d.awb_no).trim()); 
+                        });
+                    }
                     
                     for (const row of data) {
                         const container_no = String(row['container_no'] || '').trim();
@@ -2476,6 +2488,15 @@
                         
                         if (!container_no || !awb_no) continue;
                         
+                        // Skip jika data sudah ada di database atau duplikat dalam file
+                        if (existingAwbs.has(awb_no)) {
+                            duplicateCount++;
+                            continue;
+                        }
+                        
+                        // Tambahkan ke Set agar tidak double jika ada awb yang sama di baris bawah CSV
+                        existingAwbs.add(awb_no);
+                        
                         window.pendingAwbData.push({ container_no, awb_no, expect_delivery_tm });
                     }
                     
@@ -2483,12 +2504,12 @@
                     document.getElementById('csvAwbFile').value = '';
                     
                     if(window.pendingAwbData.length === 0) {
-                        window.showToast("Tidak ada data valid ditemukan", "error");
+                        window.showToast("Semua data adalah duplikat atau tidak valid", "error");
                         return;
                     }
                     
                     window.currentUploadMode = 'awb';
-                    window.openPreviewModal(window.pendingAwbData.length, 0);
+                    window.openPreviewModal(window.pendingAwbData.length, duplicateCount);
                 }
             });
         };
@@ -2499,31 +2520,48 @@
             if (window.currentUploadMode === 'awb') {
                 if (!window.pendingAwbData || window.pendingAwbData.length === 0) return;
                 
-                if(window.showLoading) window.showLoading(true, "Menyimpan Data AWB...", "upload");
-                const batchSize = 450; 
-                let batches = [];
+                if(window.showLoading) window.showLoading(true, "Menyimpan Data AWB (Batch 1)...", "upload");
+                const batchSize = 500; 
                 let currentBatch = writeBatch(db);
                 let count = 0;
-
-                for (const item of window.pendingAwbData) {
-                    const id = item.awb_no; 
-                    const docRef = doc(db, "awb_data", id);
-                    currentBatch.set(docRef, item, { merge: true }); 
-                    count++;
-                    if (count % batchSize === 0) { batches.push(currentBatch.commit()); currentBatch = writeBatch(db); }
-                }
-                if (count % batchSize !== 0) batches.push(currentBatch.commit());
+                let batchNumber = 1;
+                let successCount = 0;
 
                 try {
-                    await Promise.all(batches);
+                    for (const item of window.pendingAwbData) {
+                        // Sanitasi ID: Firebase tidak mengizinkan karakter '/' pada Document ID
+                        const id = String(item.awb_no).replace(/\//g, '_'); 
+                        const docRef = doc(db, "awb_data", id);
+                        currentBatch.set(docRef, item, { merge: true }); 
+                        count++;
+                        
+                        if (count % batchSize === 0) { 
+                            if(window.showLoading) document.getElementById('loadingText').textContent = `Menyimpan Data AWB (Batch ${batchNumber})...`;
+                            await currentBatch.commit(); 
+                            successCount += batchSize;
+                            currentBatch = writeBatch(db); 
+                            batchNumber++;
+                        }
+                    }
+                    if (count % batchSize !== 0) {
+                        if(window.showLoading) document.getElementById('loadingText').textContent = `Menyimpan Data AWB (Batch Terakhir)...`;
+                        await currentBatch.commit();
+                        successCount += (count % batchSize);
+                    }
+
                     if(window.showLoading) window.showLoading(false);
                     window.pendingAwbData = []; 
-                    window.openSuccessModal(count);
+                    window.openSuccessModal(successCount);
                     window.loadDataFromFirestore();
                 } catch (e) {
                     console.error(e);
                     if(window.showLoading) window.showLoading(false);
-                    window.showToast("Upload Data AWB Gagal", "error");
+                    if (successCount > 0) {
+                        window.showToast(`Upload terhenti. ${successCount} data berhasil masuk.`, "warning");
+                        window.loadDataFromFirestore();
+                    } else {
+                        window.showToast("Upload Data AWB Gagal", "error");
+                    }
                 }
                 return;
             }
@@ -2533,39 +2571,58 @@
                 return;
             }
 
-            if(window.showLoading) window.showLoading(true, "Menyimpan ke Cloud...", "upload");
-            const batchSize = 450; 
-            let batches = [];
-            let currentBatch = writeBatch(db);
-            let count = 0;
-
-            for (const row of window.pendingUploadData) {
-                const bagseal = String(row['No Bagseals'] || '').trim();
-                const smu = (row['SMU']||'').replace(/\s/g, '');
-                const dest = (row['Destinasi']||'').replace(/\s/g, '');
-                
-                const dateStrRaw = String(row['Tanggal Diterima'] || row['Tanggal DIterima'] || '');
-                const date = dateStrRaw.replace(/[\/\s,]/g, ''); 
-                
-                const id = bagseal || `${smu}_${dest}_${date}`.substring(0, 100) || doc(collection(db, "inbound_data")).id; 
-
-                const docRef = doc(db, "inbound_data", id);
-                currentBatch.set(docRef, row);
-                count++;
-                if (count % batchSize === 0) { batches.push(currentBatch.commit()); currentBatch = writeBatch(db); }
-            }
-            if (count % batchSize !== 0) batches.push(currentBatch.commit());
+            if(window.showLoading) window.showLoading(true, "Menyimpan ke Cloud (Batch 1)...", "upload");
+            const batchSizeInbound = 500; 
+            let currentBatchInbound = writeBatch(db);
+            let countInbound = 0;
+            let batchNumberInbound = 1;
+            let successCountInbound = 0;
 
             try {
-                await Promise.all(batches);
+                for (const row of window.pendingUploadData) {
+                    const bagseal = String(row['No Bagseals'] || '').trim();
+                    const smu = (row['SMU']||'').replace(/\s/g, '');
+                    const dest = (row['Destinasi']||'').replace(/\s/g, '');
+                    
+                    const dateStrRaw = String(row['Tanggal Diterima'] || row['Tanggal DIterima'] || '');
+                    const date = dateStrRaw.replace(/[\/\s,]/g, ''); 
+                    
+                    let rawId = bagseal || `${smu}_${dest}_${date}`.substring(0, 100); 
+                    
+                    // Sanitasi ID untuk inbound data
+                    let id = rawId ? String(rawId).replace(/\//g, '_') : doc(collection(db, "inbound_data")).id;
+
+                    const docRef = doc(db, "inbound_data", id);
+                    currentBatchInbound.set(docRef, row);
+                    countInbound++;
+                    
+                    if (countInbound % batchSizeInbound === 0) { 
+                        if(window.showLoading) document.getElementById('loadingText').textContent = `Menyimpan ke Cloud (Batch ${batchNumberInbound})...`;
+                        await currentBatchInbound.commit(); 
+                        successCountInbound += batchSizeInbound;
+                        currentBatchInbound = writeBatch(db); 
+                        batchNumberInbound++;
+                    }
+                }
+                if (countInbound % batchSizeInbound !== 0) {
+                    if(window.showLoading) document.getElementById('loadingText').textContent = `Menyimpan ke Cloud (Batch Terakhir)...`;
+                    await currentBatchInbound.commit();
+                    successCountInbound += (countInbound % batchSizeInbound);
+                }
+
                 if(window.showLoading) window.showLoading(false);
                 window.pendingUploadData = []; 
-                window.openSuccessModal(count);
+                window.openSuccessModal(successCountInbound);
                 window.loadDataFromFirestore(); 
             } catch (e) {
                 console.error(e);
                 if(window.showLoading) window.showLoading(false);
-                window.showToast("Upload Gagal", "error");
+                if (successCountInbound > 0) {
+                    window.showToast(`Upload terhenti. ${successCountInbound} data berhasil masuk.`, "warning");
+                    window.loadDataFromFirestore(); 
+                } else {
+                    window.showToast("Upload Gagal", "error");
+                }
             }
         };
 
