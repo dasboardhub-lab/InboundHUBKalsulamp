@@ -784,6 +784,7 @@
         window.filteredData = [];
         window.aggregatedData = [];
         window.rejectedData = []; 
+        window.filteredRejectedData = [];
         
         window.awbData = []; 
         window.pendingAwbData = [];
@@ -1098,6 +1099,7 @@
 
             window.rawData = validData;
             window.rejectedData = rejectedData;
+            window.filteredRejectedData = rejectedData;
 
             window.populateFilters();
             window.renderRejectedTable();
@@ -1118,15 +1120,15 @@
             const badge = document.getElementById('rejectedCountBadge');
 
             if (badge) {
-                badge.textContent = window.rejectedData.length + ' Data';
-                if (window.rejectedData.length === 0) {
+                badge.textContent = window.filteredRejectedData.length + ' Data';
+                if (window.filteredRejectedData.length === 0) {
                     badge.className = 'bg-slate-200 text-slate-500 text-[10px] font-bold px-2 py-1 rounded-full shadow-sm';
                 } else {
                     badge.className = 'bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm animate-pulse';
                 }
             }
 
-            if (window.rejectedData.length === 0) {
+            if (window.filteredRejectedData.length === 0) {
                 table.innerHTML = `<tr><td class="p-4 text-center text-slate-400 italic">Tidak ada data Unidentified Received Date</td></tr>`;
                 return;
             }
@@ -1146,7 +1148,7 @@
                 <th class="text-left text-red-600 bg-red-50">Note</th>
             </tr></thead><tbody>`;
 
-            window.rejectedData.forEach(d => {
+            window.filteredRejectedData.forEach(d => {
                 const datePa = d._tglPA ? formatDate(d._tglPA) : '-';
                 html += `<tr class="hover:bg-red-50/30">
                     <td class="font-medium text-slate-600">${datePa}</td>
@@ -1348,6 +1350,24 @@
                 return dateOk && orgOk && dstOk && venOk && svcOk && searchOk;
             });
 
+            window.filteredRejectedData = window.rejectedData.filter(d => {
+                const orgOk = fOrg.includes('ALL') || fOrg.includes(d._origin);
+                const dstOk = fDst.includes('ALL') || fDst.includes(d._dest);
+                const venOk = fVen.includes('ALL') || fVen.includes(d._vendor);
+                const svcOk = window.selectedService === 'ALL' || d._service === window.selectedService;
+                
+                let searchOk = true;
+                if(search) {
+                    const haystack = [
+                        d._smu, d._flight, d._vendor, d._origin, d._dest,
+                        d._batch, d._mb, d._note, d._service
+                    ].join(' ').toUpperCase();
+                    searchOk = haystack.includes(search);
+                }
+                
+                return orgOk && dstOk && venOk && svcOk && searchOk;
+            });
+
             window.currentPage = 1;
             window.matrixPage = 1; 
             window.updateDashboard();
@@ -1435,6 +1455,7 @@
             window.renderMatrixTable();
             window.aggregateAndRenderTable();
             window.renderSlaEddTable();
+            window.renderRejectedTable();
         };
 
         window.updateDiff = function(id, current, previous) {
@@ -2294,6 +2315,7 @@
         import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
         import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js';
 
+        // 1. Config Database A (Untuk Data Inbound)
         const firebaseConfig = {
             apiKey: "AIzaSyDNB8muGuCvKuXVmQdJt8MkrAltKn2mtIY",
             authDomain: "dasboardhub-ab72e.firebaseapp.com",
@@ -2304,30 +2326,64 @@
             measurementId: "G-CW183HEGQN"
         };
 
+        // 2. Config Database B (Untuk Data Gabungan AWB)
+        const firebaseConfigAwb = {
+            apiKey: "AIzaSyBD5M30Ase7qglGsqbCNmxew_5YkV33Y3Y",
+            authDomain: "data-dasboard-f53a2.firebaseapp.com",
+            projectId: "data-dasboard-f53a2",
+            storageBucket: "data-dasboard-f53a2.firebasestorage.app",
+            messagingSenderId: "909860400950",
+            appId: "1:909860400950:web:7502f4c42ea73cb90dcd97",
+            measurementId: "G-8KGP1D5H9N"
+        };
+
+        // Initialize Firebase A (Default)
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
+        // Initialize Firebase B (Diberi nama "AwbApp" agar tidak bentrok)
+        const appAwb = initializeApp(firebaseConfigAwb, "AwbApp");
+        const analyticsAwb = getAnalytics(appAwb);
+        const dbAwb = getFirestore(appAwb);
+        const authAwb = getAuth(appAwb);
+
+        // State untuk memastikan kedua database siap
+        let inboundReady = false;
+        let awbReady = false;
+        window.dataLoadedFlag = false;
+
+        function checkBothAuthAndLoad() {
+            if (inboundReady && awbReady && !window.dataLoadedFlag) {
+                window.dataLoadedFlag = true;
                 const statusText = document.getElementById('statusText');
                 const connectionStatus = document.getElementById('connectionStatus');
-                if(statusText) statusText.textContent = 'Connected';
+                if(statusText) statusText.textContent = 'Connected (Dual Cloud)';
                 if(connectionStatus) connectionStatus.className = "w-1.5 h-1.5 rounded-full bg-emerald-500";
                 window.loadDataFromFirestore();
-            } else {
-                signInAnonymously(auth).catch(console.error);
             }
+        }
+
+        // Auth Login Otomatis untuk kedua Database
+        onAuthStateChanged(auth, (user) => {
+            if (user) { inboundReady = true; checkBothAuthAndLoad(); } 
+            else { signInAnonymously(auth).catch(console.error); }
+        });
+
+        onAuthStateChanged(authAwb, (user) => {
+            if (user) { awbReady = true; checkBothAuthAndLoad(); } 
+            else { signInAnonymously(authAwb).catch(console.error); }
         });
 
         window.loadDataFromFirestore = async function() {
             try {
                 if(window.showLoading) window.showLoading(true, "Memuat Data...");
                 
+                // Fetch data dari Firebase A (db) dan Firebase B (dbAwb) secara bersamaan
                 const [qsInbound, qsAwb] = await Promise.all([
                     getDocs(collection(db, "inbound_data")),
-                    getDocs(collection(db, "awb_data"))
+                    getDocs(collection(dbAwb, "awb_data"))
                 ]);
 
                 window.awbData = [];
@@ -2382,7 +2438,7 @@
 
             const batchSize = 450;
             let batches = [];
-            let currentBatch = writeBatch(db);
+            let currentBatch = writeBatch(db); // Hapus Inbound tetap pakai db A
             let count = 0;
 
             for (const item of toDelete) {
@@ -2439,9 +2495,7 @@
                         const fallbackId = `${smu}_${dest}_${date}`.substring(0, 100);
                         let id = bagseal || fallbackId;
 
-                        // Sanitasi ID
                         if (id) id = String(id).replace(/\//g, '_');
-
                         if (!id) continue; 
 
                         if (existingIds.has(id)) {
@@ -2450,7 +2504,6 @@
                         }
                         
                         existingIds.add(id);
-
                         window.pendingUploadData.push(row);
                     }
                     
@@ -2473,7 +2526,6 @@
                     window.pendingAwbData = [];
                     let duplicateCount = 0;
                     
-                    // Buat Set dari data AWB yang sudah ada di database
                     const existingAwbs = new Set();
                     if (window.awbData) {
                         window.awbData.forEach(d => { 
@@ -2488,15 +2540,12 @@
                         
                         if (!container_no || !awb_no) continue;
                         
-                        // Skip jika data sudah ada di database atau duplikat dalam file
                         if (existingAwbs.has(awb_no)) {
                             duplicateCount++;
                             continue;
                         }
                         
-                        // Tambahkan ke Set agar tidak double jika ada awb yang sama di baris bawah CSV
                         existingAwbs.add(awb_no);
-                        
                         window.pendingAwbData.push({ container_no, awb_no, expect_delivery_tm });
                     }
                     
@@ -2517,21 +2566,21 @@
         window.confirmUpload = async function() {
             window.closePreviewModal();
             
+            // --- AWB MENGGUNAKAN FIREBASE B (dbAwb) ---
             if (window.currentUploadMode === 'awb') {
                 if (!window.pendingAwbData || window.pendingAwbData.length === 0) return;
                 
                 if(window.showLoading) window.showLoading(true, "Menyimpan Data AWB (Batch 1)...", "upload");
                 const batchSize = 500; 
-                let currentBatch = writeBatch(db);
+                let currentBatch = writeBatch(dbAwb); // Gunakan dbAwb
                 let count = 0;
                 let batchNumber = 1;
                 let successCount = 0;
 
                 try {
                     for (const item of window.pendingAwbData) {
-                        // Sanitasi ID: Firebase tidak mengizinkan karakter '/' pada Document ID
                         const id = String(item.awb_no).replace(/\//g, '_'); 
-                        const docRef = doc(db, "awb_data", id);
+                        const docRef = doc(dbAwb, "awb_data", id); // Gunakan dbAwb
                         currentBatch.set(docRef, item, { merge: true }); 
                         count++;
                         
@@ -2539,7 +2588,7 @@
                             if(window.showLoading) document.getElementById('loadingText').textContent = `Menyimpan Data AWB (Batch ${batchNumber})...`;
                             await currentBatch.commit(); 
                             successCount += batchSize;
-                            currentBatch = writeBatch(db); 
+                            currentBatch = writeBatch(dbAwb); // Gunakan dbAwb
                             batchNumber++;
                         }
                     }
@@ -2566,6 +2615,7 @@
                 return;
             }
 
+            // --- INBOUND MENGGUNAKAN FIREBASE A (db) ---
             if (window.pendingUploadData.length === 0) {
                 window.showToast("Tidak ada data baru untuk diunggah", "info");
                 return;
@@ -2573,7 +2623,7 @@
 
             if(window.showLoading) window.showLoading(true, "Menyimpan ke Cloud (Batch 1)...", "upload");
             const batchSizeInbound = 500; 
-            let currentBatchInbound = writeBatch(db);
+            let currentBatchInbound = writeBatch(db); // Gunakan db
             let countInbound = 0;
             let batchNumberInbound = 1;
             let successCountInbound = 0;
@@ -2589,10 +2639,9 @@
                     
                     let rawId = bagseal || `${smu}_${dest}_${date}`.substring(0, 100); 
                     
-                    // Sanitasi ID untuk inbound data
                     let id = rawId ? String(rawId).replace(/\//g, '_') : doc(collection(db, "inbound_data")).id;
 
-                    const docRef = doc(db, "inbound_data", id);
+                    const docRef = doc(db, "inbound_data", id); // Gunakan db
                     currentBatchInbound.set(docRef, row);
                     countInbound++;
                     
@@ -2600,7 +2649,7 @@
                         if(window.showLoading) document.getElementById('loadingText').textContent = `Menyimpan ke Cloud (Batch ${batchNumberInbound})...`;
                         await currentBatchInbound.commit(); 
                         successCountInbound += batchSizeInbound;
-                        currentBatchInbound = writeBatch(db); 
+                        currentBatchInbound = writeBatch(db); // Gunakan db
                         batchNumberInbound++;
                     }
                 }
