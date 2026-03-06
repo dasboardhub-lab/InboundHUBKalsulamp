@@ -2413,6 +2413,9 @@
             } catch (e) {
                 console.error(e);
                 if(window.showLoading) window.showLoading(false);
+                if (e.code === 'resource-exhausted' || (e.message && e.message.includes('Quota'))) {
+                    window.showToast("Gagal memuat: Kuota Database Penuh hari ini.", "error");
+                }
             }
         };
 
@@ -2605,11 +2608,17 @@
                 } catch (e) {
                     console.error(e);
                     if(window.showLoading) window.showLoading(false);
+                    
+                    let errorMsg = "Upload Data AWB Gagal";
+                    if (e.code === 'resource-exhausted' || (e.message && e.message.includes('Quota'))) {
+                        errorMsg = "Kuota Database Penuh! Coba lagi besok.";
+                    }
+                    
                     if (successCount > 0) {
-                        window.showToast(`Upload terhenti. ${successCount} data berhasil masuk.`, "warning");
+                        window.showToast(`Upload terhenti. ${successCount} data masuk. (${errorMsg})`, "warning");
                         window.loadDataFromFirestore();
                     } else {
-                        window.showToast("Upload Data AWB Gagal", "error");
+                        window.showToast(errorMsg, "error");
                     }
                 }
                 return;
@@ -2666,11 +2675,17 @@
             } catch (e) {
                 console.error(e);
                 if(window.showLoading) window.showLoading(false);
+                
+                let errorMsg = "Upload Gagal";
+                if (e.code === 'resource-exhausted' || (e.message && e.message.includes('Quota'))) {
+                    errorMsg = "Kuota Database Penuh! Coba lagi besok.";
+                }
+
                 if (successCountInbound > 0) {
-                    window.showToast(`Upload terhenti. ${successCountInbound} data berhasil masuk.`, "warning");
+                    window.showToast(`Upload terhenti. ${successCountInbound} data masuk. (${errorMsg})`, "warning");
                     window.loadDataFromFirestore(); 
                 } else {
-                    window.showToast("Upload Gagal", "error");
+                    window.showToast(errorMsg, "error");
                 }
             }
         };
