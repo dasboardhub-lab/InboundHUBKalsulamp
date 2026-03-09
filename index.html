@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inbound Control Tower</title>
-    
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%234F46E5' d='M44.7 155.8c-26.6 15.6-26.6 54.8 0 70.4l184.4 108c16.5 9.7 36.9 9.7 53.4 0l184.4-108c26.6-15.6 26.6-54.8 0-70.4l-184.4-108c-16.5-9.7-36.9-9.7-53.4 0l-184.4 108zM512 304c0-7-2.6-13.8-7.7-18.8c-10.4-10.4-27.3-10.4-37.7 0L308.2 430.7c-31 28.5-77.5 28.5-108.5 0L41.3 285.2c-10.4-10.4-27.3-10.4-37.7 0C-1.5 290.2-1.5 307.1 8.9 317.5l163 150.3c48 44.2 121.9 44.2 169.9 0L503.1 317.5c5.1-5 7.7-11.8 7.7-18.8z'/></svg>">
+      
     <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -750,6 +753,28 @@
                 </div>
             </div>
 
+            <!-- NOTES TABLE (COLLAPSIBLE) -->
+            <div class="fresh-card overflow-hidden border-l-4 border-amber-500 transition-all duration-300 mb-6">
+                <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-amber-50/20 cursor-pointer hover:bg-amber-50/50 transition-colors" onclick="window.toggleNotesTable()">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600">
+                            <i class="fa-solid fa-message"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-[11px] font-bold text-amber-600 uppercase">Monitoring Catatan (Notes)</h3>
+                            <p class="text-[10px] text-slate-500 mt-0.5">Klik untuk melihat detail Master Bag (MB) yang memiliki catatan khusus pada periode ini</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span id="notesCountBadge" class="bg-amber-500 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm">0 MB</span>
+                        <i id="notesToggleIcon" class="fa-solid fa-chevron-down text-amber-400 transition-transform duration-300"></i>
+                    </div>
+                </div>
+                <div id="notesTableContainer" class="hidden overflow-auto custom-scrollbar max-h-80 relative">
+                    <table class="fresh-table w-full" id="notesTable"></table>
+                </div>
+            </div>
+
             <!-- 7. REJECTED TABLE (COLLAPSIBLE) MOVED TO BOTTOM -->
             <div class="fresh-card overflow-hidden border-l-4 border-red-500 transition-all duration-300 mb-10">
                 <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-red-50/20 cursor-pointer hover:bg-red-50/50 transition-colors" onclick="window.toggleRejectedTable()">
@@ -1021,6 +1046,68 @@
                 container.classList.add('hidden');
                 icon.classList.remove('rotate-180');
             }
+        };
+
+        // --- NEW: TOGGLE & RENDER NOTES TABLE ---
+        window.toggleNotesTable = function() {
+            const container = document.getElementById('notesTableContainer');
+            const icon = document.getElementById('notesToggleIcon');
+            if (container.classList.contains('hidden')) {
+                container.classList.remove('hidden');
+                icon.classList.add('rotate-180');
+            } else {
+                container.classList.add('hidden');
+                icon.classList.remove('rotate-180');
+            }
+        };
+
+        window.renderNotesTable = function() {
+            const table = document.getElementById('notesTable');
+            const badge = document.getElementById('notesCountBadge');
+
+            // Ambil data yang kolom notenya tidak kosong
+            const notesData = window.filteredData.filter(d => d._note && String(d._note).trim() !== '' && String(d._note).trim() !== '-');
+            
+            // Hitung jumlah Master Bag yang unik (agar tidak double terhitung jika 1 MB punya 2 baris)
+            const uniqueMBs = new Set(notesData.map(d => d._mb)).size;
+
+            if (badge) {
+                badge.textContent = uniqueMBs + ' MB Ber-Catatan';
+                if (uniqueMBs === 0) {
+                    badge.className = 'bg-slate-200 text-slate-500 text-[10px] font-bold px-2 py-1 rounded-full shadow-sm';
+                } else {
+                    badge.className = 'bg-amber-500 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm animate-pulse';
+                }
+            }
+
+            if (notesData.length === 0) {
+                table.innerHTML = `<tr><td class="p-4 text-center text-slate-400 italic">Tidak ada catatan khusus (Notes) pada periode ini</td></tr>`;
+                return;
+            }
+
+            let html = `<thead class="bg-amber-50 sticky top-0 z-20 shadow-sm border-b border-amber-200"><tr>
+                <th class="text-left text-amber-700 bg-amber-50">Tgl Terima</th>
+                <th class="text-center text-amber-700 bg-amber-50">Jam</th>
+                <th class="text-left text-amber-700 bg-amber-50">Destinasi</th>
+                <th class="text-left text-amber-700 bg-amber-50">Vendor</th>
+                <th class="text-left text-amber-700 bg-amber-50">SMU</th>
+                <th class="text-center text-amber-700 bg-amber-50">No Bagseals (MB)</th>
+                <th class="text-left text-amber-700 bg-amber-50">Isi Catatan (Note)</th>
+            </tr></thead><tbody>`;
+
+            notesData.forEach(d => {
+                html += `<tr class="hover:bg-amber-50/30">
+                    <td class="font-medium text-slate-600 border-b border-slate-100">${formatDate(d._date)}</td>
+                    <td class="text-center font-mono text-xs border-b border-slate-100">${d._jam}</td>
+                    <td class="font-bold text-slate-700 border-b border-slate-100">${d._dest}</td>
+                    <td class="border-b border-slate-100">${d._vendor}</td>
+                    <td class="font-mono text-xs border-b border-slate-100">${d._smu}</td>
+                    <td class="text-center font-mono text-xs font-bold text-indigo-600 border-b border-slate-100">${d._mb}</td>
+                    <td class="text-xs text-amber-700 font-medium italic border-b border-slate-100">${d._note}</td>
+                </tr>`;
+            });
+            html += '</tbody>';
+            table.innerHTML = html;
         };
 
         // --- PROCESSING (Global wrapper) ---
@@ -1455,6 +1542,7 @@
             window.renderMatrixTable();
             window.aggregateAndRenderTable();
             window.renderSlaEddTable();
+            window.renderNotesTable(); // <-- Render tabel notes
             window.renderRejectedTable();
         };
 
