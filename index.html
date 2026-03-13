@@ -1862,14 +1862,14 @@
                 if (r.type === 'total_date') {
                     tr.className = "bg-indigo-100 font-black text-indigo-900 border-b-2 border-indigo-300 shadow-sm";
                     tr.innerHTML = `
-                        <td colspan="10" class="text-right py-2 px-4 uppercase text-[11px] tracking-wide border-r border-indigo-200">Total Keseluruhan Tanggal ${formatDate(r.date)}</td>
+                        <td colspan="11" class="text-right py-2 px-4 uppercase text-[11px] tracking-wide border-r border-indigo-200">Total Keseluruhan Tanggal ${formatDate(r.date)}</td>
                         <td class="text-center font-mono text-indigo-800 border-r border-indigo-200">${formatNumber(r.mb)}</td>
                         <td class="text-right text-indigo-900 px-4">${formatNumber(r.pcs)}</td>
                     `;
                 } else if (r.type === 'total_jam') {
                     tr.className = "bg-slate-100 font-bold text-slate-700 border-y border-slate-300";
                     tr.innerHTML = `
-                        <td colspan="9" class="text-right py-1.5 px-4 uppercase text-[10px] tracking-wider border-r border-slate-300 text-slate-500">Total Jam ${r.jam}</td>
+                        <td colspan="10" class="text-right py-1.5 px-4 uppercase text-[10px] tracking-wider border-r border-slate-300 text-slate-500">Total Jam ${r.jam}</td>
                         <td class="text-center font-mono text-slate-700 border-r border-slate-300">${formatNumber(r.mb)}</td>
                         <td class="text-right text-slate-800 px-4">${formatNumber(r.pcs)}</td>
                     `;
@@ -2581,6 +2581,7 @@
                 header: true, skipEmptyLines: true,
                 complete: async function(results) {
                     const data = results.data;
+                    const UPLOAD_LIMIT = 18000; // Batas aman agar tidak melebihi 20.000 write per hari
                     
                     const existingIds = new Set();
                     if(window.rawData) {
@@ -2612,6 +2613,12 @@
                             continue; 
                         }
                         
+                        // Hentikan proses jika jumlah data BARU sudah mencapai batas aman
+                        if (window.pendingUploadData.length >= UPLOAD_LIMIT) {
+                            window.showToast(`Dibatasi! Hanya ${UPLOAD_LIMIT} data baru yang diproses untuk menjaga kuota.`, "warning");
+                            break;
+                        }
+                        
                         existingIds.add(id);
                         window.pendingUploadData.push(row);
                     }
@@ -2634,6 +2641,7 @@
                     const data = results.data;
                     window.pendingAwbData = [];
                     let duplicateCount = 0;
+                    const UPLOAD_LIMIT = 18000; // Batas aman kuota harian AWB
                     
                     const existingAwbs = new Set();
                     if (window.awbData) {
@@ -2652,6 +2660,12 @@
                         if (existingAwbs.has(awb_no)) {
                             duplicateCount++;
                             continue;
+                        }
+                        
+                        // Hentikan proses jika jumlah data BARU sudah mencapai batas aman
+                        if (window.pendingAwbData.length >= UPLOAD_LIMIT) {
+                            window.showToast(`Dibatasi! Hanya ${UPLOAD_LIMIT} data baru yang diproses untuk menjaga kuota.`, "warning");
+                            break;
                         }
                         
                         existingAwbs.add(awb_no);
