@@ -436,10 +436,6 @@
                         <i class="fa-solid fa-database text-[15px]"></i>
                     </button>
 
-                    <button onclick="window.openPasswordModal('upload_awb')" class="btn-warning btn-header-icon" title="Upload Data Gabungan AWB (CSV)">
-                        <i class="fa-solid fa-box-open text-[15px]"></i>
-                    </button>
-
                     <!-- Divider Pembatas -->
                     <div class="h-5 w-[2px] bg-slate-200 mx-1 rounded-full"></div>
 
@@ -449,7 +445,6 @@
                 </div>
                 
                 <input type="file" id="csvFile" accept=".csv" class="hidden">
-                <input type="file" id="csvAwbFile" accept=".csv" class="hidden">
             </div>
         </div>
     </header>
@@ -742,21 +737,6 @@
                 </div>
             </div>
 
-            <!-- SLA EDD TABLE -->
-            <div class="fresh-card overflow-hidden mb-10 flex flex-col">
-                <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-white">
-                    <h3 class="text-[11px] font-bold text-slate-700 uppercase flex items-center gap-2">
-                        <span class="bg-indigo-100 p-1.5 rounded-lg text-indigo-600"><i class="fa-solid fa-clock-rotate-left"></i></span>
-                        SLA by EDD Status
-                    </h3>
-                </div>
-                <div class="overflow-auto custom-scrollbar max-h-[650px]">
-                    <table class="fresh-table w-full relative" id="slaEddTable">
-                        <!-- JS Generated -->
-                    </table>
-                </div>
-            </div>
-
             <!-- NOTES TABLE (COLLAPSIBLE) -->
             <div class="fresh-card overflow-hidden border-l-4 border-amber-500 transition-all duration-300 mb-6">
                 <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-amber-50/20 cursor-pointer hover:bg-amber-50/50 transition-colors" onclick="window.toggleNotesTable()">
@@ -814,9 +794,6 @@
         window.aggregatedData = [];
         window.rejectedData = []; 
         window.filteredRejectedData = [];
-        
-        window.awbData = []; 
-        window.pendingAwbData = [];
         
         window.currentUploadMode = '';
         window.chartInstances = {};
@@ -1003,9 +980,6 @@
                 if(window.currentAction === 'upload_inbound' || window.currentAction === 'upload') {
                     window.showToast("Authorized", "success");
                     setTimeout(() => document.getElementById('csvFile').click(), 500);
-                } else if(window.currentAction === 'upload_awb') {
-                    window.showToast("Authorized", "success");
-                    setTimeout(() => document.getElementById('csvAwbFile').click(), 500);
                 } else if(window.currentAction === 'delete') {
                     const date = document.getElementById('deleteDateInput').value;
                     const dest = document.getElementById('deleteDestInput').value;
@@ -1545,8 +1519,7 @@
             window.renderSlaMatrices();
             window.renderMatrixTable();
             window.aggregateAndRenderTable();
-            window.renderSlaEddTable();
-            window.renderNotesTable(); // <-- Render tabel notes
+            window.renderNotesTable(); 
             window.renderRejectedTable();
         };
 
@@ -1562,126 +1535,6 @@
             el.innerText = `${sign}${diff.toFixed(1)}%`;
             if (diff >= 0) el.className = "text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-600";
             else el.className = "text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-50 text-rose-600";
-        };
-
-        window.renderSlaEddTable = function() {
-            const table = document.getElementById('slaEddTable');
-            if(!table) return;
-
-            const containerDateMap = {};
-            window.filteredData.forEach(d => {
-                if (d._mb && d._mb !== '-') {
-                    containerDateMap[d._mb] = { date: d._date, dest: d._dest };
-                }
-            });
-
-            const agg = {};
-            let grandAfter = 0, grandLast = 0, grandSame = 0, grandOver = 0, grandTot = 0;
-
-            (window.awbData || []).forEach(awbRow => {
-                const container = awbRow.container_no;
-                const eddStr = awbRow.expect_delivery_tm;
-
-                if (container && eddStr) {
-                    const inboundInfo = containerDateMap[container];
-                    if (inboundInfo) {
-                        let eddDate = null;
-                        if(eddStr.includes('/')) {
-                            const p = eddStr.split(' ')[0].split('/');
-                            if(p.length === 3) eddDate = new Date(p[2], p[1]-1, p[0]);
-                        } else if(eddStr.includes('-')) {
-                            eddDate = new Date(eddStr.split(' ')[0]);
-                        }
-
-                        if(eddDate && !isNaN(eddDate)) {
-                            eddDate.setHours(0,0,0,0);
-                            const rcvDate = new Date(inboundInfo.date);
-                            rcvDate.setHours(0,0,0,0);
-
-                            const diffDays = Math.round((eddDate - rcvDate) / (1000 * 60 * 60 * 24));
-                            let status = "";
-                            if (diffDays < 0) status = "After EDD";
-                            else if (diffDays === 0) status = "Last Day";
-                            else if (diffDays === 1) status = "Same Day";
-                            else if (diffDays >= 2) status = ">2 Hari";
-
-                            const dest = inboundInfo.dest;
-                            if (!agg[dest]) agg[dest] = { after: 0, last: 0, same: 0, over: 0, tot: 0 };
-
-                            if (status === "After EDD") { agg[dest].after++; grandAfter++; }
-                            if (status === "Last Day") { agg[dest].last++; grandLast++; }
-                            if (status === "Same Day") { agg[dest].same++; grandSame++; }
-                            if (status === ">2 Hari") { agg[dest].over++; grandOver++; }
-                            
-                            if (status !== "") {
-                                agg[dest].tot++;
-                                grandTot++;
-                            }
-                        }
-                    }
-                }
-            });
-
-            let h = `<thead class="sticky top-0 bg-white z-10 shadow-sm border-b border-slate-200">
-                        <tr>
-                            <th class="text-left text-slate-500">Destinasi</th>
-                            <th class="text-center text-rose-600 bg-rose-50">After EDD</th>
-                            <th class="text-center text-amber-600 bg-amber-50">Last Day</th>
-                            <th class="text-center text-emerald-600 bg-emerald-50">Same Day</th>
-                            <th class="text-center text-indigo-600 bg-indigo-50">>2 Hari</th>
-                            <th class="text-center font-bold bg-slate-100 text-slate-800">Total</th>
-                        </tr>
-                    </thead><tbody>`;
-
-            if (Object.keys(agg).length === 0) {
-                table.innerHTML = h + `<tr><td colspan="6" class="text-center py-6 text-slate-400 font-medium">Tidak ada data SLA AWB yang cocok</td></tr></tbody>`;
-                return;
-            }
-
-            Object.keys(agg).sort((a,b) => agg[b].tot - agg[a].tot).forEach(k => {
-                const d = agg[k];
-                h += `<tr class="hover:bg-slate-50 border-b border-slate-100 last:border-0">
-                    <td class="font-bold text-slate-700 valign-middle">${k}</td>
-                    <td class="text-center text-rose-600 font-mono py-1.5">${formatNumber(d.after)}</td>
-                    <td class="text-center text-amber-600 font-mono py-1.5">${formatNumber(d.last)}</td>
-                    <td class="text-center text-emerald-600 font-mono py-1.5">${formatNumber(d.same)}</td>
-                    <td class="text-center text-indigo-600 font-mono py-1.5">${formatNumber(d.over)}</td>
-                    <td class="text-center font-bold bg-slate-50 font-mono text-slate-800 py-1.5">${formatNumber(d.tot)}</td>
-                </tr>`;
-            });
-
-            const gPctAfter = grandTot > 0 ? ((grandAfter / grandTot) * 100).toFixed(1) : 0;
-            const gPctLast = grandTot > 0 ? ((grandLast / grandTot) * 100).toFixed(1) : 0;
-            const gPctSame = grandTot > 0 ? ((grandSame / grandTot) * 100).toFixed(1) : 0;
-            const gPctOver = grandTot > 0 ? ((grandOver / grandTot) * 100).toFixed(1) : 0;
-
-            h += `</tbody><tfoot class="sticky bottom-0 bg-slate-100 shadow-[0_-2px_5px_-2px_rgba(0,0,0,0.05)] border-t-2 border-slate-300">
-                <tr>
-                    <td class="font-black text-slate-800 uppercase text-[10px] py-2 valign-middle">TOTAL</td>
-                    <td class="text-center py-2">
-                        <div class="font-black text-rose-700 font-mono">${formatNumber(grandAfter)}</div>
-                        <div class="text-[9px] font-bold text-slate-500">${gPctAfter}%</div>
-                    </td>
-                    <td class="text-center py-2">
-                        <div class="font-black text-amber-700 font-mono">${formatNumber(grandLast)}</div>
-                        <div class="text-[9px] font-bold text-slate-500">${gPctLast}%</div>
-                    </td>
-                    <td class="text-center py-2">
-                        <div class="font-black text-emerald-700 font-mono">${formatNumber(grandSame)}</div>
-                        <div class="text-[9px] font-bold text-slate-500">${gPctSame}%</div>
-                    </td>
-                    <td class="text-center py-2">
-                        <div class="font-black text-indigo-700 font-mono">${formatNumber(grandOver)}</div>
-                        <div class="text-[9px] font-bold text-slate-500">${gPctOver}%</div>
-                    </td>
-                    <td class="text-center py-2 bg-slate-200">
-                        <div class="font-black text-slate-900 font-mono">${formatNumber(grandTot)}</div>
-                        <div class="text-[9px] font-bold text-slate-600">100%</div>
-                    </td>
-                </tr>
-            </tfoot>`;
-            
-            table.innerHTML = h;
         };
 
         window.downloadManifestCSV = function() {
@@ -2403,7 +2256,8 @@
     <!-- FIREBASE MODULE -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-        import { initializeFirestore, collection, getDocs, setDoc, doc, writeBatch, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+        // Tambahkan fungsi 'query' dan 'limit' pada baris import
+        import { initializeFirestore, collection, getDocs, setDoc, doc, writeBatch, deleteDoc, query, limit } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
         import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
         import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js';
 
@@ -2418,17 +2272,6 @@
             measurementId: "G-CW183HEGQN"
         };
 
-        // 2. Config Database B (Untuk Data Gabungan AWB)
-        const firebaseConfigAwb = {
-            apiKey: "AIzaSyBD5M30Ase7qglGsqbCNmxew_5YkV33Y3Y",
-            authDomain: "data-dasboard-f53a2.firebaseapp.com",
-            projectId: "data-dasboard-f53a2",
-            storageBucket: "data-dasboard-f53a2.firebasestorage.app",
-            messagingSenderId: "909860400950",
-            appId: "1:909860400950:web:7502f4c42ea73cb90dcd97",
-            measurementId: "G-8KGP1D5H9N"
-        };
-
         // Initialize Firebase A (Default)
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
@@ -2436,55 +2279,36 @@
         const db = initializeFirestore(app, { experimentalForceLongPolling: true });
         const auth = getAuth(app);
 
-        // Initialize Firebase B (Diberi nama "AwbApp" agar tidak bentrok)
-        const appAwb = initializeApp(firebaseConfigAwb, "AwbApp");
-        const analyticsAwb = getAnalytics(appAwb);
-        const dbAwb = initializeFirestore(appAwb, { experimentalForceLongPolling: true });
-        const authAwb = getAuth(appAwb);
-
-        // State untuk memastikan kedua database siap
+        // State untuk memastikan database siap
         let inboundReady = false;
-        let awbReady = false;
         window.dataLoadedFlag = false;
 
-        function checkBothAuthAndLoad() {
-            if (inboundReady && awbReady && !window.dataLoadedFlag) {
+        function checkAuthAndLoad() {
+            if (inboundReady && !window.dataLoadedFlag) {
                 window.dataLoadedFlag = true;
                 const statusText = document.getElementById('statusText');
                 const connectionStatus = document.getElementById('connectionStatus');
-                if(statusText) statusText.textContent = 'Connected (Dual Cloud)';
+                if(statusText) statusText.textContent = 'Connected (Inbound DB)';
                 if(connectionStatus) connectionStatus.className = "w-1.5 h-1.5 rounded-full bg-emerald-500";
                 window.loadDataFromFirestore();
             }
         }
 
-        // Auth Login Otomatis untuk kedua Database
+        // Auth Login Otomatis untuk Database
         onAuthStateChanged(auth, (user) => {
-            if (user) { inboundReady = true; checkBothAuthAndLoad(); } 
+            if (user) { inboundReady = true; checkAuthAndLoad(); } 
             else { signInAnonymously(auth).catch(console.error); }
-        });
-
-        onAuthStateChanged(authAwb, (user) => {
-            if (user) { awbReady = true; checkBothAuthAndLoad(); } 
-            else { signInAnonymously(authAwb).catch(console.error); }
         });
 
         window.loadDataFromFirestore = async function() {
             try {
                 if(window.showLoading) window.showLoading(true, "Memuat Data...");
                 
-                // Fetch data dari Firebase A (db) dan Firebase B (dbAwb) secara bersamaan
-                const [qsInbound, qsAwb] = await Promise.all([
-                    getDocs(collection(db, "inbound_data")),
-                    getDocs(collection(dbAwb, "awb_data"))
-                ]);
+                // MENGGUNAKAN QUERY LIMIT UNTUK MENCEGAH QUOTA EXCEEDED SAAT LOAD AWAL
+                // Batas maksimal limit Firestore adalah 10.000 dokumen per query
+                const inboundQuery = query(collection(db, "inbound_data"), limit(10000));
 
-                window.awbData = [];
-                if (qsAwb && !qsAwb.empty) {
-                    qsAwb.forEach(doc => {
-                        window.awbData.push(doc.data());
-                    });
-                }
+                const qsInbound = await getDocs(inboundQuery);
 
                 if (!qsInbound || qsInbound.empty) {
                     if(window.showLoading) window.showLoading(false);
@@ -2632,117 +2456,8 @@
             });
         };
 
-        window.uploadAwbCSVToFirestore = function(file) {
-            window.showLoading(true, "Menganalisis file Data AWB...", "upload");
-            Papa.parse(file, {
-                header: true, 
-                skipEmptyLines: true, 
-                complete: async function(results) {
-                    const data = results.data;
-                    window.pendingAwbData = [];
-                    let duplicateCount = 0;
-                    const UPLOAD_LIMIT = 18000; // Batas aman kuota harian AWB
-                    
-                    const existingAwbs = new Set();
-                    if (window.awbData) {
-                        window.awbData.forEach(d => { 
-                            if (d.awb_no) existingAwbs.add(String(d.awb_no).trim()); 
-                        });
-                    }
-                    
-                    for (const row of data) {
-                        const container_no = String(row['container_no'] || '').trim();
-                        const awb_no = String(row['awb_no'] || '').trim();
-                        const expect_delivery_tm = String(row['expect_delivery_tm'] || '').trim();
-                        
-                        if (!container_no || !awb_no) continue;
-                        
-                        if (existingAwbs.has(awb_no)) {
-                            duplicateCount++;
-                            continue;
-                        }
-                        
-                        // Hentikan proses jika jumlah data BARU sudah mencapai batas aman
-                        if (window.pendingAwbData.length >= UPLOAD_LIMIT) {
-                            window.showToast(`Dibatasi! Hanya ${UPLOAD_LIMIT} data baru yang diproses untuk menjaga kuota.`, "warning");
-                            break;
-                        }
-                        
-                        existingAwbs.add(awb_no);
-                        window.pendingAwbData.push({ container_no, awb_no, expect_delivery_tm });
-                    }
-                    
-                    if(window.showLoading) window.showLoading(false);
-                    document.getElementById('csvAwbFile').value = '';
-                    
-                    if(window.pendingAwbData.length === 0) {
-                        window.showToast("Semua data adalah duplikat atau tidak valid", "error");
-                        return;
-                    }
-                    
-                    window.currentUploadMode = 'awb';
-                    window.openPreviewModal(window.pendingAwbData.length, duplicateCount);
-                }
-            });
-        };
-
         window.confirmUpload = async function() {
             window.closePreviewModal();
-            
-            // --- AWB MENGGUNAKAN FIREBASE B (dbAwb) ---
-            if (window.currentUploadMode === 'awb') {
-                if (!window.pendingAwbData || window.pendingAwbData.length === 0) return;
-                
-                if(window.showLoading) window.showLoading(true, "Menyimpan Data AWB (Batch 1)...", "upload");
-                const batchSize = 500; 
-                let currentBatch = writeBatch(dbAwb); // Gunakan dbAwb
-                let count = 0;
-                let batchNumber = 1;
-                let successCount = 0;
-
-                try {
-                    for (const item of window.pendingAwbData) {
-                        const id = String(item.awb_no).replace(/\//g, '_'); 
-                        const docRef = doc(dbAwb, "awb_data", id); // Gunakan dbAwb
-                        currentBatch.set(docRef, item, { merge: true }); 
-                        count++;
-                        
-                        if (count % batchSize === 0) { 
-                            if(window.showLoading) document.getElementById('loadingText').textContent = `Menyimpan Data AWB (Batch ${batchNumber})...`;
-                            await currentBatch.commit(); 
-                            successCount += batchSize;
-                            currentBatch = writeBatch(dbAwb); // Gunakan dbAwb
-                            batchNumber++;
-                        }
-                    }
-                    if (count % batchSize !== 0) {
-                        if(window.showLoading) document.getElementById('loadingText').textContent = `Menyimpan Data AWB (Batch Terakhir)...`;
-                        await currentBatch.commit();
-                        successCount += (count % batchSize);
-                    }
-
-                    if(window.showLoading) window.showLoading(false);
-                    window.pendingAwbData = []; 
-                    window.openSuccessModal(successCount);
-                    window.loadDataFromFirestore();
-                } catch (e) {
-                    console.error(e);
-                    if(window.showLoading) window.showLoading(false);
-                    
-                    let errorMsg = "Upload Data AWB Gagal";
-                    if (e.code === 'resource-exhausted' || (e.message && e.message.includes('Quota'))) {
-                        errorMsg = "Kuota Database Penuh! Coba lagi besok.";
-                    }
-                    
-                    if (successCount > 0) {
-                        window.showToast(`Upload terhenti. ${successCount} data masuk. (${errorMsg})`, "warning");
-                        window.loadDataFromFirestore();
-                    } else {
-                        window.showToast(errorMsg, "error");
-                    }
-                }
-                return;
-            }
 
             // --- INBOUND MENGGUNAKAN FIREBASE A (db) ---
             if (window.pendingUploadData.length === 0) {
@@ -2812,10 +2527,6 @@
 
         document.getElementById('csvFile').addEventListener('change', function(e) {
             if(e.target.files.length > 0) window.uploadCSVToFirestore(e.target.files[0]);
-        });
-
-        document.getElementById('csvAwbFile').addEventListener('change', function(e) {
-            if(e.target.files.length > 0) window.uploadAwbCSVToFirestore(e.target.files[0]);
         });
 
     </script>
