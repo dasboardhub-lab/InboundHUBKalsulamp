@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inbound Control Tower</title>
+    <title>Inbound Control Tower (Supabase)</title>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%234F46E5' d='M44.7 155.8c-26.6 15.6-26.6 54.8 0 70.4l184.4 108c16.5 9.7 36.9 9.7 53.4 0l184.4-108c26.6-15.6 26.6-54.8 0-70.4l-184.4-108c-16.5-9.7-36.9-9.7-53.4 0l-184.4 108zM512 304c0-7-2.6-13.8-7.7-18.8c-10.4-10.4-27.3-10.4-37.7 0L308.2 430.7c-31 28.5-77.5 28.5-108.5 0L41.3 285.2c-10.4-10.4-27.3-10.4-37.7 0C-1.5 290.2-1.5 307.1 8.9 317.5l163 150.3c48 44.2 121.9 44.2 169.9 0L503.1 317.5c5.1-5 7.7-11.8 7.7-18.8z'/></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%2310B981' d='M44.7 155.8c-26.6 15.6-26.6 54.8 0 70.4l184.4 108c16.5 9.7 36.9 9.7 53.4 0l184.4-108c26.6-15.6 26.6-54.8 0-70.4l-184.4-108c-16.5-9.7-36.9-9.7-53.4 0l-184.4 108zM512 304c0-7-2.6-13.8-7.7-18.8c-10.4-10.4-27.3-10.4-37.7 0L308.2 430.7c-31 28.5-77.5 28.5-108.5 0L41.3 285.2c-10.4-10.4-27.3-10.4-37.7 0C-1.5 290.2-1.5 307.1 8.9 317.5l163 150.3c48 44.2 121.9 44.2 169.9 0L503.1 317.5c5.1-5 7.7-11.8 7.7-18.8z'/></svg>">
     
     <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -60,25 +60,25 @@
         }
         .fresh-input:focus { 
             background: #FFFFFF; 
-            border-color: #6366F1; 
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15); 
+            border-color: #10B981; 
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15); 
         }
 
         /* Buttons */
         .btn-gradient { 
-            background: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%); 
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%); 
             color: white; 
             padding: 8px 16px; 
             border-radius: 12px; 
             font-weight: 600; 
             font-size: 12px; 
             transition: all 0.3s; 
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25); 
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); 
             border: 1px solid rgba(255,255,255,0.1); 
         }
         .btn-gradient:hover { 
             transform: translateY(-1px); 
-            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35); 
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35); 
             filter: brightness(1.1); 
         }
 
@@ -99,24 +99,6 @@
             filter: brightness(1.1); 
         }
 
-        .btn-warning { 
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); 
-            color: white; 
-            padding: 8px 16px; 
-            border-radius: 12px; 
-            font-weight: 600; 
-            font-size: 12px; 
-            transition: all 0.3s; 
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25); 
-            border: 1px solid rgba(255,255,255,0.1); 
-        }
-        .btn-warning:hover { 
-            transform: translateY(-1px); 
-            box-shadow: 0 6px 16px rgba(245, 158, 11, 0.35); 
-            filter: brightness(1.1); 
-        }
-
-        /* Header Icon Buttons - Fix Ukuran Paten Tanpa Teks */
         .btn-header-icon {
             padding: 0 !important;
             width: 38px;
@@ -184,7 +166,6 @@
         .valign-middle { vertical-align: middle !important; }
         .fresh-table tr:hover td { background-color: #F1F5F9; }
         .group-col { background-color: #FFFFFF; border-right: 1px solid #cbd5e1; }
-        .thick-date-border { border-top: 4px solid #334155 !important; }
 
         /* Animations */
         @keyframes slideDown { from { transform: translate(-50%, -150%); opacity: 0; } to { transform: translate(-50%, 20px); opacity: 1; } }
@@ -195,7 +176,6 @@
         .loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .input-label { display: block; font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 4px; margin-left: 2px; }
         
-        /* Sticky Filter Background Fix */
         .sticky-filter-wrapper {
             position: sticky;
             top: 72px; 
@@ -223,20 +203,16 @@
         .road::after { content: ""; position: absolute; width: 10px; height: 100%; background-color: #282828; right: -65%; border-radius: 3px; animation: roadAnimation 1.4s linear infinite; border-left: 4px solid white; }
         .lampPost { position: absolute; bottom: 0; right: -90%; height: 90px; animation: roadAnimation 1.4s linear infinite; }
         @keyframes roadAnimation { 0% { transform: translateX(0px); } 100% { transform: translateX(-350px); } }
-        .chip-main-container { display: flex; justify-content: center; align-items: center; width: 100%; }
-        .chip-loader { width: 120px; }
-        .trace-bg { stroke: #CBD5E1; stroke-width: 1.8; fill: none; }
-        .trace-flow { stroke-width: 1.8; fill: none; stroke-dasharray: 40 400; stroke-dashoffset: 438; filter: drop-shadow(0 0 6px currentColor); animation: flow 3s cubic-bezier(0.5, 0, 0.9, 1) infinite; }
-        .yellow { stroke: #ffea00; color: #ffea00; } .blue { stroke: #00ccff; color: #00ccff; } .green { stroke: #00ff15; color: #00ff15; } .purple { stroke: #9900ff; color: #9900ff; } .red { stroke: #ff3300; color: #ff3300; }
-        @keyframes flow { to { stroke-dashoffset: 0; } }
-        .chip-body { rx: 12; ry: 12; } .chip-text { font-weight: bold; letter-spacing: 1px; } .chip-pin { stroke: #94A3B8; stroke-width: 1.5; filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.2)); }
+        
+        /* Progress Bar */
+        @keyframes shimmer { 0% { transform: skewX(-20deg) translateX(-150%); } 100% { transform: skewX(-20deg) translateX(250%); } }
+        .progress-glow { box-shadow: 0 0 12px rgba(16, 185, 129, 0.6); }
     </style>
 </head>
-<body class="flex flex-col min-h-screen selection:bg-indigo-100 selection:text-indigo-700">
+<body class="flex flex-col min-h-screen selection:bg-emerald-100 selection:text-emerald-700">
 
     <!-- LOADING OVERLAY -->
     <div id="loadingOverlay" class="loading-overlay hidden">
-        <!-- TRUCK LOADER (SYNCING) -->
         <div id="truckLoader" class="loader">
           <div class="truckWrapper">
             <div class="truckBody">
@@ -246,74 +222,33 @@
                 <path stroke-width="2" stroke="#282828" fill="#282828" d="M150 65C150 65.39 149.763 65.8656 149.127 66.2893C148.499 66.7083 147.573 67 146.5 67C145.427 67 144.501 66.7083 143.873 66.2893C143.237 65.8656 143 65.39 143 65C143 64.61 143.237 64.1344 143.873 63.7107C144.501 63.2917 145.427 63 146.5 63C147.573 63 148.499 63.2917 149.127 63.7107C149.763 64.1344 150 64.61 150 65Z"></path>
                 <rect stroke-width="2" stroke="#282828" fill="#FFFCAB" rx="1" height="7" width="5" y="63" x="187"></rect>
                 <rect stroke-width="2" stroke="#282828" fill="#282828" rx="1" height="11" width="4" y="81" x="193"></rect>
-                
-                <!-- Mengubah warna box menjadi magenta dan menambahkan teks Anteraja putih -->
                 <rect stroke-width="3" stroke="#282828" fill="#E81C65" rx="2.5" height="90" width="121" y="1.5" x="6.5"></rect>
                 <text x="67" y="52" fill="#FFFFFF" font-family="Arial, sans-serif" font-weight="900" font-style="italic" font-size="22" text-anchor="middle" letter-spacing="-1">anteraja</text>
-                
                 <rect stroke-width="2" stroke="#282828" fill="#DFDFDF" rx="2" height="4" width="6" y="84" x="1"></rect>
               </svg>
             </div>
             <div class="truckTires">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 30 30" class="tiresvg">
-                <circle stroke-width="3" stroke="#282828" fill="#282828" r="13.5" cy="15" cx="15"></circle>
-                <circle fill="#DFDFDF" r="7" cy="15" cx="15"></circle>
-              </svg>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 30 30" class="tiresvg">
-                <circle stroke-width="3" stroke="#282828" fill="#282828" r="13.5" cy="15" cx="15"></circle>
-                <circle fill="#DFDFDF" r="7" cy="15" cx="15"></circle>
-              </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 30 30" class="tiresvg"><circle stroke-width="3" stroke="#282828" fill="#282828" r="13.5" cy="15" cx="15"></circle><circle fill="#DFDFDF" r="7" cy="15" cx="15"></circle></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 30 30" class="tiresvg"><circle stroke-width="3" stroke="#282828" fill="#282828" r="13.5" cy="15" cx="15"></circle><circle fill="#DFDFDF" r="7" cy="15" cx="15"></circle></svg>
             </div>
             <div class="road"></div>
-            <svg xml:space="preserve" viewBox="0 0 453.459 453.459" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" id="Capa_1" version="1.1" fill="#000000" class="lampPost">
-              <path d="M252.882,0c-37.781,0-68.686,29.953-70.245,67.358h-6.917v8.954c-26.109,2.163-45.463,10.011-45.463,19.366h9.993
-            c-1.65,5.146-2.507,10.54-2.507,16.017c0,28.956,23.558,52.514,52.514,52.514c28.956,0,52.514-23.558,52.514-52.514
-            c0-5.478-0.856-10.872-2.506-16.017h9.992c0-9.354-19.352-17.204-45.463-19.366v-8.954h-6.149C200.189,38.779,223.924,16,252.882,16
-            c29.952,0,54.32,24.368,54.32,54.32c0,28.774-11.078,37.009-25.105,47.437c-17.444,12.968-37.216,27.667-37.216,78.884v113.914
-            h-0.797c-5.068,0-9.174,4.108-9.174,9.177c0,2.844,1.293,5.383,3.321,7.066c-3.432,27.933-26.851,95.744-8.226,115.459v11.202h45.75
-            v-11.202c18.625-19.715-4.794-87.527-8.227-115.459c2.029-1.683,3.322-4.223,3.322-7.066c0-5.068-4.107-9.177-9.176-9.177h-0.795
-            V196.641c0-43.174,14.942-54.283,30.762-66.043c14.793-10.997,31.559-23.461,31.559-60.277C323.202,31.545,291.656,0,252.882,0z
-            M232.77,111.694c0,23.442-19.071,42.514-42.514,42.514c-23.442,0-42.514-19.072-42.514-42.514c0-5.531,1.078-10.957,3.141-16.017
-            h78.747C231.693,100.736,232.77,106.162,232.77,111.694z"></path>
-            </svg>
           </div>
         </div>
 
-        <!-- CHIP LOADER (UPLOADING) -->
-        <div id="uploadLoader" class="hidden w-full">
-            <div class="chip-main-container">
-              <svg class="chip-loader" viewBox="0 0 256 256" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
-                <path class="trace-bg" d="M30,30 L80,80 L80,100" />
-                <path class="trace-bg" d="M226,30 L176,80 L176,100" />
-                <path class="trace-bg" d="M30,226 L80,176 L80,156" />
-                <path class="trace-bg" d="M226,226 L176,176 L176,156" />
-                <path class="trace-bg" d="M128,10 L128,100" />
-                <path class="trace-bg" d="M128,246 L128,156" />
-                <path class="trace-bg" d="M10,128 L100,128" />
-                <path class="trace-bg" d="M246,128 L156,128" />
-                <path class="trace-flow blue" d="M30,30 L80,80 L80,100" />
-                <path class="trace-flow yellow" d="M226,30 L176,80 L176,100" />
-                <path class="trace-flow green" d="M30,226 L80,176 L80,156" />
-                <path class="trace-flow red" d="M226,226 L176,176 L176,156" />
-                <path class="trace-flow purple" d="M128,10 L128,100" />
-                <path class="trace-flow blue" d="M128,246 L128,156" />
-                <path class="trace-flow red" d="M10,128 L100,128" />
-                <path class="trace-flow green" d="M246,128 L156,128" />
-                <line x1="110" y1="100" x2="110" y2="85" class="chip-pin" />
-                <line x1="146" y1="100" x2="146" y2="85" class="chip-pin" />
-                <line x1="110" y1="156" x2="110" y2="171" class="chip-pin" />
-                <line x1="146" y1="156" x2="146" y2="171" class="chip-pin" />
-                <line x1="100" y1="110" x2="85" y2="110" class="chip-pin" />
-                <line x1="100" y1="146" x2="85" y2="146" class="chip-pin" />
-                <line x1="156" y1="110" x2="171" y2="110" class="chip-pin" />
-                <line x1="156" y1="146" x2="171" y2="146" class="chip-pin" />
-                <rect x="96" y="96" width="64" height="64" fill="#0f172a" class="chip-body" />
-                <text x="128" y="133" fill="#ffffff" font-size="16" text-anchor="middle" font-family="monospace" class="chip-text">UP</text>
-              </svg>
+        <h3 class="text-slate-800 font-bold text-lg mt-4 tracking-wide" id="loadingText">Processing...</h3>
+
+        <!-- NEW AESTHETIC PROGRESS BAR -->
+        <div id="fetchProgressContainer" class="hidden w-72 mt-5 flex flex-col items-center animate-fade-in-up">
+            <div class="w-full bg-slate-200/80 rounded-full h-2.5 overflow-hidden shadow-inner relative border border-slate-300/50">
+                <div id="fetchProgressBar" class="bg-gradient-to-r from-emerald-400 to-emerald-600 h-full rounded-full transition-all duration-500 ease-out w-0 relative overflow-hidden progress-glow">
+                    <div class="absolute inset-0 bg-white/30" style="animation: shimmer 1.5s infinite linear; width: 40%;"></div>
+                </div>
+            </div>
+            <div class="flex justify-between w-full mt-2 px-1">
+                <span id="fetchProgressDetail" class="text-[10px] font-mono text-slate-500 font-bold tracking-wider">Menghitung data...</span>
+                <span id="fetchProgressPct" class="text-[10px] font-black text-emerald-600">0%</span>
             </div>
         </div>
-
-        <h3 class="text-slate-800 font-bold text-lg mt-4 tracking-wide" id="loadingText">Processing...</h3>
     </div>
 
     <!-- OVERLAYS -->
@@ -323,18 +258,18 @@
     <div id="passwordModal" class="fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-md hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-[320px] p-8 transform scale-95 transition-all duration-300 border border-white/50" id="passwordModalContent">
             <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-indigo-600 shadow-sm">
+                <div class="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-emerald-600 shadow-sm">
                     <i class="fa-solid fa-lock text-2xl"></i>
                 </div>
                 <h3 class="text-lg font-bold text-slate-800" id="modalTitle">Security Check</h3>
                 <p class="text-xs text-slate-500 mt-1" id="modalDesc">Please enter access code</p>
             </div>
             <div class="relative mb-6">
-                <input type="password" id="passwordInput" class="w-full text-center py-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-indigo-500 outline-none transition-all text-sm font-mono tracking-[0.5em]" placeholder="••••••" onkeypress="window.handleEnter(event)">
+                <input type="password" id="passwordInput" class="w-full text-center py-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-emerald-500 outline-none transition-all text-sm font-mono tracking-[0.5em]" placeholder="••••••" onkeypress="window.handleEnter(event)">
             </div>
             <div class="grid grid-cols-2 gap-3">
                 <button onclick="window.closePasswordModal()" class="py-2.5 rounded-xl border border-slate-200 text-slate-500 text-xs font-bold hover:bg-slate-50">Batal</button>
-                <button onclick="window.submitPassword()" class="py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 shadow-lg">Verifikasi</button>
+                <button onclick="window.submitPassword()" class="py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 shadow-lg">Verifikasi</button>
             </div>
         </div>
     </div>
@@ -363,6 +298,12 @@
                 <button onclick="window.closeDeleteModal()" class="py-2.5 rounded-xl border border-slate-200 text-slate-500 text-xs font-bold hover:bg-slate-50">Batal</button>
                 <button onclick="window.confirmDelete()" class="py-2.5 rounded-xl bg-red-600 text-white text-xs font-bold hover:bg-red-700 shadow-lg">Hapus</button>
             </div>
+            <!-- Tombol Hapus Semua Data -->
+            <div class="mt-4 text-center border-t border-slate-100 pt-4">
+                <button onclick="window.confirmDeleteAll()" class="text-[10px] font-bold text-slate-400 hover:text-red-600 transition-colors flex items-center justify-center gap-1 mx-auto">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Hapus Seluruh Database (Reset)
+                </button>
+            </div>
         </div>
     </div>
 
@@ -370,25 +311,25 @@
     <div id="previewModal" class="fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-md hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-[360px] p-8 transform scale-95 transition-all duration-300 border border-white/50" id="previewModalContent">
             <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-indigo-600 shadow-sm">
-                    <i class="fa-solid fa-magnifying-glass-chart text-2xl"></i>
+                <div class="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-emerald-600 shadow-sm">
+                    <i class="fa-solid fa-database text-2xl"></i>
                 </div>
                 <h3 class="text-lg font-bold text-slate-800">Analisis Data</h3>
-                <p class="text-xs text-slate-500 mt-1">Laporan pra-unggah (Pengecekan Duplikat)</p>
+                <p class="text-xs text-slate-500 mt-1">Laporan pra-unggah ke Supabase</p>
             </div>
             <div class="bg-slate-50 rounded-xl p-4 mb-6 border border-slate-100">
                 <div class="flex justify-between items-center mb-3">
-                    <span class="text-xs font-bold text-slate-600">Data Baru (Akan Disimpan):</span>
+                    <span class="text-xs font-bold text-slate-600">Data Baru / Di-update:</span>
                     <span class="text-sm font-black text-emerald-600" id="previewNewCount">0</span>
                 </div>
                 <div class="flex justify-between items-center border-t border-slate-200 pt-3">
-                    <span class="text-xs font-bold text-slate-500">Data Duplikat (Diabaikan):</span>
+                    <span class="text-xs font-bold text-slate-500">Data Diabaikan:</span>
                     <span class="text-sm font-black text-rose-500" id="previewDupCount">0</span>
                 </div>
             </div>
             <div class="grid grid-cols-2 gap-3">
                 <button onclick="window.closePreviewModal()" class="py-2.5 rounded-xl border border-slate-200 text-slate-500 text-xs font-bold hover:bg-slate-50">Batal</button>
-                <button onclick="window.confirmUpload()" class="py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 shadow-lg">Lanjutkan</button>
+                <button onclick="window.confirmUpload()" class="py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 shadow-lg">Lanjutkan</button>
             </div>
         </div>
     </div>
@@ -402,7 +343,7 @@
                 </div>
                 <h3 class="text-lg font-bold text-slate-800">Update Berhasil!</h3>
                 <p class="text-xs text-slate-500 mt-2 leading-relaxed">
-                    <span id="successCount" class="font-bold text-emerald-600 text-base">0</span> data baru telah berhasil disimpan ke dalam database.
+                    <span id="successCount" class="font-bold text-emerald-600 text-base">0</span> data baru telah berhasil disimpan ke dalam Supabase.
                 </p>
             </div>
             <button onclick="window.closeSuccessModal()" class="w-full py-3 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 shadow-lg transition">Selesai</button>
@@ -413,11 +354,11 @@
     <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-sm h-[72px]">
         <div class="max-w-[1600px] mx-auto px-6 h-full flex justify-between items-center">
             <div class="flex items-center gap-4">
-                <div class="w-10 h-10 bg-gradient-to-tr from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
+                <div class="w-10 h-10 bg-gradient-to-tr from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/30">
                     <i class="fa-solid fa-layer-group text-lg"></i>
                 </div>
                 <div>
-                    <h1 class="text-base font-extrabold text-slate-800 tracking-tight leading-none">Inbound<span class="text-indigo-600">Tower</span></h1>
+                    <h1 class="text-base font-extrabold text-slate-800 tracking-tight leading-none">Inbound<span class="text-emerald-600">Tower</span></h1>
                     <div class="flex items-center gap-1.5 mt-1">
                         <span id="connectionStatus" class="w-1.5 h-1.5 rounded-full bg-slate-300 animate-pulse"></span>
                         <p class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider" id="statusText">Connecting...</p>
@@ -427,7 +368,7 @@
             <div class="flex items-center gap-4">
                 <div class="hidden md:flex flex-col items-end">
                     <span class="text-[11px] font-bold text-slate-700" id="currentDateDisplay">-</span>
-                    <span class="text-[9px] font-bold text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-full">HUB-KalSulamp</span>
+                    <span class="text-[9px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">Powered by Supabase</span>
                 </div>
                 <div class="h-8 w-[1px] bg-slate-200 hidden md:block"></div>
                 
@@ -453,11 +394,11 @@
     <main class="flex-grow w-full max-w-[1600px] mx-auto px-4 py-4">
         <!-- EMPTY STATE -->
         <div id="initialState" class="flex flex-col items-center justify-center min-h-[60vh] animate-fade-in-up">
-            <div class="w-24 h-24 bg-white rounded-3xl flex items-center justify-center border-2 border-dashed border-indigo-200 shadow-xl shadow-indigo-100 mx-auto mb-6">
-                <i class="fa-solid fa-satellite-dish text-3xl text-indigo-300 animate-pulse"></i>
+            <div class="w-24 h-24 bg-white rounded-3xl flex items-center justify-center border-2 border-dashed border-emerald-200 shadow-xl shadow-emerald-100 mx-auto mb-6">
+                <i class="fa-solid fa-server text-3xl text-emerald-400 animate-pulse"></i>
             </div>
-            <h2 class="text-lg font-bold text-slate-800">Menghubungkan ke Cloud...</h2>
-            <p class="text-xs text-slate-500 mt-2 font-medium">Mengambil data dari database.</p>
+            <h2 class="text-lg font-bold text-slate-800">Menghubungkan ke Supabase...</h2>
+            <p class="text-xs text-slate-500 mt-2 font-medium" id="initialStateText">Mengambil seluruh riwayat data secara instan.</p>
         </div>
 
         <!-- DASHBOARD CONTENT -->
@@ -471,7 +412,7 @@
                         <div class="w-full xl:flex-1 flex flex-col md:flex-row gap-4 items-end">
                             <div class="relative w-full md:w-64 group">
                                 <span class="input-label">Pencarian Global (SMU, Berangkat, Vendor)</span>
-                                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-[34px] text-slate-400 text-xs group-focus-within:text-indigo-500 transition-colors"></i>
+                                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-[34px] text-slate-400 text-xs group-focus-within:text-emerald-500 transition-colors"></i>
                                 <input type="text" id="globalSearch" placeholder="Cari semua data..." class="fresh-input w-full pl-9 bg-white" oninput="window.applyFilters()">
                             </div>
                             <div class="w-full">
@@ -497,7 +438,7 @@
                                 <span class="input-label truncate">Origin</span>
                                 <button onclick="window.toggleMulti('originMenu')" class="fresh-input w-full text-left flex justify-between items-center bg-white h-[38px] relative z-10 group px-2 sm:px-3">
                                     <span id="originLabel" class="truncate text-[10px] sm:text-[11px] text-slate-600">Semua</span>
-                                    <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 group-hover:text-indigo-500"></i>
+                                    <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 group-hover:text-emerald-500"></i>
                                 </button>
                                 <div id="originMenu" class="hidden absolute top-full left-0 w-48 bg-white border border-slate-200 shadow-xl rounded-xl mt-1 z-[60] max-h-60 overflow-y-auto p-2 flex flex-col gap-1"></div>
                             </div>
@@ -507,7 +448,7 @@
                                 <span class="input-label truncate">Destinasi</span>
                                 <button onclick="window.toggleMulti('destMenu')" class="fresh-input w-full text-left flex justify-between items-center bg-white h-[38px] relative z-10 group px-2 sm:px-3">
                                     <span id="destLabel" class="truncate text-[10px] sm:text-[11px] text-slate-600">Semua</span>
-                                    <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 group-hover:text-indigo-500"></i>
+                                    <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 group-hover:text-emerald-500"></i>
                                 </button>
                                 <div id="destMenu" class="hidden absolute top-full right-0 left-auto md:left-0 md:right-auto w-48 bg-white border border-slate-200 shadow-xl rounded-xl mt-1 z-[60] max-h-60 overflow-y-auto p-2 flex flex-col gap-1"></div>
                             </div>
@@ -517,7 +458,7 @@
                                 <span class="input-label truncate">Vendor</span>
                                 <button onclick="window.toggleMulti('vendorMenu')" class="fresh-input w-full text-left flex justify-between items-center bg-white h-[38px] relative z-10 group px-2 sm:px-3">
                                     <span id="vendorLabel" class="truncate text-[10px] sm:text-[11px] text-slate-600">Semua</span>
-                                    <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 group-hover:text-indigo-500"></i>
+                                    <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 group-hover:text-emerald-500"></i>
                                 </button>
                                 <div id="vendorMenu" class="hidden absolute top-full right-0 left-auto md:left-0 md:right-auto w-48 bg-white border border-slate-200 shadow-xl rounded-xl mt-1 z-[60] max-h-60 overflow-y-auto p-2 flex flex-col gap-1"></div>
                             </div>
@@ -525,7 +466,7 @@
                             <!-- Reset -->
                             <div class="w-[38px] shrink-0">
                                 <span class="input-label hidden md:block">&nbsp;</span>
-                                <button onclick="window.resetFilters()" class="w-full md:w-[38px] h-[38px] flex items-center justify-center bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:text-indigo-600 text-slate-400 transition-all shadow-sm" title="Reset Filters">
+                                <button onclick="window.resetFilters()" class="w-full md:w-[38px] h-[38px] flex items-center justify-center bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:text-emerald-600 text-slate-400 transition-all shadow-sm" title="Reset Filters">
                                     <i class="fa-solid fa-arrows-rotate text-xs"></i>
                                 </button>
                             </div>
@@ -537,23 +478,23 @@
             <!-- 2. KPI -->
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 pt-2">
                 <!-- Tonnage -->
-                <div class="fresh-card p-6 relative overflow-hidden group">
-                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity transform group-hover:scale-110 duration-500"><i class="fa-solid fa-weight-hanging text-6xl text-indigo-600"></i></div>
+                <div class="fresh-card p-6 relative overflow-hidden group border-b-4 border-emerald-500">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity transform group-hover:scale-110 duration-500"><i class="fa-solid fa-weight-hanging text-6xl text-emerald-600"></i></div>
                     <div class="flex justify-between items-start relative z-10">
                         <div>
                             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Tonnage</p>
-                            <div class="flex items-baseline gap-2 mt-1"><h3 class="text-3xl font-extrabold text-slate-800 tracking-tight" id="kpiWeight">0</h3><span class="text-xs font-bold text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-md">Kg</span></div>
+                            <div class="flex items-baseline gap-2 mt-1"><h3 class="text-3xl font-extrabold text-slate-800 tracking-tight" id="kpiWeight">0</h3><span class="text-xs font-bold text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-md">Kg</span></div>
                             <div class="mt-3 flex items-center gap-2"><span id="kpiWeightDiff" class="text-[10px] font-bold px-2 py-1 rounded-full bg-slate-100 text-slate-500 transition-colors">0%</span><span class="text-[10px] text-slate-400 font-medium">vs periode sebelumnya</span></div>
                         </div>
                     </div>
                 </div>
                 <!-- Parcel -->
                 <div class="fresh-card p-6 relative overflow-hidden group">
-                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity transform group-hover:scale-110 duration-500"><i class="fa-solid fa-box-open text-6xl text-emerald-600"></i></div>
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity transform group-hover:scale-110 duration-500"><i class="fa-solid fa-box-open text-6xl text-blue-600"></i></div>
                     <div class="flex justify-between items-start relative z-10">
                         <div>
                             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Parcel</p>
-                            <div class="flex items-baseline gap-2 mt-1"><h3 class="text-3xl font-extrabold text-slate-800 tracking-tight" id="kpiPcs">0</h3><span class="text-xs font-bold text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-md">AWB</span></div>
+                            <div class="flex items-baseline gap-2 mt-1"><h3 class="text-3xl font-extrabold text-slate-800 tracking-tight" id="kpiPcs">0</h3><span class="text-xs font-bold text-blue-500 bg-blue-50 px-2 py-0.5 rounded-md">AWB</span></div>
                             <div class="mt-3 flex items-center gap-2"><span id="kpiPcsDiff" class="text-[10px] font-bold px-2 py-1 rounded-full bg-slate-100 text-slate-500 transition-colors">0%</span><span class="text-[10px] text-slate-400 font-medium">vs periode sebelumnya</span></div>
                         </div>
                     </div>
@@ -569,25 +510,25 @@
                         </div>
                     </div>
                 </div>
-                <!-- Average SLA (Gabungan Tercepat & Terlama) -->
-                <div class="fresh-card p-6 relative overflow-hidden group">
-                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity transform group-hover:scale-110 duration-500"><i class="fa-solid fa-bolt text-6xl text-emerald-600"></i></div>
+                <!-- Average SLA -->
+                <div class="fresh-card p-6 relative overflow-hidden group bg-slate-900 text-white">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity transform group-hover:scale-110 duration-500"><i class="fa-solid fa-bolt text-6xl text-emerald-400"></i></div>
                     <div class="flex justify-between items-start relative z-10">
                         <div class="w-full">
                             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Average SLA</p>
                             <div class="flex items-baseline gap-2 mt-1">
-                                <h3 class="text-3xl font-extrabold text-slate-800 tracking-tight" id="kpiAvgSLA">0</h3>
-                                <span class="text-xs font-bold text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-md">Hari</span>
+                                <h3 class="text-3xl font-extrabold text-white tracking-tight" id="kpiAvgSLA">0</h3>
+                                <span class="text-xs font-bold text-slate-300">Hari</span>
                             </div>
-                            <div class="mt-3 flex items-center justify-between w-full border-t border-slate-100 pt-3">
+                            <div class="mt-3 flex items-center justify-between w-full border-t border-slate-700 pt-3">
                                 <div class="flex flex-col">
                                     <span class="text-[9px] text-slate-400 font-bold uppercase">Tercepat</span>
-                                    <span class="text-xs font-black text-emerald-600"><span id="kpiMinSLA">0</span> Hari</span>
+                                    <span class="text-xs font-black text-emerald-400"><span id="kpiMinSLA">0</span> Hari</span>
                                 </div>
-                                <div class="h-6 w-[1px] bg-slate-200"></div>
+                                <div class="h-6 w-[1px] bg-slate-700"></div>
                                 <div class="flex flex-col items-end">
                                     <span class="text-[9px] text-slate-400 font-bold uppercase">Terlama</span>
-                                    <span class="text-xs font-black text-rose-600"><span id="kpiMaxSLA">0</span> Hari</span>
+                                    <span class="text-xs font-black text-rose-400"><span id="kpiMaxSLA">0</span> Hari</span>
                                 </div>
                             </div>
                         </div>
@@ -598,7 +539,7 @@
             <!-- 3. VOLUME CHART -->
             <div class="fresh-card p-6">
                 <div class="flex justify-between items-center mb-6">
-                    <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600"><i class="fa-solid fa-chart-area"></i></div><h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Volume Trend (Total Pcs)</h3></div>
+                    <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600"><i class="fa-solid fa-chart-area"></i></div><h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Volume Trend (Total Pcs)</h3></div>
                     <div class="flex bg-slate-100 p-1 rounded-xl">
                         <button id="btnDaily" onclick="window.setMainChartMode('daily')" class="px-6 py-2 rounded-lg text-[10px] font-bold transition-all bg-slate-900 text-white shadow-md">Daily</button>
                         <button id="btnMonthly" onclick="window.setMainChartMode('monthly')" class="px-6 py-2 rounded-lg text-[10px] font-bold transition-all bg-white text-slate-600 hover:bg-slate-50">Monthly</button>
@@ -613,7 +554,7 @@
                 <div class="lg:col-span-3 fresh-card p-6">
                     <div class="flex justify-between items-center mb-6">
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600"><i class="fa-regular fa-clock"></i></div>
+                            <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600"><i class="fa-regular fa-clock"></i></div>
                             <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Tren Jam Inbound (Qty Pcs)</h3>
                         </div>
                     </div>
@@ -659,11 +600,11 @@
             <!-- 5a. SLA BREAKDOWN -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
                 <div class="fresh-card overflow-hidden lg:col-span-8 flex flex-col">
-                    <div class="px-5 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span><h3 class="text-[11px] font-bold text-slate-600 uppercase">SLA by Vendor</h3></div>
+                    <div class="px-5 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span><h3 class="text-[11px] font-bold text-slate-600 uppercase">SLA by Vendor</h3></div>
                     <div class="overflow-auto custom-scrollbar max-h-[400px]"><table class="fresh-table w-full relative" id="slaVendorTable"></table></div>
                 </div>
                 <div class="fresh-card overflow-hidden lg:col-span-4 flex flex-col">
-                    <div class="px-5 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span><h3 class="text-[11px] font-bold text-slate-600 uppercase">SLA by Destination</h3></div>
+                    <div class="px-5 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span><h3 class="text-[11px] font-bold text-slate-600 uppercase">SLA by Destination</h3></div>
                     <div class="overflow-auto custom-scrollbar max-h-[400px]"><table class="fresh-table w-full relative" id="slaDestTable"></table></div>
                 </div>
             </div>
@@ -677,9 +618,9 @@
                     </div>
                     <!-- Pagination Controls -->
                      <div class="flex items-center space-x-1 bg-slate-50 p-1 rounded-lg border border-slate-100" id="matrixPaginationContainer">
-                        <button onclick="window.changeMatrixPage(-1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-indigo-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
+                        <button onclick="window.changeMatrixPage(-1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-emerald-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
                         <span id="matrixPageIndicator" class="px-3 text-[10px] font-mono font-bold text-slate-500">1</span>
-                        <button onclick="window.changeMatrixPage(1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-indigo-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                        <button onclick="window.changeMatrixPage(1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-emerald-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
                     </div>
                 </div>
                 <div class="overflow-x-auto custom-scrollbar">
@@ -693,7 +634,7 @@
                 <div class="fresh-card overflow-hidden flex flex-col">
                     <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-white">
                         <h3 class="text-[11px] font-bold text-slate-700 uppercase flex items-center gap-2">
-                            <span class="bg-indigo-100 p-1.5 rounded-lg text-indigo-600"><i class="fa-solid fa-list-check"></i></span>
+                            <span class="bg-emerald-100 p-1.5 rounded-lg text-emerald-600"><i class="fa-solid fa-list-check"></i></span>
                             Manifest Summary
                         </h3>
                         <div class="flex items-center gap-3">
@@ -701,9 +642,9 @@
                                 <i class="fa-solid fa-file-csv"></i> Download Detail CSV
                             </button>
                             <div class="flex items-center space-x-1 bg-slate-50 p-1 rounded-lg border border-slate-100">
-                                <button onclick="window.changePage(-1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-indigo-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
+                                <button onclick="window.changePage(-1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-emerald-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
                                 <span id="pageIndicator" class="px-3 text-[10px] font-mono font-bold text-slate-500">1</span>
-                                <button onclick="window.changePage(1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-indigo-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                                <button onclick="window.changePage(1)" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-400 hover:text-emerald-600 hover:shadow-sm transition"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
                             </div>
                         </div>
                     </div>
@@ -714,7 +655,7 @@
                             <thead class="sticky top-0 z-30 shadow-sm">
                                 <tr>
                                     <th class="text-center group-col w-24">Tgl Terima</th>
-                                    <th class="text-center group-col bg-indigo-50/50 text-indigo-700 w-24">Destinasi</th>
+                                    <th class="text-center group-col bg-emerald-50/50 text-emerald-700 w-24">Destinasi</th>
                                     <th class="text-left group-col w-16">Jam</th>
                                     <th class="text-left group-col w-20">Tgl PA</th>
                                     <th class="text-left group-col w-16">Batch</th>
@@ -880,7 +821,7 @@
             let icon = '';
             if(type === 'success') icon = '<i class="fa-solid fa-circle-check text-emerald-500 text-lg"></i>';
             else if(type === 'error') icon = '<i class="fa-solid fa-circle-xmark text-rose-500 text-lg"></i>';
-            else icon = '<i class="fa-solid fa-circle-info text-indigo-500 text-lg"></i>';
+            else icon = '<i class="fa-solid fa-circle-info text-blue-500 text-lg"></i>';
 
             toast.className = `toast-animate pointer-events-auto flex items-center gap-3 px-5 py-3 bg-white rounded-2xl shadow-hover border border-slate-100 min-w-[240px] justify-center`;
             toast.innerHTML = `${icon}<span class="text-xs font-bold text-slate-600">${message}</span>`;
@@ -963,6 +904,11 @@
                 document.getElementById('successModal').classList.add('hidden');
             }, 300);
         };
+            
+        window.confirmDeleteAll = function() {
+            window.closeDeleteModal();
+            window.openPasswordModal('delete_all');
+        };
 
         window.confirmDelete = function() {
              const date = document.getElementById('deleteDateInput').value;
@@ -970,8 +916,6 @@
              window.closeDeleteModal();
              window.openPasswordModal('delete');
         };
-
-        window.handleEnter = function(e) { if (e.key === 'Enter') window.submitPassword(); };
 
         window.submitPassword = function() {
             const pwd = document.getElementById('passwordInput').value;
@@ -985,6 +929,9 @@
                     const dest = document.getElementById('deleteDestInput').value;
                     if(window.deleteDataForDate) window.deleteDataForDate(date, dest);
                     else window.showToast("Service Offline", "error");
+                } else if(window.currentAction === 'delete_all') {
+                    if(window.deleteAllData) window.deleteAllData();
+                    else window.showToast("Service Offline", "error");
                 }
             } else {
                 window.showToast("Invalid Passcode", "error");
@@ -992,28 +939,30 @@
             }
         };
 
+        window.handleEnter = function(e) { if (e.key === 'Enter') window.submitPassword(); };
+
         window.showLoading = function(show, text, type = 'sync') {
             const el = document.getElementById('loadingOverlay');
+            const fetchProgress = document.getElementById('fetchProgressContainer');
             const truckLoader = document.getElementById('truckLoader');
-            const uploadLoader = document.getElementById('uploadLoader');
 
             if(show) {
                 el.classList.remove('hidden');
                 document.getElementById('loadingText').textContent = text;
                 
-                if (type === 'upload') {
-                    if (truckLoader) truckLoader.classList.add('hidden');
-                    if (uploadLoader) uploadLoader.classList.remove('hidden');
+                // Selalu tampilkan truk
+                if (truckLoader) truckLoader.classList.remove('hidden');
+                
+                if (type === 'fetch' || type === 'upload') {
+                    if (fetchProgress) fetchProgress.classList.remove('hidden');
                 } else {
-                    if (truckLoader) truckLoader.classList.remove('hidden');
-                    if (uploadLoader) uploadLoader.classList.add('hidden');
+                    if (fetchProgress) fetchProgress.classList.add('hidden');
                 }
             } else {
                 el.classList.add('hidden');
             }
         };
 
-        // --- NEW: TOGGLE REJECTED TABLE ---
         window.toggleRejectedTable = function() {
             const container = document.getElementById('rejectedTableContainer');
             const icon = document.getElementById('rejectedToggleIcon');
@@ -1026,7 +975,6 @@
             }
         };
 
-        // --- NEW: TOGGLE & RENDER NOTES TABLE ---
         window.toggleNotesTable = function() {
             const container = document.getElementById('notesTableContainer');
             const icon = document.getElementById('notesToggleIcon');
@@ -1043,10 +991,7 @@
             const table = document.getElementById('notesTable');
             const badge = document.getElementById('notesCountBadge');
 
-            // Ambil data yang kolom notenya tidak kosong
             const notesData = window.filteredData.filter(d => d._note && String(d._note).trim() !== '' && String(d._note).trim() !== '-');
-            
-            // Hitung jumlah Master Bag yang unik (agar tidak double terhitung jika 1 MB punya 2 baris)
             const uniqueMBs = new Set(notesData.map(d => d._mb)).size;
 
             if (badge) {
@@ -1080,7 +1025,7 @@
                     <td class="font-bold text-slate-700 border-b border-slate-100">${d._dest}</td>
                     <td class="border-b border-slate-100">${d._vendor}</td>
                     <td class="font-mono text-xs border-b border-slate-100">${d._smu}</td>
-                    <td class="text-center font-mono text-xs font-bold text-indigo-600 border-b border-slate-100">${d._mb}</td>
+                    <td class="text-center font-mono text-xs font-bold text-emerald-600 border-b border-slate-100">${d._mb}</td>
                     <td class="text-xs text-amber-700 font-medium italic border-b border-slate-100">${d._note}</td>
                 </tr>`;
             });
@@ -1088,13 +1033,11 @@
             table.innerHTML = html;
         };
 
-        // --- PROCESSING (Global wrapper) ---
         window.processRawDataWrapper = function(data) {
             const validData = [];
             const rejectedData = [];
 
             data.forEach(row => {
-                // Perbaikan: Membaca kolom "Tanggal Diterima" secara aman dari berbagai versi penulisan
                 const tglTerimaStr = String(row['Tanggal Diterima'] || row['Tanggal DIterima'] || '').trim();
                 
                 let vendor = (row['VENDOR'] || 'N/A').toUpperCase();
@@ -1110,7 +1053,6 @@
                 
                 const tglTerima = parseDate(tglTerimaStr);
                 
-                // Masukkan ke Exception Monitoring jika bukan tanggal yang valid (kosong atau berisi teks selain tanggal)
                 if (!tglTerima) {
                     rejectedData.push({
                         _tglPA: parseDate(row['Tanggal']),
@@ -1169,17 +1111,15 @@
             window.populateFilters();
             window.renderRejectedTable();
             
-            // Setel filter tanggal bawaan: 30 Hari Terakhir dari hari ini
             const endDate = new Date();
             const startDate = new Date();
-            startDate.setDate(endDate.getDate() - 30);
+            startDate.setDate(endDate.getDate() - 90); // Default ke 90 hari karena Supabase mampu
             document.getElementById('filterStartDate').value = formatInputDate(startDate);
             document.getElementById('filterEndDate').value = formatInputDate(endDate);
 
             window.applyFilters();
         };
 
-        // --- NEW REJECTED TABLE RENDERER ---
         window.renderRejectedTable = function() {
             const table = document.getElementById('rejectedTable');
             const badge = document.getElementById('rejectedCountBadge');
@@ -1234,15 +1174,14 @@
             table.innerHTML = html;
         };
 
-        // --- FILTERS ---
         window.populateFilters = function() {
             const populateMulti = (menuId, labelId, field) => {
                 const menu = document.getElementById(menuId);
                 const opts = [...new Set(window.rawData.map(d => d[field]))].sort();
                 
                 let html = `
-                    <label class="flex items-center gap-2 px-2 py-1.5 hover:bg-indigo-50 rounded cursor-pointer transition-colors border-b border-slate-100 mb-1">
-                        <input type="checkbox" value="ALL" class="accent-indigo-600 w-3.5 h-3.5" onchange="window.handleMultiChange('${menuId}', '${labelId}', this)" checked>
+                    <label class="flex items-center gap-2 px-2 py-1.5 hover:bg-emerald-50 rounded cursor-pointer transition-colors border-b border-slate-100 mb-1">
+                        <input type="checkbox" value="ALL" class="accent-emerald-600 w-3.5 h-3.5" onchange="window.handleMultiChange('${menuId}', '${labelId}', this)" checked>
                         <span class="text-xs font-bold text-slate-700">Pilih Semua</span>
                     </label>
                 `;
@@ -1250,7 +1189,7 @@
                 opts.forEach(o => {
                     html += `
                     <label class="flex items-center gap-2 px-2 py-1.5 hover:bg-slate-50 rounded cursor-pointer transition-colors">
-                        <input type="checkbox" value="${o}" class="accent-indigo-600 w-3.5 h-3.5 item-checkbox" onchange="window.handleMultiChange('${menuId}', '${labelId}', this)" checked>
+                        <input type="checkbox" value="${o}" class="accent-emerald-600 w-3.5 h-3.5 item-checkbox" onchange="window.handleMultiChange('${menuId}', '${labelId}', this)" checked>
                         <span class="text-xs text-slate-600">${o}</span>
                     </label>`;
                 });
@@ -1321,10 +1260,10 @@
                 label.classList.add("text-slate-400");
             } else if (checked.length === items.length) {
                 label.textContent = "Semua";
-                label.classList.remove("text-slate-400", "font-bold", "text-indigo-600");
+                label.classList.remove("text-slate-400", "font-bold", "text-emerald-600");
             } else {
                 label.textContent = `${checked.length} Terpilih`;
-                label.classList.add("font-bold", "text-indigo-600");
+                label.classList.add("font-bold", "text-emerald-600");
                 label.classList.remove("text-slate-400");
             }
         };
@@ -1713,11 +1652,11 @@
                 const tr = document.createElement('tr');
                 
                 if (r.type === 'total_date') {
-                    tr.className = "bg-indigo-100 font-black text-indigo-900 border-b-2 border-indigo-300 shadow-sm";
+                    tr.className = "bg-emerald-100 font-black text-emerald-900 border-b-2 border-emerald-300 shadow-sm";
                     tr.innerHTML = `
-                        <td colspan="11" class="text-right py-2 px-4 uppercase text-[11px] tracking-wide border-r border-indigo-200">Total Keseluruhan Tanggal ${formatDate(r.date)}</td>
-                        <td class="text-center font-mono text-indigo-800 border-r border-indigo-200">${formatNumber(r.mb)}</td>
-                        <td class="text-right text-indigo-900 px-4">${formatNumber(r.pcs)}</td>
+                        <td colspan="11" class="text-right py-2 px-4 uppercase text-[11px] tracking-wide border-r border-emerald-200">Total Keseluruhan Tanggal ${formatDate(r.date)}</td>
+                        <td class="text-center font-mono text-emerald-800 border-r border-emerald-200">${formatNumber(r.mb)}</td>
+                        <td class="text-right text-emerald-900 px-4">${formatNumber(r.pcs)}</td>
                     `;
                 } else if (r.type === 'total_jam') {
                     tr.className = "bg-slate-100 font-bold text-slate-700 border-y border-slate-300";
@@ -1741,7 +1680,7 @@
 
                     addTd(formatDate(d._date), r.spanDate, "text-center font-bold text-slate-800 bg-white border-r border-slate-300 group-col whitespace-nowrap");
                     addTd(d._jam, r.spanJam, "text-center text-slate-700 font-bold border-r border-slate-300 bg-white group-col whitespace-nowrap");
-                    addTd(d._dest, r.spanDest, "text-center font-bold text-indigo-800 bg-indigo-50/50 border-r border-slate-300 group-col whitespace-nowrap");
+                    addTd(d._dest, r.spanDest, "text-center font-bold text-emerald-800 bg-emerald-50/50 border-r border-slate-300 group-col whitespace-nowrap");
                     addTd(formatDate(d._dateOrigin), r.spanPa, "text-left text-slate-500 border-r border-slate-300 bg-white group-col whitespace-nowrap");
                     addTd(d._batch, r.spanBatch, "text-left text-slate-500 border-r border-slate-300 bg-white group-col");
                     addTd(d._origin, r.spanOrigin, "text-left text-slate-700 border-r border-slate-300 bg-white group-col whitespace-nowrap");
@@ -1755,8 +1694,8 @@
                         addTd(d._sla, r.spanSla, `text-center border-r border-slate-300 group-col ${slaColor}`);
                     }
 
-                    addTd(formatNumber(d._mb_count), 1, "text-center font-mono font-bold text-indigo-700 border-r border-slate-300 bg-indigo-50/30 group-col");
-                    addTd(formatNumber(d._pcs), 1, "text-right font-black text-indigo-900 valign-middle bg-indigo-50/50 group-col");
+                    addTd(formatNumber(d._mb_count), 1, "text-center font-mono font-bold text-emerald-700 border-r border-slate-300 bg-emerald-50/30 group-col");
+                    addTd(formatNumber(d._pcs), 1, "text-right font-black text-emerald-900 valign-middle bg-emerald-50/50 group-col");
                 }
                 tbody.appendChild(tr);
             });
@@ -1832,7 +1771,7 @@
 
             window.chartInstances.main = new Chart(ctx, {
                 type: 'line',
-                data: { labels: lbls, datasets: [{ label: 'Total Pcs', data: dataVals, borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.1)', fill: true, tension: 0.3 }] },
+                data: { labels: lbls, datasets: [{ label: 'Total Pcs', data: dataVals, borderColor: '#10B981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.3 }] },
                 options: { 
                     responsive: true, 
                     maintainAspectRatio: false, 
@@ -1885,7 +1824,7 @@
                     datasets: [{
                         label: 'Qty Pcs',
                         data: labels.map(k => agg[k]),
-                        backgroundColor: '#10b981',
+                        backgroundColor: '#3B82F6',
                         borderRadius: 4
                     }]
                 },
@@ -2060,7 +1999,7 @@
 
                 slas.forEach(sla => {
                     hV += `<tr class="hover:bg-slate-50 border-b border-slate-100 last:border-0">
-                            <td class="text-center font-bold text-indigo-600 bg-indigo-50/50 border-r border-slate-200">${sla}</td>`;
+                            <td class="text-center font-bold text-emerald-600 bg-emerald-50/50 border-r border-slate-200">${sla}</td>`;
                     vendors.forEach(v => {
                         const val = matrix[sla][v] || 0; 
                         hV += `<td class="text-center font-mono border-r border-slate-100 ${val > 0 ? 'text-slate-700' : 'text-slate-300'}">${val > 0 ? formatNumber(val) : '-'}</td>`;
@@ -2080,7 +2019,7 @@
                 vendors.forEach(v => {
                     const pct = grandTotal > 0 ? ((vendorTotals[v] / grandTotal) * 100).toFixed(1) : 0;
                     hV += `<td class="text-center py-2 border-r border-slate-200">
-                                <div class="font-black text-indigo-700 font-mono">${formatNumber(vendorTotals[v])}</div>
+                                <div class="font-black text-emerald-700 font-mono">${formatNumber(vendorTotals[v])}</div>
                                 <div class="text-[9px] font-bold text-slate-500">${pct}%</div>
                            </td>`;
                 });
@@ -2115,7 +2054,7 @@
                         <th class="text-center text-amber-600 bg-amber-50">3-5H</th>
                         <th class="text-center text-rose-600 bg-rose-50">>5H</th>
                         <th class="text-center text-slate-800 bg-slate-100">Tot</th>
-                        <th class="text-center text-indigo-600 bg-indigo-50">Avg</th>
+                        <th class="text-center text-emerald-600 bg-emerald-50">Avg</th>
                     </tr></thead><tbody>`;
 
             Object.keys(agg).sort((a,b) => agg[b].tot - agg[a].tot).forEach(k => { 
@@ -2127,7 +2066,7 @@
                         <td class="text-center text-amber-600 font-mono">${formatNumber(d.b35)}</td>
                         <td class="text-center text-rose-600 font-bold font-mono">${formatNumber(d.o5)}</td>
                         <td class="text-center font-bold bg-slate-50 font-mono">${formatNumber(d.tot)}</td>
-                        <td class="text-center font-bold text-indigo-600">${(d.tot>0 ? d.sum/d.tot : 0).toFixed(1)}</td>
+                        <td class="text-center font-bold text-emerald-600">${(d.tot>0 ? d.sum/d.tot : 0).toFixed(1)}</td>
                       </tr>`; 
             });
 
@@ -2155,7 +2094,7 @@
                             <div class="font-black text-slate-900 font-mono">${formatNumber(grandTot)}</div>
                             <div class="text-[9px] font-bold text-slate-600">100%</div>
                         </td>
-                        <td class="text-center py-2 bg-indigo-100 font-black text-indigo-800">${grandAvg}</td>
+                        <td class="text-center py-2 bg-emerald-100 font-black text-emerald-800">${grandAvg}</td>
                     </tr>
                   </tfoot>`;
             if(tDest) tDest.innerHTML = h;
@@ -2225,7 +2164,7 @@
                     const v = weekData.filter(d => d._date.getTime() === t && d._dest === dst).reduce((s,d) => s+d._pcs, 0); 
                     rowTotal += v;
                     grandTotals[i] += v;
-                    r += `<td class="text-center border-r border-slate-100 ${v>0?'text-slate-800 font-bold bg-indigo-50/20':'text-slate-300'}">${v>0?formatNumber(v):'-'}</td>`;
+                    r += `<td class="text-center border-r border-slate-100 ${v>0?'text-slate-800 font-bold bg-emerald-50/20':'text-slate-300'}">${v>0?formatNumber(v):'-'}</td>`;
                 });
                 
                 grandTotalAll += rowTotal;
@@ -2234,9 +2173,9 @@
 
             let gRow = `<tr><td class="font-black text-slate-900 sticky left-0 bg-slate-100 border-r border-slate-300 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] whitespace-nowrap uppercase text-[10px]">TOTAL HARIAN</td>`;
             grandTotals.forEach(gt => {
-                gRow += `<td class="text-center font-black text-indigo-700 bg-indigo-50/50 border-r border-indigo-100/50">${gt>0?formatNumber(gt):'-'}</td>`;
+                gRow += `<td class="text-center font-black text-emerald-700 bg-emerald-50/50 border-r border-emerald-100/50">${gt>0?formatNumber(gt):'-'}</td>`;
             });
-            gRow += `<td class="text-center font-black text-indigo-900 bg-indigo-100 border-l border-indigo-200">${formatNumber(grandTotalAll)}</td></tr>`;
+            gRow += `<td class="text-center font-black text-emerald-900 bg-emerald-100 border-l border-emerald-200">${formatNumber(grandTotalAll)}</td></tr>`;
 
             h += gRow + '</tbody>';
             table.innerHTML = h;
@@ -2253,72 +2192,100 @@
 
     </script>
 
-    <!-- FIREBASE MODULE -->
+    <!-- SUPABASE MODULE -->
     <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-        // Tambahkan fungsi 'query' dan 'limit' pada baris import
-        import { initializeFirestore, collection, getDocs, setDoc, doc, writeBatch, deleteDoc, query, limit } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
-        import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
-        import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js';
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-        // 1. Config Database A (Untuk Data Inbound)
-        const firebaseConfig = {
-            apiKey: "AIzaSyDNB8muGuCvKuXVmQdJt8MkrAltKn2mtIY",
-            authDomain: "dasboardhub-ab72e.firebaseapp.com",
-            projectId: "dasboardhub-ab72e",
-            storageBucket: "dasboardhub-ab72e.firebasestorage.app",
-            messagingSenderId: "126699041682",
-            appId: "1:126699041682:web:3d96b34c074108697c474b",
-            measurementId: "G-CW183HEGQN"
-        };
-
-        // Initialize Firebase A (Default)
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        // Tambahkan opsi experimentalForceLongPolling untuk mengatasi error koneksi di beberapa browser/lingkungan terisolasi
-        const db = initializeFirestore(app, { experimentalForceLongPolling: true });
-        const auth = getAuth(app);
-
-        // State untuk memastikan database siap
-        let inboundReady = false;
-        window.dataLoadedFlag = false;
-
-        function checkAuthAndLoad() {
-            if (inboundReady && !window.dataLoadedFlag) {
-                window.dataLoadedFlag = true;
-                const statusText = document.getElementById('statusText');
-                const connectionStatus = document.getElementById('connectionStatus');
-                if(statusText) statusText.textContent = 'Connected (Inbound DB)';
-                if(connectionStatus) connectionStatus.className = "w-1.5 h-1.5 rounded-full bg-emerald-500";
-                window.loadDataFromFirestore();
-            }
+        // === KONFIGURASI SUPABASE ===
+        const SUPABASE_URL = 'https://svmgwupvjybfmatjfafp.supabase.co'; 
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2bWd3dXB2anliZm1hdGpmYWZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1ODc1NDUsImV4cCI6MjA4ODE2MzU0NX0.kP7Y0dy5l61Xi2S8ji9buq8W1R9ZNLyHyBHhTh3qFbw'; 
+        
+        let supabase = null;
+        try {
+            supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+        } catch(e) {
+            console.error("Supabase Config Error:", e);
         }
-
-        // Auth Login Otomatis untuk Database
-        onAuthStateChanged(auth, (user) => {
-            if (user) { inboundReady = true; checkAuthAndLoad(); } 
-            else { signInAnonymously(auth).catch(console.error); }
-        });
 
         window.loadDataFromFirestore = async function() {
             try {
-                if(window.showLoading) window.showLoading(true, "Memuat Data...");
+                if(window.showLoading) window.showLoading(true, "Menyiapkan Koneksi...", "fetch");
                 
-                // MENGGUNAKAN QUERY LIMIT UNTUK MENCEGAH QUOTA EXCEEDED SAAT LOAD AWAL
-                // Batas maksimal limit Firestore adalah 10.000 dokumen per query
-                const inboundQuery = query(collection(db, "inbound_data"), limit(10000));
+                const statusText = document.getElementById('statusText');
+                const connectionStatus = document.getElementById('connectionStatus');
+                if(statusText) statusText.textContent = 'Connected (Supabase)';
+                if(connectionStatus) connectionStatus.className = "w-1.5 h-1.5 rounded-full bg-emerald-500";
 
-                const qsInbound = await getDocs(inboundQuery);
+                // 1. Ambil jumlah total data terlebih dahulu untuk progress bar
+                const { count, error: countError } = await supabase
+                    .from('inbound_data')
+                    .select('*', { count: 'exact', head: true });
+                
+                if (countError && countError.code !== 'PGRST205') throw countError;
+                
+                let totalData = count || 0;
 
-                if (!qsInbound || qsInbound.empty) {
-                    if(window.showLoading) window.showLoading(false);
-                    return; 
+                // 2. Tarik Data dengan sistem Looping
+                let allData = [];
+                let from = 0;
+                const step = 1000;
+                let isFetching = true;
+
+                const pbBar = document.getElementById('fetchProgressBar');
+                const pbText = document.getElementById('fetchProgressDetail');
+                const pbPct = document.getElementById('fetchProgressPct');
+
+                while (isFetching) {
+                    if (window.showLoading) {
+                        const loadText = document.getElementById('loadingText');
+                        if (loadText) loadText.textContent = `Mengunduh Riwayat Inbound...`;
+                        
+                        let pct = totalData > 0 ? Math.min(Math.round((allData.length / totalData) * 100), 100) : 0;
+                        if (pbBar) pbBar.style.width = `${pct}%`;
+                        if (pbText) pbText.textContent = `${allData.length.toLocaleString('id-ID')} / ${totalData.toLocaleString('id-ID')} Baris`;
+                        if (pbPct) pbPct.textContent = `${pct}%`;
+                    }
+
+                    const { data, error } = await supabase
+                        .from('inbound_data')
+                        .select('id, data')
+                        .range(from, from + step - 1);
+
+                    if (error) {
+                        if (error.code === 'PGRST205' || error.message.includes('Could not find the table')) {
+                            throw new Error('Tabel "inbound_data" belum dibuat di Supabase.');
+                        }
+                        throw error;
+                    }
+
+                    if (data && data.length > 0) {
+                        allData = allData.concat(data);
+                        from += step;
+                        
+                        // Update UI setelah data berhasil masuk batch
+                        let pct = totalData > 0 ? Math.min(Math.round((allData.length / totalData) * 100), 100) : 100;
+                        if (pbBar) pbBar.style.width = `${pct}%`;
+                        if (pbText) pbText.textContent = `${allData.length.toLocaleString('id-ID')} / ${totalData.toLocaleString('id-ID')} Baris`;
+                        if (pbPct) pbPct.textContent = `${pct}%`;
+
+                        if (data.length < step) {
+                            isFetching = false;
+                        }
+                    } else {
+                        isFetching = false;
+                    }
                 }
-                const docs = [];
-                qsInbound.forEach((doc) => {
-                    const data = doc.data();
-                    data._firestoreId = doc.id; 
-                    docs.push(data);
+                
+                // Muluskan ke 100% dan beri jeda sedikit agar efeknya terasa natural
+                if (pbBar) pbBar.style.width = `100%`;
+                if (pbPct) pbPct.textContent = `100%`;
+                if(window.showLoading) document.getElementById('loadingText').textContent = `Memproses Tampilan...`;
+                await new Promise(r => setTimeout(r, 400)); 
+                
+                const docs = allData.map(d => {
+                    const row = typeof d.data === 'string' ? JSON.parse(d.data) : d.data;
+                    row._firestoreId = d.id; // Menyimpan ID Supabase dengan nama variabel lama agar kompatibel
+                    return row;
                 });
                 
                 if(window.processRawDataWrapper) {
@@ -2328,24 +2295,30 @@
                 }
                 if(window.showLoading) window.showLoading(false);
             } catch (e) {
-                console.error("Firebase Error: ", e);
+                console.error("Supabase Error: ", e);
                 if(window.showLoading) window.showLoading(false);
-                
-                // Menangkap error kuota penuh atau error koneksi lainnya
-                if (e.code === 'resource-exhausted' || (e.message && e.message.includes('Quota'))) {
-                    window.showToast("Gagal memuat: Kuota Database Penuh hari ini.", "error");
-                    document.getElementById('initialState').innerHTML = `
-                        <div class="w-24 h-24 bg-red-50 rounded-3xl flex items-center justify-center border-2 border-dashed border-red-200 shadow-xl shadow-red-100 mx-auto mb-6">
-                            <i class="fa-solid fa-ban text-3xl text-red-500"></i>
-                        </div>
-                        <h2 class="text-lg font-bold text-slate-800">Batas Kuota Harian Tercapai</h2>
-                        <p class="text-xs text-slate-500 mt-2 font-medium">Database telah mencapai batas maksimal pembacaan harian. Silakan coba lagi besok.</p>
-                    `;
-                } else if (e.code === 'unavailable') {
-                    window.showToast("Gagal memuat: Koneksi terputus.", "error");
-                } else {
-                    window.showToast("Terjadi kesalahan saat memuat data.", "error");
+                let errorMsg = "Gagal memuat data dari Supabase.";
+                if (e.message) {
+                    errorMsg += " " + e.message;
+                    
+                    if (e.message.includes('belum dibuat')) {
+                         document.getElementById('initialState').innerHTML = `
+                            <div class="w-24 h-24 bg-rose-50 rounded-3xl flex items-center justify-center border-2 border-dashed border-rose-200 shadow-xl shadow-rose-100 mx-auto mb-6">
+                                <i class="fa-solid fa-database text-3xl text-rose-500"></i>
+                            </div>
+                            <h2 class="text-lg font-bold text-slate-800">Tabel Supabase Belum Dibuat</h2>
+                            <div class="text-xs text-slate-500 mt-2 font-medium max-w-md text-center bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                                <p class="mb-2">Silakan buka <b>SQL Editor</b> di Supabase Anda dan jalankan perintah ini:</p>
+                                <code class="block text-left bg-slate-800 text-emerald-400 p-3 rounded-lg text-[10px] overflow-x-auto whitespace-pre">CREATE TABLE inbound_data (
+    id TEXT PRIMARY KEY,
+    data JSONB NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);</code>
+                            </div>
+                        `;
+                    }
                 }
+                window.showToast(errorMsg, "error");
             }
         };
 
@@ -2369,33 +2342,62 @@
                 return;
             }
 
-            const batchSize = 450;
-            let batches = [];
-            let currentBatch = writeBatch(db); // Hapus Inbound tetap pakai db A
-            let count = 0;
+            const idsToDelete = toDelete.map(d => d._firestoreId).filter(id => id);
 
-            for (const item of toDelete) {
-                if(item._firestoreId) {
-                    const docRef = doc(db, "inbound_data", item._firestoreId);
-                    currentBatch.delete(docRef);
-                    count++;
-                    if(count % batchSize === 0) {
-                        batches.push(currentBatch.commit());
-                        currentBatch = writeBatch(db);
-                    }
-                }
+            if(idsToDelete.length === 0) {
+                if(window.showLoading) window.showLoading(false);
+                window.showToast("Terjadi kesalahan, ID data tidak ditemukan", "error");
+                return;
             }
-            if(count % batchSize !== 0) batches.push(currentBatch.commit());
 
             try {
-                await Promise.all(batches);
+                // Delete dalam potongan kecil agar tidak gagal (Timeout)
+                const CHUNK_SIZE = 1000;
+                for (let i = 0; i < idsToDelete.length; i += CHUNK_SIZE) {
+                    const chunk = idsToDelete.slice(i, i + CHUNK_SIZE);
+                    const { error } = await supabase.from('inbound_data').delete().in('id', chunk);
+                    if (error) throw error;
+                }
+                
                 if(window.showLoading) window.showLoading(false);
-                window.showToast(`Berhasil menghapus ${count} data`, "success");
+                window.showToast(`Berhasil menghapus ${idsToDelete.length} data`, "success");
                 window.loadDataFromFirestore(); 
             } catch(e) {
                 console.error(e);
                 window.showLoading(false);
-                window.showToast("Gagal menghapus data", "error");
+                window.showToast("Gagal menghapus data di Supabase", "error");
+            }
+        };
+
+        window.deleteAllData = async function() {
+            if(window.showLoading) window.showLoading(true, "Mereset Database...", "fetch");
+
+            const allIds = [];
+            if(window.rawData) window.rawData.forEach(d => { if(d._firestoreId) allIds.push(d._firestoreId); });
+            if(window.rejectedData) window.rejectedData.forEach(d => { if(d._firestoreId) allIds.push(d._firestoreId); });
+
+            if(allIds.length === 0) {
+                if(window.showLoading) window.showLoading(false);
+                window.showToast("Database sudah kosong", "info");
+                return;
+            }
+
+            try {
+                const CHUNK_SIZE = 1000;
+                for (let i = 0; i < allIds.length; i += CHUNK_SIZE) {
+                    const chunk = allIds.slice(i, i + CHUNK_SIZE);
+                    if(window.showLoading) document.getElementById('loadingText').textContent = `Menghapus Batch ${Math.ceil(i/CHUNK_SIZE)+1}...`;
+                    const { error } = await supabase.from('inbound_data').delete().in('id', chunk);
+                    if (error) throw error;
+                }
+                
+                if(window.showLoading) window.showLoading(false);
+                window.showToast("Database berhasil direset (Dikosongkan)", "success");
+                window.loadDataFromFirestore(); 
+            } catch(e) {
+                console.error(e);
+                window.showLoading(false);
+                window.showToast("Gagal mereset database", "error");
             }
         };
 
@@ -2405,7 +2407,7 @@
                 header: true, skipEmptyLines: true,
                 complete: async function(results) {
                     const data = results.data;
-                    const UPLOAD_LIMIT = 18000; // Batas aman agar tidak melebihi 20.000 write per hari
+                    const UPLOAD_LIMIT = 50000; // Supabase jauh lebih kuat dari Firebase
                     
                     const existingIds = new Set();
                     if(window.rawData) {
@@ -2437,9 +2439,9 @@
                             continue; 
                         }
                         
-                        // Hentikan proses jika jumlah data BARU sudah mencapai batas aman
+                        // Batas aman Browser Memory (Bukan batasan Supabase)
                         if (window.pendingUploadData.length >= UPLOAD_LIMIT) {
-                            window.showToast(`Dibatasi! Hanya ${UPLOAD_LIMIT} data baru yang diproses untuk menjaga kuota.`, "warning");
+                            window.showToast(`Dibatasi! Maksimal ${UPLOAD_LIMIT} data diproses sekaligus agar Browser tidak macet.`, "warning");
                             break;
                         }
                         
@@ -2459,49 +2461,65 @@
         window.confirmUpload = async function() {
             window.closePreviewModal();
 
-            // --- INBOUND MENGGUNAKAN FIREBASE A (db) ---
             if (window.pendingUploadData.length === 0) {
                 window.showToast("Tidak ada data baru untuk diunggah", "info");
                 return;
             }
 
-            if(window.showLoading) window.showLoading(true, "Menyimpan ke Cloud (Batch 1)...", "upload");
-            const batchSizeInbound = 500; 
-            let currentBatchInbound = writeBatch(db); // Gunakan db
-            let countInbound = 0;
-            let batchNumberInbound = 1;
+            // Ganti tipe loader menjadi 'fetch' agar progress bar estetiknya muncul juga saat Upload!
+            if(window.showLoading) window.showLoading(true, "Menyiapkan Data...", "fetch");
+            
+            const CHUNK_SIZE = 5000; 
             let successCountInbound = 0;
+            const totalToUpload = window.pendingUploadData.length;
+
+            const pbBar = document.getElementById('fetchProgressBar');
+            const pbText = document.getElementById('fetchProgressDetail');
+            const pbPct = document.getElementById('fetchProgressPct');
 
             try {
-                for (const row of window.pendingUploadData) {
-                    const bagseal = String(row['No Bagseals'] || '').trim();
-                    const smu = (row['SMU']||'').replace(/\s/g, '');
-                    const dest = (row['Destinasi']||'').replace(/\s/g, '');
+                for (let i = 0; i < window.pendingUploadData.length; i += CHUNK_SIZE) {
+                    const chunk = window.pendingUploadData.slice(i, i + CHUNK_SIZE);
                     
-                    const dateStrRaw = String(row['Tanggal Diterima'] || row['Tanggal DIterima'] || '');
-                    const date = dateStrRaw.replace(/[\/\s,]/g, ''); 
+                    // Update UI Progress Bar Upload
+                    let pct = Math.min(Math.round((i / totalToUpload) * 100), 100);
+                    if (pbBar) pbBar.style.width = `${pct}%`;
+                    if (pbText) pbText.textContent = `${i.toLocaleString('id-ID')} / ${totalToUpload.toLocaleString('id-ID')} Baris`;
+                    if (pbPct) pbPct.textContent = `${pct}%`;
+                    if(window.showLoading) document.getElementById('loadingText').textContent = `Mengunggah Batch ${Math.ceil(i/CHUNK_SIZE)+1}...`;
                     
-                    let rawId = bagseal || `${smu}_${dest}_${date}`.substring(0, 100); 
-                    
-                    let id = rawId ? String(rawId).replace(/\//g, '_') : doc(collection(db, "inbound_data")).id;
+                    const upsertPayload = chunk.map(row => {
+                        const bagseal = String(row['No Bagseals'] || '').trim();
+                        const smu = (row['SMU']||'').replace(/\s/g, '');
+                        const dest = (row['Destinasi']||'').replace(/\s/g, '');
+                        
+                        const dateStrRaw = String(row['Tanggal Diterima'] || row['Tanggal DIterima'] || '');
+                        const date = dateStrRaw.replace(/[\/\s,]/g, ''); 
+                        
+                        let rawId = bagseal || `${smu}_${dest}_${date}`.substring(0, 100); 
+                        let id = rawId ? String(rawId).replace(/\//g, '_') : 'ID_' + Date.now() + Math.random().toString(36).substr(2, 9);
 
-                    const docRef = doc(db, "inbound_data", id); // Gunakan db
-                    currentBatchInbound.set(docRef, row);
-                    countInbound++;
-                    
-                    if (countInbound % batchSizeInbound === 0) { 
-                        if(window.showLoading) document.getElementById('loadingText').textContent = `Menyimpan ke Cloud (Batch ${batchNumberInbound})...`;
-                        await currentBatchInbound.commit(); 
-                        successCountInbound += batchSizeInbound;
-                        currentBatchInbound = writeBatch(db); // Gunakan db
-                        batchNumberInbound++;
+                        return { id: id, data: row };
+                    });
+
+                    // Upsert (Insert jika baru, Update jika ID sudah ada)
+                    const { error } = await supabase.from('inbound_data').upsert(upsertPayload, { onConflict: 'id' });
+                    if (error) {
+                        if (error.code === 'PGRST205') {
+                            throw new Error('Tabel "inbound_data" belum dibuat di Supabase.');
+                        }
+                        throw error;
                     }
+                    
+                    successCountInbound += chunk.length;
                 }
-                if (countInbound % batchSizeInbound !== 0) {
-                    if(window.showLoading) document.getElementById('loadingText').textContent = `Menyimpan ke Cloud (Batch Terakhir)...`;
-                    await currentBatchInbound.commit();
-                    successCountInbound += (countInbound % batchSizeInbound);
-                }
+
+                // Finalisasi UI ke 100%
+                if (pbBar) pbBar.style.width = `100%`;
+                if (pbText) pbText.textContent = `${successCountInbound.toLocaleString('id-ID')} / ${totalToUpload.toLocaleString('id-ID')} Baris`;
+                if (pbPct) pbPct.textContent = `100%`;
+                if(window.showLoading) document.getElementById('loadingText').textContent = `Menyelesaikan...`;
+                await new Promise(r => setTimeout(r, 400)); // Estetik Delay
 
                 if(window.showLoading) window.showLoading(false);
                 window.pendingUploadData = []; 
@@ -2510,24 +2528,22 @@
             } catch (e) {
                 console.error(e);
                 if(window.showLoading) window.showLoading(false);
-                
-                let errorMsg = "Upload Gagal";
-                if (e.code === 'resource-exhausted' || (e.message && e.message.includes('Quota'))) {
-                    errorMsg = "Kuota Database Penuh! Coba lagi besok.";
-                }
-
-                if (successCountInbound > 0) {
-                    window.showToast(`Upload terhenti. ${successCountInbound} data masuk. (${errorMsg})`, "warning");
-                    window.loadDataFromFirestore(); 
+                let errorMsg = "Upload Gagal: ";
+                if (e.message) {
+                    errorMsg += e.message;
                 } else {
-                    window.showToast(errorMsg, "error");
+                    errorMsg += "Terjadi kesalahan yang tidak diketahui.";
                 }
+                window.showToast(errorMsg, "error");
             }
         };
 
         document.getElementById('csvFile').addEventListener('change', function(e) {
             if(e.target.files.length > 0) window.uploadCSVToFirestore(e.target.files[0]);
         });
+
+        // Auto Start
+        window.loadDataFromFirestore();
 
     </script>
 </body>
