@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inbound Control Tower (Supabase)</title>
+    <title>Inbound Control Tower</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%2310B981' d='M44.7 155.8c-26.6 15.6-26.6 54.8 0 70.4l184.4 108c16.5 9.7 36.9 9.7 53.4 0l184.4-108c26.6-15.6 26.6-54.8 0-70.4l-184.4-108c-16.5-9.7-36.9-9.7-53.4 0l-184.4 108zM512 304c0-7-2.6-13.8-7.7-18.8c-10.4-10.4-27.3-10.4-37.7 0L308.2 430.7c-31 28.5-77.5 28.5-108.5 0L41.3 285.2c-10.4-10.4-27.3-10.4-37.7 0C-1.5 290.2-1.5 307.1 8.9 317.5l163 150.3c48 44.2 121.9 44.2 169.9 0L503.1 317.5c5.1-5 7.7-11.8 7.7-18.8z'/></svg>">
@@ -373,6 +373,12 @@
                 <div class="h-8 w-[1px] bg-slate-200 hidden md:block"></div>
                 
                 <div class="flex items-center gap-2">
+                    <!-- Tombol Link ke Dashboard AWB -->
+                    <a href="https://dataawbinbound.vercel.app/" class="flex items-center justify-center h-[38px] px-3 sm:px-4 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-slate-800 transition-colors shadow-md mr-1 gap-2" title="Buka Dashboard AWB">
+                        <i class="fa-solid fa-truck-fast"></i>
+                        <span class="hidden sm:inline">Data AWB</span>
+                    </a>
+
                     <button onclick="window.openPasswordModal('upload_inbound')" class="btn-gradient btn-header-icon" title="Update Data Inbound">
                         <i class="fa-solid fa-database text-[15px]"></i>
                     </button>
@@ -539,7 +545,7 @@
             <!-- 3. VOLUME CHART -->
             <div class="fresh-card p-6">
                 <div class="flex justify-between items-center mb-6">
-                    <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600"><i class="fa-solid fa-chart-area"></i></div><h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Volume Trend (Total Pcs)</h3></div>
+                    <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600"><i class="fa-solid fa-chart-area"></i></div><h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Volume Trend</h3></div>
                     <div class="flex bg-slate-100 p-1 rounded-xl">
                         <button id="btnDaily" onclick="window.setMainChartMode('daily')" class="px-6 py-2 rounded-lg text-[10px] font-bold transition-all bg-slate-900 text-white shadow-md">Daily</button>
                         <button id="btnMonthly" onclick="window.setMainChartMode('monthly')" class="px-6 py-2 rounded-lg text-[10px] font-bold transition-all bg-white text-slate-600 hover:bg-slate-50">Monthly</button>
@@ -555,7 +561,7 @@
                     <div class="flex justify-between items-center mb-6">
                         <div class="flex items-center gap-3">
                             <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600"><i class="fa-regular fa-clock"></i></div>
-                            <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Tren Jam Inbound (Qty Pcs)</h3>
+                            <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Tren Jam Inbound</h3>
                         </div>
                     </div>
                     <div class="h-60 w-full relative"><canvas id="timeChart"></canvas></div>
@@ -655,8 +661,8 @@
                             <thead class="sticky top-0 z-30 shadow-sm">
                                 <tr>
                                     <th class="text-center group-col w-24">Tgl Terima</th>
-                                    <th class="text-center group-col bg-emerald-50/50 text-emerald-700 w-24">Destinasi</th>
-                                    <th class="text-left group-col w-16">Jam</th>
+                                    <th class="text-center group-col w-16">Jam</th>
+                                    <th class="text-center group-col bg-indigo-50/50 text-indigo-700 w-24">Destinasi</th>
                                     <th class="text-left group-col w-20">Tgl PA</th>
                                     <th class="text-left group-col w-16">Batch</th>
                                     <th class="text-left group-col">Origin</th>
