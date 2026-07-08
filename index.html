@@ -240,14 +240,26 @@
                     <i class="fa-solid fa-calendar-xmark text-2xl"></i>
                 </div>
                 <h3 class="text-lg font-bold text-slate-800">Hapus Data</h3>
-                <p class="text-xs text-slate-500 mt-1">Pilih tanggal untuk menghapus data</p>
+                <p class="text-xs text-slate-500 mt-1">Pilih parameter untuk menghapus data</p>
             </div>
             <div class="relative mb-4">
-                <label class="input-label mb-2 text-xs">Tanggal Diterima</label>
+                <label class="input-label mb-2 text-xs">Waktu</label>
+                <select id="deleteTimeMode" onchange="window.toggleDeleteTimeInput()" class="w-full text-center py-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-red-500 outline-none transition-all text-sm font-bold text-slate-700 cursor-pointer">
+                    <option value="DATE">Tanggal Tertentu</option>
+                    <option value="MONTH">Bulan Tertentu</option>
+                    <option value="ALL">Semua Waktu</option>
+                </select>
+            </div>
+            <div class="relative mb-4" id="deleteDateContainer">
+                <label class="input-label mb-2 text-xs">Pilih Tanggal</label>
                 <input type="date" id="deleteDateInput" class="w-full text-center py-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-red-500 outline-none transition-all text-sm font-bold text-slate-700">
             </div>
+            <div class="relative mb-4 hidden" id="deleteMonthContainer">
+                <label class="input-label mb-2 text-xs">Pilih Bulan</label>
+                <input type="month" id="deleteMonthInput" class="w-full text-center py-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-red-500 outline-none transition-all text-sm font-bold text-slate-700">
+            </div>
             <div class="relative mb-6">
-                <label class="input-label mb-2 text-xs">Destinasi (Opsional)</label>
+                <label class="input-label mb-2 text-xs">Destinasi</label>
                 <select id="deleteDestInput" class="w-full text-center py-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-red-500 outline-none transition-all text-sm font-bold text-slate-700 cursor-pointer">
                     <option value="ALL">Semua Destinasi</option>
                 </select>
@@ -326,7 +338,7 @@
             </div>
 
             <!-- Right: Filter & Action Controls -->
-            <div id="headerControls" class="flex flex-1 justify-start lg:justify-end items-end gap-3 flex-wrap opacity-0 transition-opacity duration-500 pb-1 lg:pb-0">
+            <div id="headerControls" class="flex flex-1 justify-start lg:justify-end items-end gap-3 flex-wrap transition-opacity duration-500 pb-1 lg:pb-0">
                 
                 <!-- Pencarian -->
                 <div class="relative shrink-0 group flex flex-col justify-end">
@@ -412,8 +424,8 @@
             <div class="w-24 h-24 bg-white rounded-3xl flex items-center justify-center border-2 border-dashed border-emerald-200 shadow-xl shadow-emerald-100 mx-auto mb-6">
                 <i class="fa-solid fa-server text-3xl text-emerald-400 animate-pulse"></i>
             </div>
-            <h2 class="text-lg font-bold text-slate-800">Menghubungkan ke Supabase...</h2>
-            <p class="text-xs text-slate-500 mt-2 font-medium" id="initialStateText">Mengambil seluruh riwayat data secara instan.</p>
+            <h2 class="text-lg font-bold text-slate-800">Mengunduh Data di Latar Belakang...</h2>
+            <p class="text-xs text-slate-500 mt-2 font-medium" id="initialStateText">Kamu sudah bisa menggunakan fitur upload sekarang tanpa perlu menunggu selesai.</p>
         </div>
 
         <!-- DASHBOARD CONTENT -->
@@ -845,9 +857,25 @@
             }, 300);
         };
 
+        window.toggleDeleteTimeInput = function() {
+            const mode = document.getElementById('deleteTimeMode').value;
+            document.getElementById('deleteDateContainer').classList.add('hidden');
+            document.getElementById('deleteMonthContainer').classList.add('hidden');
+            if (mode === 'DATE') document.getElementById('deleteDateContainer').classList.remove('hidden');
+            if (mode === 'MONTH') document.getElementById('deleteMonthContainer').classList.remove('hidden');
+        };
+
         window.confirmDelete = function() {
+             const mode = document.getElementById('deleteTimeMode').value;
              const date = document.getElementById('deleteDateInput').value;
-             if(!date) return window.showToast("Pilih tanggal dulu!", "error");
+             const month = document.getElementById('deleteMonthInput').value;
+             const dest = document.getElementById('deleteDestInput').value;
+
+             if(mode === 'DATE' && !date) return window.showToast("Pilih tanggal dulu!", "error");
+             if(mode === 'MONTH' && !month) return window.showToast("Pilih bulan dulu!", "error");
+             if(mode === 'ALL' && dest === 'ALL') return window.showToast("Gunakan fitur Hapus Seluruh Database di bawah.", "error");
+
+             window.deleteParams = { mode, date, month, dest };
              window.closeDeleteModal();
              window.openPasswordModal('delete');
         };
@@ -862,9 +890,7 @@
                     window.showToast("Authorized", "success");
                     setTimeout(() => document.getElementById('csvFile').click(), 500);
                 } else if(window.currentAction === 'delete') {
-                    const date = document.getElementById('deleteDateInput').value;
-                    const dest = document.getElementById('deleteDestInput').value;
-                    if(window.deleteDataForDate) window.deleteDataForDate(date, dest);
+                    if(window.executeDelete) window.executeDelete(window.deleteParams);
                     else window.showToast("Service Offline", "error");
                 } else if(window.currentAction === 'delete_all') {
                     if(window.deleteAllData) window.deleteAllData();
@@ -2297,12 +2323,10 @@
 
         window.loadDataFromFirestore = async function() {
             try {
-                if(window.showLoading) window.showLoading(true, "Menyiapkan Koneksi...", "fetch");
-                
                 const statusText = document.getElementById('statusText');
                 const connectionStatus = document.getElementById('connectionStatus');
-                if(statusText) statusText.textContent = 'Connected (Supabase)';
-                if(connectionStatus) connectionStatus.className = "w-1.5 h-1.5 rounded-full bg-emerald-500";
+                if(statusText) statusText.textContent = 'Menyiapkan Koneksi...';
+                if(connectionStatus) connectionStatus.className = "w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse";
 
                 // 1. Ambil jumlah total data terlebih dahulu untuk progress bar
                 const { count, error: countError } = await supabase
@@ -2319,19 +2343,10 @@
                 const step = 1000;
                 let isFetching = true;
 
-                const pbBar = document.getElementById('fetchProgressBar');
-                const pbText = document.getElementById('fetchProgressDetail');
-                const pbPct = document.getElementById('fetchProgressPct');
-
                 while (isFetching) {
-                    if (window.showLoading) {
-                        const loadText = document.getElementById('loadingText');
-                        if (loadText) loadText.textContent = `Mengunduh Riwayat Inbound...`;
-                        
+                    if (statusText) {
                         let pct = totalData > 0 ? Math.min(Math.round((allData.length / totalData) * 100), 100) : 0;
-                        if (pbBar) pbBar.style.width = `${pct}%`;
-                        if (pbText) pbText.textContent = `${allData.length.toLocaleString('id-ID')} / ${totalData.toLocaleString('id-ID')} Baris`;
-                        if (pbPct) pbPct.textContent = `${pct}%`;
+                        statusText.textContent = `Mengunduh... ${pct}% (${allData.length.toLocaleString('id-ID')} baris)`;
                     }
 
                     const { data, error } = await supabase
@@ -2350,11 +2365,10 @@
                         allData = allData.concat(data);
                         from += step;
                         
-                        // Update UI setelah data berhasil masuk batch
-                        let pct = totalData > 0 ? Math.min(Math.round((allData.length / totalData) * 100), 100) : 100;
-                        if (pbBar) pbBar.style.width = `${pct}%`;
-                        if (pbText) pbText.textContent = `${allData.length.toLocaleString('id-ID')} / ${totalData.toLocaleString('id-ID')} Baris`;
-                        if (pbPct) pbPct.textContent = `${pct}%`;
+                        if (statusText) {
+                            let pct = totalData > 0 ? Math.min(Math.round((allData.length / totalData) * 100), 100) : 100;
+                            statusText.textContent = `Mengunduh... ${pct}% (${allData.length.toLocaleString('id-ID')} baris)`;
+                        }
 
                         if (data.length < step) {
                             isFetching = false;
@@ -2364,10 +2378,7 @@
                     }
                 }
                 
-                // Muluskan ke 100% dan beri jeda sedikit agar efeknya terasa natural
-                if (pbBar) pbBar.style.width = `100%`;
-                if (pbPct) pbPct.textContent = `100%`;
-                if(window.showLoading) document.getElementById('loadingText').textContent = `Memproses Tampilan...`;
+                if(statusText) statusText.textContent = 'Memproses Tampilan...';
                 await new Promise(r => setTimeout(r, 400)); 
                 
                 const docs = allData.map(d => {
@@ -2380,12 +2391,17 @@
                     window.processRawDataWrapper(docs);
                     document.getElementById('initialState').classList.add('hidden');
                     document.getElementById('dashboardContent').classList.remove('hidden');
-                    document.getElementById('headerControls').classList.remove('opacity-0');
                 }
-                if(window.showLoading) window.showLoading(false);
+                
+                if(statusText) statusText.textContent = 'Connected (Supabase)';
+                if(connectionStatus) connectionStatus.className = "w-1.5 h-1.5 rounded-full bg-emerald-500";
             } catch (e) {
                 console.error("Supabase Error: ", e);
-                if(window.showLoading) window.showLoading(false);
+                const statusText = document.getElementById('statusText');
+                const connectionStatus = document.getElementById('connectionStatus');
+                if(statusText) statusText.textContent = 'Koneksi Gagal';
+                if(connectionStatus) connectionStatus.className = "w-1.5 h-1.5 rounded-full bg-rose-500";
+                
                 let errorMsg = "Gagal memuat data dari Supabase.";
                 if (e.message) {
                     errorMsg += " " + e.message;
@@ -2411,18 +2427,37 @@
             }
         };
 
-        window.deleteDataForDate = async function(dateString, destString) {
+        window.executeDelete = async function(params) {
             if(window.showLoading) window.showLoading(true, "Menghapus Data...");
-            const targetDate = new Date(dateString);
-            targetDate.setHours(0,0,0,0);
+            const { mode, date, month, dest } = params;
+
+            let targetDate = null;
+            let targetYear = null;
+            let targetMonth = null;
+
+            if (mode === 'DATE') {
+                targetDate = new Date(date);
+                targetDate.setHours(0,0,0,0);
+            } else if (mode === 'MONTH') {
+                const [y, m] = month.split('-');
+                targetYear = parseInt(y);
+                targetMonth = parseInt(m) - 1;
+            }
 
             const toDelete = window.rawData.filter(d => {
                 if (!d._date || !(d._date instanceof Date) || isNaN(d._date)) return false;
-                const dDate = new Date(d._date); 
-                dDate.setHours(0,0,0,0);
-                const matchDate = dDate.getTime() === targetDate.getTime();
-                const matchDest = destString === 'ALL' || d._dest === destString;
-                return matchDate && matchDest;
+                
+                let matchTime = true;
+                if (mode === 'DATE') {
+                    const dDate = new Date(d._date); 
+                    dDate.setHours(0,0,0,0);
+                    matchTime = dDate.getTime() === targetDate.getTime();
+                } else if (mode === 'MONTH') {
+                    matchTime = d._date.getFullYear() === targetYear && d._date.getMonth() === targetMonth;
+                }
+
+                const matchDest = dest === 'ALL' || d._dest === dest;
+                return matchTime && matchDest;
             });
 
             if(toDelete.length === 0) {
