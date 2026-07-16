@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inbound Control Tower</title>
+    <title>Inbound Control Tower (Offline)</title>
     
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%2310B981' d='M44.7 155.8c-26.6 15.6-26.6 54.8 0 70.4l184.4 108c16.5 9.7 36.9 9.7 53.4 0l184.4-108c26.6-15.6 26.6-54.8 0-70.4l-184.4-108c-16.5-9.7-36.9-9.7-53.4 0l-184.4 108zM512 304c0-7-2.6-13.8-7.7-18.8c-10.4-10.4-27.3-10.4-37.7 0L308.2 430.7c-31 28.5-77.5 28.5-108.5 0L41.3 285.2c-10.4-10.4-27.3-10.4-37.7 0C-1.5 290.2-1.5 307.1 8.9 317.5l163 150.3c48 44.2 121.9 44.2 169.9 0L503.1 317.5c5.1-5 7.7-11.8 7.7-18.8z'/></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%233B82F6' d='M44.7 155.8c-26.6 15.6-26.6 54.8 0 70.4l184.4 108c16.5 9.7 36.9 9.7 53.4 0l184.4-108c26.6-15.6 26.6-54.8 0-70.4l-184.4-108c-16.5-9.7-36.9-9.7-53.4 0l-184.4 108zM512 304c0-7-2.6-13.8-7.7-18.8c-10.4-10.4-27.3-10.4-37.7 0L308.2 430.7c-31 28.5-77.5 28.5-108.5 0L41.3 285.2c-10.4-10.4-27.3-10.4-37.7 0C-1.5 290.2-1.5 307.1 8.9 317.5l163 150.3c48 44.2 121.9 44.2 169.9 0L503.1 317.5c5.1-5 7.7-11.8 7.7-18.8z'/></svg>">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -15,113 +15,30 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        body { 
-            background-color: #F0F4F8; 
-            color: #334155; 
-            font-size: 13px; 
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-image: radial-gradient(#E2E8F0 1px, transparent 1px); 
-            background-size: 24px 24px; 
-        }
-        
+        body { background-color: #F0F4F8; color: #334155; font-size: 13px; font-family: 'Plus Jakarta Sans', sans-serif; background-image: radial-gradient(#E2E8F0 1px, transparent 1px); background-size: 24px 24px; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
-
-        .fresh-card { 
-            background: rgba(255, 255, 255, 0.95); 
-            backdrop-filter: blur(10px); 
-            border-radius: 20px; 
-            border: 1px solid #FFFFFF; 
-            box-shadow: 0 4px 20px -2px rgba(148, 163, 184, 0.15); 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-        }
-        .fresh-card:hover { 
-            transform: translateY(-3px); 
-            box-shadow: 0 10px 30px -5px rgba(148, 163, 184, 0.2); 
-        }
-
-        .fresh-input { 
-            background: #F8FAFC; 
-            border: 1px solid #E2E8F0; 
-            border-radius: 12px; 
-            padding: 8px 12px; 
-            font-size: 12px; 
-            font-weight: 500; 
-            color: #334155; 
-            outline: none; 
-            transition: all 0.2s; 
-        }
-        .fresh-input:focus { 
-            background: #FFFFFF; 
-            border-color: #10B981; 
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15); 
-        }
-
-        .btn-gradient { 
-            background: linear-gradient(135deg, #10B981 0%, #059669 100%); 
-            color: white; 
-            padding: 8px 16px; 
-            border-radius: 12px; 
-            font-weight: 600; 
-            font-size: 12px; 
-            transition: all 0.3s; 
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); 
-            border: 1px solid rgba(255,255,255,0.1); 
-        }
-        .btn-gradient:hover { 
-            transform: translateY(-1px); 
-            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35); 
-            filter: brightness(1.1); 
-        }
-
-        .btn-danger { 
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); 
-            color: white; 
-            padding: 8px 16px; 
-            border-radius: 12px; 
-            font-weight: 600; 
-            font-size: 12px; 
-            transition: all 0.3s; 
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25); 
-            border: 1px solid rgba(255,255,255,0.1); 
-        }
-        .btn-danger:hover { 
-            transform: translateY(-1px); 
-            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35); 
-            filter: brightness(1.1); 
-        }
-
-        .fresh-table th { 
-            text-transform: uppercase; 
-            font-size: 10px; 
-            font-weight: 700; 
-            color: #64748B; 
-            letter-spacing: 0.05em; 
-            padding: 14px 16px; 
-            background: #F8FAFC; 
-            border-bottom: 2px solid #94a3b8; 
-        }
-        .fresh-table td { 
-            padding: 12px 16px; 
-            border-bottom: 1px solid #cbd5e1; 
-            color: #334155; 
-            vertical-align: top; 
-        }
-        
+        .fresh-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; border: 1px solid #FFFFFF; box-shadow: 0 4px 20px -2px rgba(148, 163, 184, 0.15); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .fresh-card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px -5px rgba(148, 163, 184, 0.2); }
+        .fresh-input { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 8px 12px; font-size: 12px; font-weight: 500; color: #334155; outline: none; transition: all 0.2s; }
+        .fresh-input:focus { background: #FFFFFF; border-color: #10B981; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15); }
+        .btn-gradient { background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: white; padding: 8px 16px; border-radius: 12px; font-weight: 600; font-size: 12px; transition: all 0.3s; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); border: 1px solid rgba(255,255,255,0.1); }
+        .btn-gradient:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35); filter: brightness(1.1); }
+        .btn-danger { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 8px 16px; border-radius: 12px; font-weight: 600; font-size: 12px; transition: all 0.3s; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25); border: 1px solid rgba(255,255,255,0.1); }
+        .btn-danger:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35); filter: brightness(1.1); }
+        .fresh-table th { text-transform: uppercase; font-size: 10px; font-weight: 700; color: #64748B; letter-spacing: 0.05em; padding: 14px 16px; background: #F8FAFC; border-bottom: 2px solid #94a3b8; }
+        .fresh-table td { padding: 12px 16px; border-bottom: 1px solid #cbd5e1; color: #334155; vertical-align: top; }
         .valign-middle { vertical-align: middle !important; }
         .fresh-table tr:hover td { background-color: #F1F5F9; }
         .group-col { background-color: #FFFFFF; border-right: 1px solid #cbd5e1; }
-
         @keyframes slideDown { from { transform: translate(-50%, -150%); opacity: 0; } to { transform: translate(-50%, 20px); opacity: 1; } }
         .toast-animate { animation: slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
         .animate-fade-in-up { animation: fadeInUp 0.6s ease-out; }
         @keyframes fadeInUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        
         .loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .input-label { display: block; font-size: 9px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 2px; margin-left: 2px; }
-        
         .loader { width: fit-content; height: fit-content; display: flex; align-items: center; justify-content: center; }
         .truckWrapper { width: 200px; height: 100px; display: flex; flex-direction: column; position: relative; align-items: center; justify-content: flex-end; overflow-x: hidden; }
         .truckBody { width: 130px; height: fit-content; margin-bottom: 6px; animation: motion 1s linear infinite; }
@@ -132,9 +49,6 @@
         .road::before { content: ""; position: absolute; width: 20px; height: 100%; background-color: #282828; right: -50%; border-radius: 3px; animation: roadAnimation 1.4s linear infinite; border-left: 10px solid white; }
         .road::after { content: ""; position: absolute; width: 10px; height: 100%; background-color: #282828; right: -65%; border-radius: 3px; animation: roadAnimation 1.4s linear infinite; border-left: 4px solid white; }
         @keyframes roadAnimation { 0% { transform: translateX(0px); } 100% { transform: translateX(-350px); } }
-        
-        @keyframes shimmer { 0% { transform: skewX(-20deg) translateX(-150%); } 100% { transform: skewX(-20deg) translateX(250%); } }
-        .progress-glow { box-shadow: 0 0 12px rgba(16, 185, 129, 0.6); }
     </style>
 </head>
 <body class="flex flex-col min-h-screen selection:bg-emerald-100 selection:text-emerald-700">
@@ -166,25 +80,6 @@
 
     <div id="toast-container" class="fixed top-0 left-1/2 -translate-x-1/2 z-[100] flex flex-col gap-2 pointer-events-none w-full max-w-sm"></div>
 
-    <div id="passwordModal" class="fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-md hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-[320px] p-8 transform scale-95 transition-all duration-300 border border-white/50" id="passwordModalContent">
-            <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-emerald-600 shadow-sm">
-                    <i class="fa-solid fa-lock text-2xl"></i>
-                </div>
-                <h3 class="text-lg font-bold text-slate-800" id="modalTitle">Security Check</h3>
-                <p class="text-xs text-slate-500 mt-1" id="modalDesc">Please enter access code</p>
-            </div>
-            <div class="relative mb-6">
-                <input type="password" id="passwordInput" class="w-full text-center py-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-emerald-500 outline-none transition-all text-sm font-mono tracking-[0.5em]" placeholder="••••••" onkeypress="window.handleEnter(event)">
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-                <button onclick="window.closePasswordModal()" class="py-2.5 rounded-xl border border-slate-200 text-slate-500 text-xs font-bold hover:bg-slate-50">Batal</button>
-                <button onclick="window.submitPassword()" class="py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 shadow-lg">Verifikasi</button>
-            </div>
-        </div>
-    </div>
-
     <div id="deleteModal" class="fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-md hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-[340px] p-8 transform scale-95 transition-all duration-300 border border-white/50" id="deleteModalContent">
             <div class="text-center mb-6">
@@ -192,7 +87,7 @@
                     <i class="fa-solid fa-calendar-xmark text-2xl"></i>
                 </div>
                 <h3 class="text-lg font-bold text-slate-800">Hapus Data</h3>
-                <p class="text-xs text-slate-500 mt-1">Pilih parameter untuk menghapus data</p>
+                <p class="text-xs text-slate-500 mt-1">Pilih parameter untuk menghapus data dari memori</p>
             </div>
             <div class="relative mb-4">
                 <label class="input-label mb-2 text-xs">Waktu</label>
@@ -222,7 +117,7 @@
             </div>
             <div class="mt-4 text-center border-t border-slate-100 pt-4">
                 <button onclick="window.confirmDeleteAll()" class="text-[10px] font-bold text-slate-400 hover:text-red-600 transition-colors flex items-center justify-center gap-1 mx-auto">
-                    <i class="fa-solid fa-triangle-exclamation"></i> Hapus Seluruh Database (Reset)
+                    <i class="fa-solid fa-triangle-exclamation"></i> Hapus Seluruh Data (Reset)
                 </button>
             </div>
         </div>
@@ -249,44 +144,34 @@
         </div>
     </div>
 
-    <div id="previewModal" class="fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-md hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-[360px] p-8 transform scale-95 transition-all duration-300 border border-white/50" id="previewModalContent">
-            <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-emerald-600 shadow-sm">
-                    <i class="fa-solid fa-database text-2xl"></i>
-                </div>
-                <h3 class="text-lg font-bold text-slate-800">Analisis Data</h3>
-                <p class="text-xs text-slate-500 mt-1">Laporan pra-unggah ke Supabase</p>
-            </div>
-            <div class="bg-slate-50 rounded-xl p-4 mb-6 border border-slate-100">
-                <div class="flex justify-between items-center mb-3">
-                    <span class="text-xs font-bold text-slate-600">Data Baru / Di-update:</span>
-                    <span class="text-sm font-black text-emerald-600" id="previewNewCount">0</span>
-                </div>
-                <div class="flex justify-between items-center border-t border-slate-200 pt-3">
-                    <span class="text-xs font-bold text-slate-500">Data Diabaikan:</span>
-                    <span class="text-sm font-black text-rose-500" id="previewDupCount">0</span>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-                <button onclick="window.closePreviewModal()" class="py-2.5 rounded-xl border border-slate-200 text-slate-500 text-xs font-bold hover:bg-slate-50">Batal</button>
-                <button onclick="window.confirmUpload()" class="py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 shadow-lg">Lanjutkan</button>
-            </div>
-        </div>
-    </div>
-
     <div id="successModal" class="fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-md hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-[320px] p-8 transform scale-95 transition-all duration-300 border border-white/50" id="successModalContent">
             <div class="text-center mb-6">
                 <div class="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-emerald-600 shadow-sm">
                     <i class="fa-solid fa-check-double text-2xl"></i>
                 </div>
-                <h3 class="text-lg font-bold text-slate-800">Update Berhasil!</h3>
+                <h3 class="text-lg font-bold text-slate-800">Proses Berhasil!</h3>
                 <p class="text-xs text-slate-500 mt-2 leading-relaxed">
-                    <span id="successCount" class="font-bold text-emerald-600 text-base">0</span> data baru telah berhasil disimpan ke dalam Supabase.
+                    <span id="successCount" class="font-bold text-emerald-600 text-base">0</span> data baru telah ditambahkan ke sistem memori.
                 </p>
             </div>
             <button onclick="window.closeSuccessModal()" class="w-full py-3 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 shadow-lg transition">Selesai</button>
+        </div>
+    </div>
+
+    <div id="validationErrorModal" class="fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-md hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-8 transform scale-95 transition-all duration-300 border border-white/50" id="validationErrorModalContent">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-rose-600 shadow-sm">
+                    <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800">Validasi Data Gagal</h3>
+                <p class="text-xs text-slate-500 mt-1">Harap perbaiki data berikut sebelum mengunggah file CSV.</p>
+            </div>
+            <div class="bg-slate-50 border border-slate-200 rounded-xl max-h-60 overflow-y-auto p-4 mb-6 custom-scrollbar text-left">
+                <ul id="validationErrorList" class="text-[11px] text-rose-600 font-mono space-y-2"></ul>
+            </div>
+            <button onclick="window.closeValidationErrorModal()" class="w-full py-3 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 shadow-lg transition">Tutup & Perbaiki File</button>
         </div>
     </div>
 
@@ -294,14 +179,14 @@
         <div class="max-w-[1920px] mx-auto px-6 w-full flex flex-wrap lg:flex-nowrap justify-between items-center gap-4">
             
             <div class="flex items-center gap-4 shrink-0">
-                <div class="w-10 h-10 bg-gradient-to-tr from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/30">
+                <div class="w-10 h-10 bg-gradient-to-tr from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
                     <i class="fa-solid fa-layer-group text-lg"></i>
                 </div>
                 <div>
-                    <h1 class="text-base font-extrabold text-slate-800 tracking-tight leading-none">Inbound<span class="text-emerald-600">Tower</span></h1>
+                    <h1 class="text-base font-extrabold text-slate-800 tracking-tight leading-none">Inbound<span class="text-blue-600">Tower</span></h1>
                     <div class="flex items-center gap-1.5 mt-1">
-                        <span id="connectionStatus" class="w-1.5 h-1.5 rounded-full bg-slate-300 animate-pulse"></span>
-                        <p class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider" id="statusText">Connecting...</p>
+                        <span id="connectionStatus" class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                        <p class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider" id="statusText">Mode Offline Aktif</p>
                     </div>
                 </div>
             </div>
@@ -362,53 +247,37 @@
                 <div class="h-6 w-[2px] bg-slate-200 mx-1 rounded-full shrink-0 mb-[4px]"></div>
 
                 <div class="flex items-center gap-2 mb-[0px]">
-                    <a href="https://dataawbinbound.vercel.app/" class="flex items-center justify-center h-[32px] px-3 rounded-lg bg-slate-900 text-white font-bold text-[11px] hover:bg-slate-800 transition-colors shadow-sm shrink-0 gap-1.5 hide-on-archive" title="Buka Dashboard AWB">
-                        <i class="fa-solid fa-truck-fast"></i>
-                        <span class="hidden sm:inline">Data AWB</span>
-                    </a>
-                    
                     <div class="relative shrink-0 flex flex-col justify-end group">
-                        <button onclick="window.toggleMulti('arsipMenu')" class="btn-gradient w-[32px] h-[32px] p-0 flex items-center justify-center rounded-lg shrink-0 !bg-blue-600 border-none shadow-blue-500/25" title="Menu Arsip">
+                        <button onclick="window.toggleMulti('arsipMenu')" class="btn-gradient w-[32px] h-[32px] p-0 flex items-center justify-center rounded-lg shrink-0 !bg-blue-600 border-none shadow-blue-500/25" title="Menu Arsip CSV">
                             <i class="fa-solid fa-box-archive text-[13px]"></i>
                         </button>
                         <div id="arsipMenu" class="hidden absolute top-[calc(100%+4px)] right-0 w-48 bg-white border border-slate-200 shadow-xl rounded-xl z-[60] p-2 flex flex-col gap-1">
-                            <button onclick="window.openDownloadArchiveModal()" class="hide-on-archive text-left px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 rounded-lg flex items-center gap-2"><i class="fa-solid fa-file-arrow-down text-blue-500"></i> Unduh Arsip CSV</button>
-                            <label for="csvArchiveInput" class="text-left px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 rounded-lg flex items-center gap-2 cursor-pointer m-0"><i class="fa-solid fa-folder-open text-amber-500"></i> Buka Arsip CSV</label>
-                            <input type="file" id="csvArchiveInput" accept=".csv" class="hidden" onchange="window.loadArchiveCSV(event)">
+                            <button onclick="window.openDownloadArchiveModal()" class="text-left px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 rounded-lg flex items-center gap-2"><i class="fa-solid fa-calendar-days text-blue-500"></i> Unduh per Bulan</button>
+                            <button onclick="window.executeDownloadMaster()" class="text-left px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 rounded-lg flex items-center gap-2"><i class="fa-solid fa-database text-emerald-500"></i> Unduh Master Backup</button>
                         </div>
                     </div>
 
-                    <button onclick="window.openPasswordModal('upload_inbound')" class="btn-gradient w-[32px] h-[32px] p-0 flex items-center justify-center rounded-lg shrink-0 hide-on-archive" title="Update Data Inbound">
+                    <button onclick="document.getElementById('csvFile').click()" class="btn-gradient w-[32px] h-[32px] p-0 flex items-center justify-center rounded-lg shrink-0" title="Upload Banyak File CSV">
                         <i class="fa-solid fa-database text-[13px]"></i>
                     </button>
-                    <button onclick="window.openDeleteModal()" class="btn-danger w-[32px] h-[32px] p-0 flex items-center justify-center rounded-lg shrink-0 hide-on-archive" title="Hapus Data">
+                    <button onclick="window.openDeleteModal()" class="btn-danger w-[32px] h-[32px] p-0 flex items-center justify-center rounded-lg shrink-0" title="Hapus Data">
                         <i class="fa-solid fa-trash-can text-[13px]"></i>
                     </button>
                 </div>
-                <input type="file" id="csvFile" accept=".csv" class="hidden">
+                <!-- Input ini diubah menjadi multiple untuk menerima lebih dari 1 file sekaligus -->
+                <input type="file" id="csvFile" accept=".csv" multiple class="hidden">
             </div>
         </div>
     </header>
 
     <main class="flex-grow w-full max-w-[1920px] mx-auto px-4 py-4">
-        
-        <div id="archiveBanner" class="hidden mb-6 bg-amber-50 border-l-4 border-amber-500 p-4 rounded-xl flex items-center justify-between shadow-sm animate-fade-in-up">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600"><i class="fa-solid fa-box-archive"></i></div>
-                <div>
-                    <h3 class="text-sm font-bold text-amber-800" id="archiveBannerText">MODE ARSIP AKTIF</h3>
-                    <p class="text-xs text-amber-600 mt-0.5">Anda sedang melihat data dari file arsip CSV. Fitur modifikasi dinonaktifkan sementara.</p>
-                </div>
-            </div>
-            <button onclick="window.exitArchiveMode()" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-sm transition-colors">Tutup Arsip & Kembali</button>
-        </div>
 
         <div id="initialState" class="flex flex-col items-center justify-center min-h-[60vh] animate-fade-in-up">
-            <div class="w-24 h-24 bg-white rounded-3xl flex items-center justify-center border-2 border-dashed border-emerald-200 shadow-xl shadow-emerald-100 mx-auto mb-6">
-                <i class="fa-solid fa-server text-3xl text-emerald-400 animate-pulse"></i>
+            <div class="w-24 h-24 bg-white rounded-3xl flex items-center justify-center border-2 border-dashed border-blue-200 shadow-xl shadow-blue-100 mx-auto mb-6">
+                <i class="fa-solid fa-folder-open text-3xl text-blue-400"></i>
             </div>
-            <h2 class="text-lg font-bold text-slate-800" id="initialStateTitle">Mengunduh Data di Latar Belakang...</h2>
-            <p class="text-xs text-slate-500 mt-2 font-medium" id="initialStateText">Kamu sudah bisa menggunakan fitur upload sekarang tanpa perlu menunggu selesai.</p>
+            <h2 class="text-lg font-bold text-slate-800" id="initialStateTitle">Siap Menerima Data CSV</h2>
+            <p class="text-xs text-slate-500 mt-2 font-medium" id="initialStateText">Klik ikon database warna hijau di kanan atas untuk mengunggah satu atau beberapa file CSV sekaligus.</p>
         </div>
 
         <div id="dashboardContent" class="hidden space-y-6">
@@ -665,7 +534,6 @@
 
         window.selectedService = 'ALL';
         window.currentAction = ''; 
-        window.isArchiveMode = false;
 
         window.parseNum = (str) => {
             if (typeof str === 'number') return str;
@@ -744,27 +612,6 @@
             setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translate(-50%, -20px)'; setTimeout(() => toast.remove(), 300); }, 3000);
         };
 
-        window.openPasswordModal = function(action) {
-            window.currentAction = action;
-            document.getElementById('passwordModal').classList.remove('hidden');
-            document.getElementById('modalTitle').textContent = action === 'delete' ? 'Konfirmasi Hapus' : 'Admin Access';
-            document.getElementById('modalDesc').textContent = action === 'delete' ? 'Masukkan kode untuk konfirmasi' : 'Please enter access code';
-            setTimeout(() => {
-                document.getElementById('passwordModal').classList.remove('opacity-0');
-                document.getElementById('passwordModalContent').classList.remove('scale-95');
-                document.getElementById('passwordModalContent').classList.add('scale-100');
-            }, 10);
-            document.getElementById('passwordInput').value = '';
-            document.getElementById('passwordInput').focus();
-        };
-
-        window.closePasswordModal = function() {
-            document.getElementById('passwordModal').classList.add('opacity-0');
-            document.getElementById('passwordModalContent').classList.remove('scale-100');
-            document.getElementById('passwordModalContent').classList.add('scale-95');
-            setTimeout(() => document.getElementById('passwordModal').classList.add('hidden'), 300);
-        };
-        
         window.openDeleteModal = function() {
             document.getElementById('deleteModal').classList.remove('hidden');
             setTimeout(() => {
@@ -779,24 +626,6 @@
             document.getElementById('deleteModalContent').classList.remove('scale-100');
             document.getElementById('deleteModalContent').classList.add('scale-95');
             setTimeout(() => document.getElementById('deleteModal').classList.add('hidden'), 300);
-        };
-
-        window.openPreviewModal = function(newCount, dupCount) {
-            document.getElementById('previewModal').classList.remove('hidden');
-            document.getElementById('previewNewCount').textContent = formatNumber(newCount);
-            document.getElementById('previewDupCount').textContent = formatNumber(dupCount);
-            setTimeout(() => {
-                document.getElementById('previewModal').classList.remove('opacity-0');
-                document.getElementById('previewModalContent').classList.remove('scale-95');
-                document.getElementById('previewModalContent').classList.add('scale-100');
-            }, 10);
-        };
-
-        window.closePreviewModal = function() {
-            document.getElementById('previewModal').classList.add('opacity-0');
-            document.getElementById('previewModalContent').classList.remove('scale-100');
-            document.getElementById('previewModalContent').classList.add('scale-95');
-            setTimeout(() => document.getElementById('previewModal').classList.add('hidden'), 300);
         };
 
         window.openSuccessModal = function(count) {
@@ -816,6 +645,24 @@
             setTimeout(() => {
                 document.getElementById('successModal').classList.add('hidden');
             }, 300);
+        };
+
+        window.showErrorModal = function(errors) {
+            const list = document.getElementById('validationErrorList');
+            list.innerHTML = errors.map(e => `<li><i class="fa-solid fa-circle-xmark mr-1"></i> ${e}</li>`).join('');
+            document.getElementById('validationErrorModal').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('validationErrorModal').classList.remove('opacity-0');
+                document.getElementById('validationErrorModalContent').classList.remove('scale-95');
+                document.getElementById('validationErrorModalContent').classList.add('scale-100');
+            }, 10);
+        };
+
+        window.closeValidationErrorModal = function() {
+            document.getElementById('validationErrorModal').classList.add('opacity-0');
+            document.getElementById('validationErrorModalContent').classList.remove('scale-100');
+            document.getElementById('validationErrorModalContent').classList.add('scale-95');
+            setTimeout(() => document.getElementById('validationErrorModal').classList.add('hidden'), 300);
         };
 
         window.toggleDeleteTimeInput = function() {
@@ -838,47 +685,23 @@
 
              window.deleteParams = { mode, date, month, dest };
              window.closeDeleteModal();
-             window.openPasswordModal('delete');
+             if(window.executeDelete) window.executeDelete(window.deleteParams);
         };
 
-        window.handleEnter = function(e) { if (e.key === 'Enter') window.submitPassword(); };
-
-        window.submitPassword = function() {
-            const pwd = document.getElementById('passwordInput').value;
-            if (pwd === "TAB123") {
-                window.closePasswordModal();
-                if(window.currentAction === 'upload_inbound' || window.currentAction === 'upload') {
-                    window.showToast("Authorized", "success");
-                    setTimeout(() => document.getElementById('csvFile').click(), 500);
-                } else if(window.currentAction === 'delete') {
-                    if(window.executeDelete) window.executeDelete(window.deleteParams);
-                    else window.showToast("Service Offline", "error");
-                } else if(window.currentAction === 'delete_all') {
-                    if(window.deleteAllData) window.deleteAllData();
-                    else window.showToast("Service Offline", "error");
-                }
-            } else {
-                window.showToast("Invalid Passcode", "error");
-                document.getElementById('passwordInput').value = '';
-            }
+        window.confirmDeleteAll = function() {
+            window.closeDeleteModal();
+            if(window.deleteAllData) window.deleteAllData();
         };
 
         window.showLoading = function(show, text, type = 'sync') {
             const el = document.getElementById('loadingOverlay');
             const truckLoader = document.getElementById('truckLoader');
-            const fetchProgress = document.getElementById('fetchProgressContainer');
 
             if(show) {
                 el.classList.remove('hidden');
                 document.getElementById('loadingText').textContent = text;
                 
-                if (type === 'fetch') {
-                    if (truckLoader) truckLoader.classList.add('hidden');
-                    if (fetchProgress) fetchProgress.classList.remove('hidden');
-                } else {
-                    if (truckLoader) truckLoader.classList.remove('hidden');
-                    if (fetchProgress) fetchProgress.classList.add('hidden');
-                }
+                if (truckLoader) truckLoader.classList.remove('hidden');
             } else {
                 el.classList.add('hidden');
             }
@@ -952,94 +775,6 @@
             });
             html += '</tbody>';
             table.innerHTML = html;
-        };
-
-        window.processRawDataWrapper = function(data) {
-            const validData = [];
-            const rejectedData = [];
-
-            data.forEach(row => {
-                const tglTerimaStr = String(row['Tanggal Diterima'] || row['Tanggal DIterima'] || '').trim();
-                
-                let vendor = (row['VENDOR'] || 'N/A').toUpperCase();
-                let origin = (row['Origin'] || 'N/A').toUpperCase();
-                let dest = (row['Destinasi'] || 'Unknown').toUpperCase();
-                let batch = (row['BATCH'] || 'N/A').toString().toUpperCase();
-                let service = (row['SERVICE'] || 'N/A').toUpperCase();
-                if (service === 'REG') service = 'REGULER';
-                
-                const rawFlight = row['FLIGHT'] || '-';
-                let cleanFlight = rawFlight.toUpperCase();
-                if (service === 'REGULER') cleanFlight = rawFlight.replace(/[\s-]/g, '').toUpperCase();
-                
-                const tglTerima = parseDate(tglTerimaStr);
-                
-                if (!tglTerima) {
-                    rejectedData.push({
-                        _tglPA: parseDate(row['Tanggal']),
-                        _origin: origin,
-                        _vendor: vendor,
-                        _dest: dest,
-                        _smu: row['SMU'] || '-',
-                        _flight: cleanFlight,
-                        _batch: batch,
-                        _pcs: window.parseNum(row['Kuantitas Paket (Awb)']),
-                        _weight: window.parseNum(row['Berat Total (kg)']),
-                        _note: row['Note'] || row['CATATAN'] || '-',
-                        _keterangan: tglTerimaStr || 'Kosong/Tidak Valid',
-                        _mb: row['No Bagseals'] || '-',
-                        _service: service,
-                        _firestoreId: row._firestoreId 
-                    });
-                    return; 
-                }
-
-                const tglOrigin = parseDate(row['Tanggal']); 
-                
-                if (tglTerima) {
-                    let sla = 0;
-                    if (tglOrigin) {
-                        const diff = tglTerima - tglOrigin;
-                        sla = Math.ceil(diff / (1000 * 60 * 60 * 24));
-                    }
-
-                    validData.push({
-                        ...row,
-                        _date: tglTerima,
-                        _dateOrigin: tglOrigin,
-                        _weight: window.parseNum(row['Berat Total (kg)']),
-                        _pcs: window.parseNum(row['Kuantitas Paket (Awb)']), 
-                        _vendor: vendor,
-                        _origin: origin,
-                        _dest: dest,
-                        _service: service,
-                        _batch: batch,
-                        _jam: formatTimeHHMM(row['JAM']), 
-                        _smu: row['SMU'] || '-',
-                        _flight: cleanFlight,
-                        _tglFlight: row['TANGGAL FLIGHT'] || '-',
-                        _mb: row['No Bagseals'] || '-',
-                        _note: row['Note'] || row['CATATAN'] || '',
-                        _sla: sla,
-                        _firestoreId: row._firestoreId 
-                    });
-                }
-            });
-
-            window.rawData = validData;
-            window.rejectedData = rejectedData;
-            window.filteredRejectedData = rejectedData;
-
-            window.populateFilters();
-            window.renderRejectedTable();
-            
-            const endDate = new Date();
-            const startDate = new Date();
-            startDate.setDate(endDate.getDate() - 90); 
-            document.getElementById('filterStartDate').value = formatInputDate(startDate);
-            document.getElementById('filterEndDate').value = formatInputDate(endDate);
-
-            window.applyFilters();
         };
 
         window.renderRejectedTable = function() {
@@ -1204,7 +939,6 @@
             const menu = document.getElementById(menuId);
             const allChk = menu.querySelector('input[value="ALL"]');
             if (allChk && allChk.checked) return ['ALL'];
-            
             return [...menu.querySelectorAll('input.item-checkbox:checked')].map(i => i.value);
         };
 
@@ -1431,71 +1165,44 @@
                 window.showToast("Tidak ada data untuk diunduh", "info");
                 return;
             }
-
             const headers = [
                 "Tanggal Diterima", "Jam", "Destinasi", "Tanggal PA", "Batch",
                 "Origin", "SMU", "Berangkat", "Tanggal Berangkat", "SLA (Hari)",
                 "No Bagseals", "Berat (Kg)", "Pcs", "Vendor", "Service", "Note"
             ];
-
             const csvRows = window.filteredData.map(d => {
                 const paDate = d._dateOrigin ? formatDate(d._dateOrigin) : '-';
                 const safeNote = (d._note || '').split('"').join('""');
                 return [
-                    formatDate(d._date),
-                    d._jam || '-',
-                    d._dest || '-',
-                    paDate,
-                    d._batch || '-',
-                    d._origin || '-',
-                    d._smu || '-',
-                    d._flight || '-',
-                    d._tglFlight || '-',
-                    d._sla || 0,
-                    d._mb || '-',
-                    d._weight || 0,
-                    d._pcs || 0,
-                    d._vendor || '-',
-                    d._service || '-',
-                    safeNote
+                    formatDate(d._date), d._jam || '-', d._dest || '-', paDate, d._batch || '-',
+                    d._origin || '-', d._smu || '-', d._flight || '-', d._tglFlight || '-', d._sla || 0,
+                    d._mb || '-', d._weight || 0, d._pcs || 0, d._vendor || '-', d._service || '-', safeNote
                 ].map(val => `"${val}"`).join(','); 
             });
-
             const csvContent = [headers.join(','), ...csvRows].join('\n');
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
-            
             const link = document.createElement("a");
             link.setAttribute("href", url);
             link.setAttribute("download", `Manifest_Detail_${formatInputDate(new Date())}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            
             window.showToast("Mendownload CSV...", "success");
         };
 
         window.aggregateAndRenderTable = function() {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
-
             let aggregatedList = [];
             window.filteredData.forEach(row => {
                 const rowPaTime = row._dateOrigin ? row._dateOrigin.getTime() : 0;
-                
                 const existing = aggregatedList.find(d => {
                     const dPaTime = d._dateOrigin ? d._dateOrigin.getTime() : 0;
-                    return d._date.getTime() === row._date.getTime() &&
-                           d._jam === row._jam &&
-                           d._dest === row._dest &&
-                           dPaTime === rowPaTime &&
-                           d._batch === row._batch &&
-                           d._origin === row._origin &&
-                           d._smu === row._smu &&
-                           d._flight === row._flight &&
-                           d._tglFlight === row._tglFlight &&
-                           d._vendor === row._vendor &&
-                           d._sla === row._sla;
+                    return d._date.getTime() === row._date.getTime() && d._jam === row._jam &&
+                           d._dest === row._dest && dPaTime === rowPaTime && d._batch === row._batch &&
+                           d._origin === row._origin && d._smu === row._smu && d._flight === row._flight &&
+                           d._tglFlight === row._tglFlight && d._vendor === row._vendor && d._sla === row._sla;
                 });
                 
                 if (existing) {
@@ -1511,11 +1218,9 @@
                 if(a._date.getTime() !== b._date.getTime()) return b._date - a._date;
                 if(a._jam !== b._jam) return a._jam.localeCompare(b._jam);
                 if(a._dest !== b._dest) return a._dest < b._dest ? -1 : 1; 
-                
                 const aPa = a._dateOrigin ? a._dateOrigin.getTime() : 0;
                 const bPa = b._dateOrigin ? b._dateOrigin.getTime() : 0;
                 if(aPa !== bPa) return aPa - bPa;
-                
                 if(a._batch !== b._batch) return a._batch.localeCompare(b._batch);
                 if(a._origin !== b._origin) return a._origin.localeCompare(b._origin);
                 if(a._smu !== b._smu) return a._smu.localeCompare(b._smu);
@@ -1528,7 +1233,6 @@
             let renderRows = [];
             for (let i = 0; i < pageData.length; i++) {
                 renderRows.push({ type: 'data', data: pageData[i], date: pageData[i]._date, jam: pageData[i]._jam });
-
                 const isLastInJam = (i === pageData.length - 1) || (pageData[i]._jam !== pageData[i+1]._jam) || (pageData[i]._date.getTime() !== pageData[i+1]._date.getTime());
                 const isLastInDate = (i === pageData.length - 1) || (pageData[i]._date.getTime() !== pageData[i+1]._date.getTime());
 
@@ -1538,7 +1242,6 @@
                     const sumPcs = trueJamData.reduce((s, x) => s + x._pcs, 0);
                     renderRows.push({ type: 'total_jam', date: pageData[i]._date, jam: pageData[i]._jam, mb: sumMb, pcs: sumPcs });
                 }
-
                 if (isLastInDate) {
                     const trueDateData = aggregatedList.filter(x => x._date.getTime() === pageData[i]._date.getTime());
                     const sumMb = trueDateData.reduce((s, x) => s + x._mb_count, 0);
@@ -1554,8 +1257,8 @@
             });
 
             renderRows.forEach(r => {
-                if(r.type === 'total_date') { r.spanDate = 0; }
-                if(r.type === 'total_jam') { r.spanJam = 0; }
+                if(r.type === 'total_date') r.spanDate = 0;
+                if(r.type === 'total_jam') r.spanJam = 0;
             });
 
             for (let i = 0; i < renderRows.length; i++) {
@@ -1586,13 +1289,11 @@
 
                     const pmJam = (a, b) => a._date.getTime()===b._date.getTime() && a._jam===b._jam;
                     const pmDest = (a, b) => pmJam(a,b) && a._dest===b._dest;
-                    
                     const pmPa = (a, b) => {
                         const aPa = a._dateOrigin ? a._dateOrigin.getTime() : 0;
                         const bPa = b._dateOrigin ? b._dateOrigin.getTime() : 0;
                         return pmDest(a,b) && aPa === bPa;
                     };
-                    
                     const pmBatch = (a, b) => pmPa(a,b) && a._batch===b._batch;
                     const pmOrigin = (a, b) => pmBatch(a,b) && a._origin===b._origin;
                     const pmSmu = (a, b) => pmOrigin(a,b) && a._smu===b._smu;
@@ -1601,36 +1302,27 @@
                     const pmVendor = (a, b) => pmTglFlight(a,b) && a._vendor===b._vendor;
                     const pmSla = (a, b) => pmVendor(a,b) && a._sla===b._sla;
 
-                    calcDataSpan('Jam', pmJam);
-                    calcDataSpan('Dest', pmDest);
-                    calcDataSpan('Pa', pmPa);
-                    calcDataSpan('Batch', pmBatch);
-                    calcDataSpan('Origin', pmOrigin);
-                    calcDataSpan('Smu', pmSmu);
-                    calcDataSpan('Flight', pmFlight);
-                    calcDataSpan('TglFlight', pmTglFlight);
-                    calcDataSpan('Vendor', pmVendor);
-                    calcDataSpan('Sla', pmSla);
+                    calcDataSpan('Jam', pmJam); calcDataSpan('Dest', pmDest); calcDataSpan('Pa', pmPa);
+                    calcDataSpan('Batch', pmBatch); calcDataSpan('Origin', pmOrigin); calcDataSpan('Smu', pmSmu);
+                    calcDataSpan('Flight', pmFlight); calcDataSpan('TglFlight', pmTglFlight);
+                    calcDataSpan('Vendor', pmVendor); calcDataSpan('Sla', pmSla);
                 }
             }
 
             renderRows.forEach(r => {
                 const tr = document.createElement('tr');
-                
                 if (r.type === 'total_date') {
                     tr.className = "bg-emerald-100 font-black text-emerald-900 border-b-2 border-emerald-300 shadow-sm";
                     tr.innerHTML = `
                         <td colspan="11" class="text-right py-2 px-4 uppercase text-[11px] tracking-wide border-r border-emerald-200">Total Keseluruhan Tanggal ${formatDate(r.date)}</td>
                         <td class="text-center font-mono text-emerald-800 border-r border-emerald-200">${formatNumber(r.mb)}</td>
-                        <td class="text-right text-emerald-900 px-4">${formatNumber(r.pcs)}</td>
-                    `;
+                        <td class="text-right text-emerald-900 px-4">${formatNumber(r.pcs)}</td>`;
                 } else if (r.type === 'total_jam') {
                     tr.className = "bg-slate-100 font-bold text-slate-700 border-y border-slate-300";
                     tr.innerHTML = `
                         <td colspan="10" class="text-right py-1.5 px-4 uppercase text-[10px] tracking-wider border-r border-slate-300 text-slate-500">Total Jam ${r.jam}</td>
                         <td class="text-center font-mono text-slate-700 border-r border-slate-300">${formatNumber(r.mb)}</td>
-                        <td class="text-right text-slate-800 px-4">${formatNumber(r.pcs)}</td>
-                    `;
+                        <td class="text-right text-slate-800 px-4">${formatNumber(r.pcs)}</td>`;
                 } else {
                     tr.className = "hover:bg-slate-50 transition border-b border-slate-200";
                     const d = r.data;
@@ -1659,13 +1351,11 @@
                         const slaColor = d._sla > 3 ? 'text-rose-600 font-extrabold bg-rose-50' : 'text-emerald-600 font-extrabold bg-emerald-50';
                         addTd(d._sla, r.spanSla, `text-center border-r border-slate-300 group-col ${slaColor}`);
                     }
-
                     addTd(formatNumber(d._mb_count), 1, "text-center font-mono font-bold text-emerald-700 border-r border-slate-300 bg-emerald-50/30 group-col");
                     addTd(formatNumber(d._pcs), 1, "text-right font-black text-emerald-900 valign-middle bg-emerald-50/50 group-col");
                 }
                 tbody.appendChild(tr);
             });
-            
             document.getElementById('showingCount').textContent = `${Math.min(start+1, window.aggregatedData.length)} - ${Math.min(start+pageData.length, window.aggregatedData.length)}`;
             document.getElementById('totalCount').textContent = window.aggregatedData.length;
             document.getElementById('pageIndicator').textContent = window.currentPage;
@@ -1675,7 +1365,6 @@
             if(window.chartInstances.main) window.chartInstances.main.destroy();
             const ctx = document.getElementById('mainChart').getContext('2d');
             const agg = {};
-            
             let dataToUse = window.filteredData;
 
             if (window.currentChartMode === 'monthly') {
@@ -1687,22 +1376,16 @@
 
                 dataToUse = window.rawData.filter(d => {
                     if(!d._date) return false;
-                    
                     const yearOk = d._date.getFullYear() === currentYear;
                     const orgOk = fOrg.includes('ALL') || fOrg.includes(d._origin);
                     const dstOk = fDst.includes('ALL') || fDst.includes(d._dest);
                     const venOk = fVen.includes('ALL') || fVen.includes(d._vendor);
                     const svcOk = window.selectedService === 'ALL' || d._service === window.selectedService;
-                    
                     let searchOk = true;
                     if(search) {
-                        const haystack = [
-                            d._smu, d._flight, d._vendor, d._origin, d._dest,
-                            d._batch, d._mb, d._note, d._service
-                        ].join(' ').toUpperCase();
+                        const haystack = [d._smu, d._flight, d._vendor, d._origin, d._dest, d._batch, d._mb, d._note, d._service].join(' ').toUpperCase();
                         searchOk = haystack.includes(search);
                     }
-                    
                     return yearOk && orgOk && dstOk && venOk && svcOk && searchOk;
                 });
             }
@@ -1781,11 +1464,8 @@
 
                         ctxPlugin.fillStyle = bgColor;
                         ctxPlugin.beginPath();
-                        if(ctxPlugin.roundRect) {
-                            ctxPlugin.roundRect(midX - (boxWidth/2), midY + offsetY - (boxHeight/2), boxWidth, boxHeight, 6);
-                        } else {
-                            ctxPlugin.fillRect(midX - (boxWidth/2), midY + offsetY - (boxHeight/2), boxWidth, boxHeight);
-                        }
+                        if(ctxPlugin.roundRect) ctxPlugin.roundRect(midX - (boxWidth/2), midY + offsetY - (boxHeight/2), boxWidth, boxHeight, 6);
+                        else ctxPlugin.fillRect(midX - (boxWidth/2), midY + offsetY - (boxHeight/2), boxWidth, boxHeight);
                         ctxPlugin.fill();
 
                         ctxPlugin.fillStyle = textColor;
@@ -1809,60 +1489,28 @@
             window.chartInstances.main = new Chart(ctx, {
                 type: 'line',
                 data: { labels: lbls, datasets: [{ 
-                    label: 'Total Pcs', 
-                    data: dataVals, 
-                    borderColor: '#10B981', 
-                    backgroundColor: gradient, 
-                    fill: true, 
-                    tension: 0.4,
-                    pointBackgroundColor: '#ffffff',
-                    pointBorderColor: '#10B981',
-                    pointBorderWidth: 2,
-                    pointRadius: ptRadius,
-                    pointHoverRadius: ptHover
+                    label: 'Total Pcs', data: dataVals, borderColor: '#10B981', backgroundColor: gradient, 
+                    fill: true, tension: 0.4, pointBackgroundColor: '#ffffff', pointBorderColor: '#10B981',
+                    pointBorderWidth: 2, pointRadius: ptRadius, pointHoverRadius: ptHover
                 }] },
                 plugins: [gapLabelPlugin],
                 options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false, 
-                    layout: {
-                        padding: { top: isMonthly ? 60 : 30, right: 30, left: 10, bottom: 10 }
-                    },
+                    responsive: true, maintainAspectRatio: false, 
+                    layout: { padding: { top: isMonthly ? 60 : 30, right: 30, left: 10, bottom: 10 } },
                     scales: { 
-                        y: { 
-                            display: false, 
-                            grace: '15%'
-                        }, 
-                        x: { 
-                            grid: { display: false },
-                            ticks: { color: '#64748b', font: { weight: 'bold' } } 
-                        } 
+                        y: { display: false, grace: '15%' }, 
+                        x: { grid: { display: false }, ticks: { color: '#64748b', font: { weight: 'bold' } } } 
                     }, 
                     plugins: { 
                         legend: { display: false }, 
                         tooltip: {
-                            enabled: true,
-                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
-                            titleFont: { size: 11 },
-                            bodyFont: { size: 13, weight: 'bold' },
-                            padding: 10,
-                            cornerRadius: 8,
-                            displayColors: false,
-                            callbacks: {
-                                label: function(context) {
-                                    return 'Total: ' + formatNumber(context.parsed.y) + ' Pcs';
-                                }
-                            }
+                            enabled: true, backgroundColor: 'rgba(15, 23, 42, 0.9)', titleFont: { size: 11 },
+                            bodyFont: { size: 13, weight: 'bold' }, padding: 10, cornerRadius: 8, displayColors: false,
+                            callbacks: { label: function(context) { return 'Total: ' + formatNumber(context.parsed.y) + ' Pcs'; } }
                         },
                         datalabels: { 
-                            display: true,
-                            align: 'top', 
-                            anchor: 'end', 
-                            offset: 8,
-                            color: '#64748b', 
-                            font: { size: 9 },
-                            formatter: (value) => value > 0 ? formatNumber(value) : '',
-                            clip: false
+                            display: true, align: 'top', anchor: 'end', offset: 8, color: '#64748b', 
+                            font: { size: 9 }, formatter: (value) => value > 0 ? formatNumber(value) : '', clip: false
                         } 
                     } 
                 }
@@ -1873,9 +1521,7 @@
             if(window.chartInstances.time) window.chartInstances.time.destroy();
             const ctx = document.getElementById('timeChart').getContext('2d');
             const agg = {};
-            for(let i=0; i<24; i++) {
-                agg[String(i).padStart(2, '0')] = 0;
-            }
+            for(let i=0; i<24; i++) agg[String(i).padStart(2, '0')] = 0;
             
             window.filteredData.forEach(d => {
                 if(d._jam && d._jam.includes(':')) {
@@ -1891,18 +1537,9 @@
             const labels = Object.keys(agg).sort();
             window.chartInstances.time = new Chart(ctx, {
                 type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Qty Pcs',
-                        data: labels.map(k => agg[k]),
-                        backgroundColor: '#3B82F6',
-                        borderRadius: 4
-                    }]
-                },
+                data: { labels: labels, datasets: [{ label: 'Qty Pcs', data: labels.map(k => agg[k]), backgroundColor: '#3B82F6', borderRadius: 4 }] },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
+                    responsive: true, maintainAspectRatio: false,
                     scales: { y: { display: false }, x: { grid: { display: false } } },
                     plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'end', color: '#64748b', font: { size: 9 }, formatter: (v) => v > 0 ? formatNumber(v) : '' } }
                 }
@@ -1945,40 +1582,15 @@
             const renderBar = (id, dataArr, c) => {
                 if(window.chartInstances[id]) window.chartInstances[id].destroy();
                 const ctx = document.getElementById(id).getContext('2d');
-                
                 ctx.canvas.parentNode.style.height = `${dynamicHeight}px`;
 
                 window.chartInstances[id] = new Chart(ctx, { 
                     type: 'bar', 
-                    data: { 
-                        labels: dataArr.map(e=>e[0]), 
-                        datasets: [{ 
-                            data: dataArr.map(e=>e[1]), 
-                            backgroundColor: c, 
-                            borderRadius: 6,
-                            maxBarThickness: 60 
-                        }] 
-                    }, 
+                    data: { labels: dataArr.map(e=>e[0]), datasets: [{ data: dataArr.map(e=>e[1]), backgroundColor: c, borderRadius: 6, maxBarThickness: 60 }] }, 
                     options: { 
-                        indexAxis: 'y', 
-                        responsive: true, 
-                        maintainAspectRatio: false, 
-                        layout: { padding: { right: 40 } },
-                        scales: { 
-                            x: { display: false }, 
-                            y: { grid: { display: false }, ticks: { font: { size: 10 } } } 
-                        }, 
-                        plugins: { 
-                            legend: { display: false }, 
-                            datalabels: { 
-                                anchor: 'end', 
-                                align: 'end', 
-                                color: '#64748b', 
-                                font: { size: 10, weight: 'bold' }, 
-                                formatter: (v) => formatNumber(v),
-                                clip: false
-                            } 
-                        } 
+                        indexAxis: 'y', responsive: true, maintainAspectRatio: false, layout: { padding: { right: 40 } },
+                        scales: { x: { display: false }, y: { grid: { display: false }, ticks: { font: { size: 10 } } } }, 
+                        plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'end', color: '#64748b', font: { size: 10, weight: 'bold' }, formatter: (v) => formatNumber(v), clip: false } } 
                     } 
                 });
             };
@@ -1996,23 +1608,11 @@
                 type: 'doughnut',
                 data: {
                     labels: sS.map(e => e[0]),
-                    datasets: [{
-                        data: sS.map(e => e[1]),
-                        backgroundColor: serviceColors,
-                        borderWidth: 3,           
-                        borderColor: '#ffffff',   
-                        borderRadius: 15           
-                    }]
+                    datasets: [{ data: sS.map(e => e[1]), backgroundColor: serviceColors, borderWidth: 3, borderColor: '#ffffff', borderRadius: 15 }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '60%',
-                    plugins: {
-                        legend: { display: false }, 
-                        tooltip: { enabled: true },
-                        datalabels: { display: false } 
-                    }
+                    responsive: true, maintainAspectRatio: false, cutout: '60%',
+                    plugins: { legend: { display: false }, tooltip: { enabled: true }, datalabels: { display: false } }
                 }
             });
 
@@ -2028,10 +1628,7 @@
 
                 tableHTML += `
                     <tr class="border-b border-slate-50 last:border-0">
-                        <td class="py-1.5 flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full" style="background-color: ${color}"></span>
-                            <span class="font-semibold">${serviceName}</span>
-                        </td>
+                        <td class="py-1.5 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background-color: ${color}"></span><span class="font-semibold">${serviceName}</span></td>
                         <td class="py-1.5 text-right font-mono">${formatNumber(val)}</td>
                         <td class="py-1.5 text-right font-bold text-slate-400">${pct}</td>
                     </tr>
@@ -2046,11 +1643,7 @@
             if(tVendor) tVendor.innerHTML = '';
             
             if (window.filteredData.length > 0 && tVendor) {
-                const matrix = {};
-                const vendorTotals = {};
-                let grandTotal = 0;
-                const slasSet = new Set();
-
+                const matrix = {}; const vendorTotals = {}; let grandTotal = 0; const slasSet = new Set();
                 window.filteredData.forEach(d => {
                     slasSet.add(d._sla);
                     if (!matrix[d._sla]) matrix[d._sla] = { total: 0 };
@@ -2063,41 +1656,28 @@
                 const slas = [...slasSet].sort((a,b) => a - b);
                 const vendors = Object.keys(vendorTotals).sort((a, b) => vendorTotals[b] - vendorTotals[a]);
 
-                let hV = `<thead class="sticky top-0 bg-white z-10 shadow-sm"><tr>
-                            <th class="text-center text-slate-500 w-16 border-r border-slate-200">SLA</th>`;
+                let hV = `<thead class="sticky top-0 bg-white z-10 shadow-sm"><tr><th class="text-center text-slate-500 w-16 border-r border-slate-200">SLA</th>`;
                 vendors.forEach(v => hV += `<th class="text-center text-slate-600 bg-slate-50 border-r border-slate-200 px-3 min-w-[80px]">${v}</th>`);
                 hV += `<th class="text-center text-slate-800 bg-slate-100 font-bold px-4">TOTAL</th></tr></thead><tbody>`;
 
                 slas.forEach(sla => {
-                    hV += `<tr class="hover:bg-slate-50 border-b border-slate-100 last:border-0">
-                            <td class="text-center font-bold text-emerald-600 bg-emerald-50/50 border-r border-slate-200">${sla}</td>`;
+                    hV += `<tr class="hover:bg-slate-50 border-b border-slate-100 last:border-0"><td class="text-center font-bold text-emerald-600 bg-emerald-50/50 border-r border-slate-200">${sla}</td>`;
                     vendors.forEach(v => {
                         const val = matrix[sla][v] || 0; 
                         hV += `<td class="text-center font-mono border-r border-slate-100 ${val > 0 ? 'text-slate-700' : 'text-slate-300'}">${val > 0 ? formatNumber(val) : '-'}</td>`;
                     });
-                    
                     const rowTotal = matrix[sla].total;
                     const rowPct = grandTotal > 0 ? ((rowTotal / grandTotal) * 100).toFixed(1) : 0;
-                    
-                    hV += `<td class="text-center bg-slate-50 py-1">
-                                <div class="font-bold text-slate-800 font-mono">${formatNumber(rowTotal)}</div>
-                                <div class="text-[9px] font-bold text-slate-500">${rowPct}%</div>
-                           </td></tr>`;
+                    hV += `<td class="text-center bg-slate-50 py-1"><div class="font-bold text-slate-800 font-mono">${formatNumber(rowTotal)}</div><div class="text-[9px] font-bold text-slate-500">${rowPct}%</div></td></tr>`;
                 });
 
                 hV += `</tbody><tfoot class="sticky bottom-0 bg-slate-100 shadow-[0_-2px_5px_-2px_rgba(0,0,0,0.05)] border-t-2 border-slate-300">
                         <tr><td class="text-center font-black text-slate-800 uppercase text-[10px] py-2 border-r border-slate-300">TOT</td>`;
                 vendors.forEach(v => {
                     const pct = grandTotal > 0 ? ((vendorTotals[v] / grandTotal) * 100).toFixed(1) : 0;
-                    hV += `<td class="text-center py-2 border-r border-slate-200">
-                                <div class="font-black text-emerald-700 font-mono">${formatNumber(vendorTotals[v])}</div>
-                                <div class="text-[9px] font-bold text-slate-500">${pct}%</div>
-                           </td>`;
+                    hV += `<td class="text-center py-2 border-r border-slate-200"><div class="font-black text-emerald-700 font-mono">${formatNumber(vendorTotals[v])}</div><div class="text-[9px] font-bold text-slate-500">${pct}%</div></td>`;
                 });
-                hV += `<td class="text-center py-2 bg-slate-200">
-                            <div class="font-black text-slate-900 font-mono">${formatNumber(grandTotal)}</div>
-                            <div class="text-[9px] font-bold text-slate-600">100%</div>
-                       </td></tr></tfoot>`;
+                hV += `<td class="text-center py-2 bg-slate-200"><div class="font-black text-slate-900 font-mono">${formatNumber(grandTotal)}</div><div class="text-[9px] font-bold text-slate-600">100%</div></td></tr></tfoot>`;
                 tVendor.innerHTML = hV;
             } else if (tVendor) {
                 tVendor.innerHTML = `<tr><td class="p-4 text-center text-slate-400">Tidak ada data</td></tr>`;
@@ -2111,32 +1691,23 @@
             window.filteredData.forEach(d => { 
                 const k = d._dest; 
                 if(!agg[k]) agg[k] = {u3:0, b35:0, o5:0, tot:0, sum:0}; 
-                agg[k].tot += d._pcs; 
-                agg[k].sum += (d._sla * d._pcs); 
-                if(d._sla <= 2) agg[k].u3 += d._pcs; 
-                else if(d._sla <= 5) agg[k].b35 += d._pcs; 
-                else agg[k].o5 += d._pcs; 
+                agg[k].tot += d._pcs; agg[k].sum += (d._sla * d._pcs); 
+                if(d._sla <= 2) agg[k].u3 += d._pcs; else if(d._sla <= 5) agg[k].b35 += d._pcs; else agg[k].o5 += d._pcs; 
             });
 
             let h = `<thead class="sticky top-0 bg-white z-10 shadow-sm"><tr>
-                        <th class="text-left text-slate-500">DESTINASI</th>
-                        <th class="text-center text-emerald-600 bg-emerald-50">0-2H</th>
-                        <th class="text-center text-amber-600 bg-amber-50">3-5H</th>
-                        <th class="text-center text-rose-600 bg-rose-50">>5H</th>
-                        <th class="text-center text-slate-800 bg-slate-100">Tot</th>
-                        <th class="text-center text-emerald-600 bg-emerald-50">Avg</th>
+                        <th class="text-left text-slate-500">DESTINASI</th><th class="text-center text-emerald-600 bg-emerald-50">0-2H</th>
+                        <th class="text-center text-amber-600 bg-amber-50">3-5H</th><th class="text-center text-rose-600 bg-rose-50">>5H</th>
+                        <th class="text-center text-slate-800 bg-slate-100">Tot</th><th class="text-center text-emerald-600 bg-emerald-50">Avg</th>
                     </tr></thead><tbody>`;
 
             Object.keys(agg).sort((a,b) => agg[b].tot - agg[a].tot).forEach(k => { 
                 const d = agg[k]; 
                 grandU3 += d.u3; grandB35 += d.b35; grandO5 += d.o5; grandTot += d.tot; grandSum += d.sum;
                 h += `<tr class="hover:bg-slate-50 border-b border-slate-100 last:border-0">
-                        <td class="font-bold text-slate-700">${k}</td>
-                        <td class="text-center text-emerald-600 font-mono">${formatNumber(d.u3)}</td>
-                        <td class="text-center text-amber-600 font-mono">${formatNumber(d.b35)}</td>
-                        <td class="text-center text-rose-600 font-bold font-mono">${formatNumber(d.o5)}</td>
-                        <td class="text-center font-bold bg-slate-50 font-mono">${formatNumber(d.tot)}</td>
-                        <td class="text-center font-bold text-emerald-600">${(d.tot>0 ? d.sum/d.tot : 0).toFixed(1)}</td>
+                        <td class="font-bold text-slate-700">${k}</td><td class="text-center text-emerald-600 font-mono">${formatNumber(d.u3)}</td>
+                        <td class="text-center text-amber-600 font-mono">${formatNumber(d.b35)}</td><td class="text-center text-rose-600 font-bold font-mono">${formatNumber(d.o5)}</td>
+                        <td class="text-center font-bold bg-slate-50 font-mono">${formatNumber(d.tot)}</td><td class="text-center font-bold text-emerald-600">${(d.tot>0 ? d.sum/d.tot : 0).toFixed(1)}</td>
                       </tr>`; 
             });
 
@@ -2148,22 +1719,10 @@
             h += `</tbody><tfoot class="sticky bottom-0 bg-slate-100 shadow-[0_-2px_5px_-2px_rgba(0,0,0,0.05)] border-t-2 border-slate-300">
                     <tr>
                         <td class="font-black text-slate-800 uppercase text-[10px] py-2">TOTAL</td>
-                        <td class="text-center py-2">
-                            <div class="font-black text-emerald-700 font-mono">${formatNumber(grandU3)}</div>
-                            <div class="text-[9px] font-bold text-slate-500">${pctU3}%</div>
-                        </td>
-                        <td class="text-center py-2">
-                            <div class="font-black text-amber-700 font-mono">${formatNumber(grandB35)}</div>
-                            <div class="text-[9px] font-bold text-slate-500">${pctB35}%</div>
-                        </td>
-                        <td class="text-center py-2">
-                            <div class="font-black text-rose-700 font-mono">${formatNumber(grandO5)}</div>
-                            <div class="text-[9px] font-bold text-slate-500">${pctO5}%</div>
-                        </td>
-                        <td class="text-center py-2 bg-slate-200">
-                            <div class="font-black text-slate-900 font-mono">${formatNumber(grandTot)}</div>
-                            <div class="text-[9px] font-bold text-slate-600">100%</div>
-                        </td>
+                        <td class="text-center py-2"><div class="font-black text-emerald-700 font-mono">${formatNumber(grandU3)}</div><div class="text-[9px] font-bold text-slate-500">${pctU3}%</div></td>
+                        <td class="text-center py-2"><div class="font-black text-amber-700 font-mono">${formatNumber(grandB35)}</div><div class="text-[9px] font-bold text-slate-500">${pctB35}%</div></td>
+                        <td class="text-center py-2"><div class="font-black text-rose-700 font-mono">${formatNumber(grandO5)}</div><div class="text-[9px] font-bold text-slate-500">${pctO5}%</div></td>
+                        <td class="text-center py-2 bg-slate-200"><div class="font-black text-slate-900 font-mono">${formatNumber(grandTot)}</div><div class="text-[9px] font-bold text-slate-600">100%</div></td>
                         <td class="text-center py-2 bg-emerald-100 font-black text-emerald-800">${grandAvg}</td>
                     </tr>
                   </tfoot>`;
@@ -2183,11 +1742,9 @@
         window.renderMatrixTable = function() {
             const uniqueMondays = [...new Set(window.filteredData.map(d => window.getMondayTime(d._date)))].sort((a,b)=>a-b);
             const totalPages = uniqueMondays.length || 1;
-            
             if (window.matrixPage > totalPages) window.matrixPage = 1;
 
             document.getElementById('matrixPageIndicator').innerText = `Minggu ${window.matrixPage} / ${totalPages}`;
-
             let currentMonday = uniqueMondays.length > 0 ? uniqueMondays[window.matrixPage - 1] : window.getMondayTime(new Date());
             
             const weekDates = [];
@@ -2198,13 +1755,10 @@
             }
 
             const daysName = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
-
             const weekStart = weekDates[0].getTime();
             const weekEnd = weekDates[6].getTime() + 24*60*60*1000 - 1; 
             const weekData = window.filteredData.filter(d => d._date.getTime() >= weekStart && d._date.getTime() <= weekEnd);
-            
             const dests = [...new Set(weekData.map(d => d._dest))].sort();
-
             const table = document.getElementById('matrixTable');
             
             let h = `<thead><tr><th class="text-left sticky left-0 bg-white z-10 w-32 border-r border-slate-200 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">Destinasi</th>`;
@@ -2228,15 +1782,12 @@
             dests.forEach(dst => {
                 let r = `<tr><td class="font-bold text-slate-700 sticky left-0 bg-white border-r border-slate-200 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] whitespace-nowrap">${dst}</td>`;
                 let rowTotal = 0;
-                
                 weekDates.forEach((date, i) => {
                     const t = date.getTime();
                     const v = weekData.filter(d => d._date.getTime() === t && d._dest === dst).reduce((s,d) => s+d._pcs, 0); 
-                    rowTotal += v;
-                    grandTotals[i] += v;
+                    rowTotal += v; grandTotals[i] += v;
                     r += `<td class="text-center border-r border-slate-100 ${v>0?'text-slate-800 font-bold bg-emerald-50/20':'text-slate-300'}">${v>0?formatNumber(v):'-'}</td>`;
                 });
-                
                 grandTotalAll += rowTotal;
                 h += r + `<td class="text-center font-black text-slate-900 bg-slate-50 border-l border-slate-200">${formatNumber(rowTotal)}</td></tr>`;
             });
@@ -2260,6 +1811,55 @@
             }
         };
 
+        window.executeDownloadArchive = function() {
+            const monthStr = document.getElementById('downloadArchiveMonthInput').value;
+            if (!monthStr) return window.showToast("Pilih bulan dulu!", "error");
+            const [year, month] = monthStr.split('-');
+            const targetYear = parseInt(year);
+            const targetMonth = parseInt(month) - 1;
+            const archiveData = [];
+
+            window.rawData.forEach(d => {
+                if (d._date && d._date.getFullYear() === targetYear && d._date.getMonth() === targetMonth) archiveData.push(d);
+            });
+            window.rejectedData.forEach(d => {
+                if (d._tglPA && d._tglPA.getFullYear() === targetYear && d._tglPA.getMonth() === targetMonth) archiveData.push(d);
+            });
+
+            if (archiveData.length === 0) {
+                window.closeDownloadArchiveModal();
+                return window.showToast(`Tidak ada data di bulan ${monthStr}`, "info");
+            }
+
+            const headers = [
+                "Tanggal Diterima", "JAM", "Destinasi", "Tanggal", "BATCH",
+                "Origin", "SMU", "FLIGHT", "TANGGAL FLIGHT", "No Bagseals",
+                "Berat Total (kg)", "Kuantitas Paket (Awb)", "VENDOR", "SERVICE", "CATATAN"
+            ];
+            const csvRows = archiveData.map(d => {
+                const safeNote = (d._note || '').split('"').join('""');
+                return [
+                    d._date ? formatDate(d._date) : d._keterangan, d._jam || '-', d._dest || '-',
+                    d._dateOrigin ? formatDate(d._dateOrigin) : (d._tglPA ? formatDate(d._tglPA) : '-'), d._batch || '-',
+                    d._origin || '-', d._smu || '-', d._flight || '-', d._tglFlight || '-', d._mb || '-',
+                    d._weight || 0, d._pcs || 0, d._vendor || '-', d._service || '-', safeNote
+                ].map(val => `"${val}"`).join(','); 
+            });
+
+            const csvContent = [headers.join(','), ...csvRows].join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Arsip_Inbound_${monthStr}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            window.closeDownloadArchiveModal();
+            window.showToast("Berhasil mengunduh arsip CSV", "success");
+        };
+
         window.openDownloadArchiveModal = function() {
             document.getElementById('downloadArchiveModal').classList.remove('hidden');
             setTimeout(() => {
@@ -2276,31 +1876,11 @@
             setTimeout(() => document.getElementById('downloadArchiveModal').classList.add('hidden'), 300);
         };
 
-        window.executeDownloadArchive = function() {
-            const monthStr = document.getElementById('downloadArchiveMonthInput').value;
-            if (!monthStr) return window.showToast("Pilih bulan dulu!", "error");
-            
-            const [year, month] = monthStr.split('-');
-            const targetYear = parseInt(year);
-            const targetMonth = parseInt(month) - 1;
+        window.executeDownloadMaster = function() {
+            const allData = [...(window.rawData || []), ...(window.rejectedData || [])];
 
-            const archiveData = [];
-
-            window.rawData.forEach(d => {
-                if (d._date && d._date.getFullYear() === targetYear && d._date.getMonth() === targetMonth) {
-                    archiveData.push(d);
-                }
-            });
-            
-            window.rejectedData.forEach(d => {
-                if (d._tglPA && d._tglPA.getFullYear() === targetYear && d._tglPA.getMonth() === targetMonth) {
-                    archiveData.push(d);
-                }
-            });
-
-            if (archiveData.length === 0) {
-                window.closeDownloadArchiveModal();
-                return window.showToast(`Tidak ada data di bulan ${monthStr}`, "info");
+            if (allData.length === 0) {
+                return window.showToast("Tidak ada data untuk di-backup", "info");
             }
 
             const headers = [
@@ -2309,217 +1889,200 @@
                 "Berat Total (kg)", "Kuantitas Paket (Awb)", "VENDOR", "SERVICE", "CATATAN"
             ];
 
-            const csvRows = archiveData.map(d => {
+            const csvRows = allData.map(d => {
                 const safeNote = (d._note || '').split('"').join('""');
+                
+                let tglTerima = '';
+                if (d._date) tglTerima = formatDate(d._date);
+                else if (d._keterangan && d._keterangan !== 'Kosong/Tidak Valid') tglTerima = d._keterangan;
+
+                let tglPA = '';
+                if (d._dateOrigin) tglPA = formatDate(d._dateOrigin);
+                else if (d._tglPA) tglPA = formatDate(d._tglPA);
+
                 return [
-                    d._date ? formatDate(d._date) : d._keterangan,
-                    d._jam || '-',
-                    d._dest || '-',
-                    d._dateOrigin ? formatDate(d._dateOrigin) : (d._tglPA ? formatDate(d._tglPA) : '-'),
-                    d._batch || '-',
-                    d._origin || '-',
-                    d._smu || '-',
-                    d._flight || '-',
-                    d._tglFlight || '-',
-                    d._mb || '-',
-                    d._weight || 0,
-                    d._pcs || 0,
-                    d._vendor || '-',
-                    d._service || '-',
-                    safeNote
+                    tglTerima || '-', d._jam || '-', d._dest || '-',
+                    tglPA || '-', d._batch || '-',
+                    d._origin || '-', d._smu || '-', d._flight || '-', d._tglFlight || '-', d._mb || '-',
+                    d._weight || 0, d._pcs || 0, d._vendor || '-', d._service || '-', safeNote
                 ].map(val => `"${val}"`).join(','); 
             });
 
             const csvContent = [headers.join(','), ...csvRows].join('\n');
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
-            
             const link = document.createElement("a");
             link.setAttribute("href", url);
-            link.setAttribute("download", `Arsip_Inbound_${monthStr}.csv`);
+            link.setAttribute("download", `Master_Backup_Inbound_${formatInputDate(new Date())}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
 
-            window.closeDownloadArchiveModal();
-            window.showToast("Berhasil mengunduh arsip CSV", "success");
+            window.showToast("Berhasil mengunduh Master CSV", "success");
         };
 
-        window.loadArchiveCSV = function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
+        // --- Fitur Offline Handling ---
+
+        window.processMultipleCSVs = async function(files) {
+            window.showLoading(true, "Memproses File CSV...", "fetch");
+            let newValidData = [];
+            let newRejectedData = [];
+            let validationErrors = [];
+            let duplicateCount = 0;
+            const existingIds = new Set();
             
-            window.showLoading(true, "Membaca Arsip...", "fetch");
+            if(window.rawData) window.rawData.forEach(d => { if(d._id) existingIds.add(String(d._id)); });
+            if(window.rejectedData) window.rejectedData.forEach(d => { if(d._id) existingIds.add(String(d._id)); });
 
-            Papa.parse(file, {
-                header: true,
-                skipEmptyLines: true,
-                complete: function(results) {
-                    if (results.data && results.data.length > 0) {
-                        window.isArchiveMode = true;
-                        document.getElementById('csvArchiveInput').value = '';
-                        
-                        document.getElementById('initialState').classList.add('hidden');
-                        document.getElementById('dashboardContent').classList.remove('hidden');
-                        
-                        window.toggleArchiveUI(true);
-                        
-                        window.processRawDataWrapper(results.data);
-                        window.showLoading(false);
-                        window.showToast("Arsip berhasil dimuat", "success");
-                    } else {
-                        window.showLoading(false);
-                        window.showToast("File CSV kosong atau tidak valid", "error");
-                    }
-                },
-                error: function(err) {
-                    window.showLoading(false);
-                    window.showToast("Gagal membaca file CSV", "error");
-                }
-            });
-        };
-
-        window.toggleArchiveUI = function(isArchive) {
-            const banner = document.getElementById('archiveBanner');
-            const controls = document.querySelectorAll('.hide-on-archive');
-            if (isArchive) {
-                banner.classList.remove('hidden');
-                controls.forEach(c => c.classList.add('hidden'));
-                document.getElementById('statusText').textContent = 'Mode Arsip Aktif';
-                document.getElementById('connectionStatus').className = "w-1.5 h-1.5 rounded-full bg-amber-500";
-            } else {
-                banner.classList.add('hidden');
-                controls.forEach(c => c.classList.remove('hidden'));
-                document.getElementById('statusText').textContent = 'Connected (Supabase)';
-                document.getElementById('connectionStatus').className = "w-1.5 h-1.5 rounded-full bg-emerald-500";
-            }
-        };
-
-        window.exitArchiveMode = function() {
-            window.isArchiveMode = false;
-            window.toggleArchiveUI(false);
-            window.showToast("Keluar dari Mode Arsip", "info");
-            
-            document.getElementById('initialState').classList.remove('hidden');
-            document.getElementById('dashboardContent').classList.add('hidden');
-            document.getElementById('initialStateTitle').textContent = "Mengunduh Data di Latar Belakang...";
-            
-            window.loadDataFromFirestore();
-        };
-
-    </script>
-
-    <script type="module">
-        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-
-        const SUPABASE_URL = 'https://svmgwupvjybfmatjfafp.supabase.co'; 
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2bWd3dXB2anliZm1hdGpmYWZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1ODc1NDUsImV4cCI6MjA4ODE2MzU0NX0.kP7Y0dy5l61Xi2S8ji9buq8W1R9ZNLyHyBHhTh3qFbw'; 
-        
-        let supabase = null;
-        try {
-            supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-        } catch(e) {
-            console.error("Supabase Config Error:", e);
-        }
-
-        window.loadDataFromFirestore = async function() {
-            if (window.isArchiveMode) return;
-
-            try {
-                const statusText = document.getElementById('statusText');
-                const connectionStatus = document.getElementById('connectionStatus');
-                if(statusText) statusText.textContent = 'Menyiapkan Koneksi...';
-                if(connectionStatus) connectionStatus.className = "w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse";
-
-                const { count, error: countError } = await supabase
-                    .from('inbound_data')
-                    .select('*', { count: 'exact', head: true });
-                
-                if (countError && countError.code !== 'PGRST205') throw countError;
-                
-                let totalData = count || 0;
-
-                let allData = [];
-                let from = 0;
-                const step = 1000;
-                let isFetching = true;
-
-                while (isFetching) {
-                    if (window.isArchiveMode) return; 
-
-                    if (statusText) {
-                        let pct = totalData > 0 ? Math.min(Math.round((allData.length / totalData) * 100), 100) : 0;
-                        statusText.textContent = `Mengunduh... ${pct}% (${allData.length.toLocaleString('id-ID')} baris)`;
-                    }
-
-                    const { data, error } = await supabase
-                        .from('inbound_data')
-                        .select('id, data')
-                        .range(from, from + step - 1);
-
-                    if (error) {
-                        if (error.code === 'PGRST205' || error.message.includes('Could not find the table')) {
-                            throw new Error('Tabel "inbound_data" belum dibuat di Supabase.');
-                        }
-                        throw error;
-                    }
-
-                    if (data && data.length > 0) {
-                        allData = allData.concat(data);
-                        from += step;
-                        
-                        if (statusText) {
-                            let pct = totalData > 0 ? Math.min(Math.round((allData.length / totalData) * 100), 100) : 100;
-                            statusText.textContent = `Mengunduh... ${pct}% (${allData.length.toLocaleString('id-ID')} baris)`;
-                        }
-
-                        if (data.length < step) {
-                            isFetching = false;
-                        }
-                    } else {
-                        isFetching = false;
-                    }
-                }
-                
-                if (window.isArchiveMode) return;
-
-                if(statusText) statusText.textContent = 'Memproses Tampilan...';
-                await new Promise(r => setTimeout(r, 400)); 
-                
-                const docs = allData.map(d => {
-                    const row = typeof d.data === 'string' ? JSON.parse(d.data) : d.data;
-                    row._firestoreId = d.id; 
-                    return row;
+            const parseFile = (file) => {
+                return new Promise((resolve) => {
+                    Papa.parse(file, {
+                        header: true, skipEmptyLines: true,
+                        complete: function(results) { resolve(results.data); }
+                    });
                 });
+            };
+
+            for(let i=0; i<files.length; i++) {
+                const data = await parseFile(files[i]);
+                let rowIndex = 1;
+                for (const row of data) {
+                    rowIndex++;
+                    const bagseal = String(row['No Bagseals'] || '').trim();
+                    const smu = (row['SMU']||'').replace(/\s/g, '');
+                    const dest = (row['Destinasi']||'').replace(/\s/g, '');
+                    const dateStrRaw = String(row['Tanggal Diterima'] || row['Tanggal DIterima'] || '');
+                    const date = dateStrRaw.replace(/[\/\s,]/g, ''); 
+                    
+                    let id = bagseal || `${smu}_${dest}_${date}`.substring(0, 100);
+                    if (id) id = String(id).replace(/\//g, '_');
+                    if (!id) id = 'ID_' + Math.random().toString(36).substr(2, 9);
+                    
+                    if (existingIds.has(id)) {
+                        duplicateCount++;
+                        continue;
+                    }
+                    existingIds.add(id);
+                    row._id = id;
+                    
+                    const tglTerimaStr = String(row['Tanggal Diterima'] || row['Tanggal DIterima'] || '').trim();
+                    let vendor = (row['VENDOR'] || 'N/A').toUpperCase();
+                    let origin = (row['Origin'] || 'N/A').toUpperCase();
+                    let destClean = (row['Destinasi'] || 'Unknown').toUpperCase();
+                    let batch = (row['BATCH'] || 'N/A').toString().toUpperCase();
+                    let service = (row['SERVICE'] || 'N/A').toUpperCase();
+                    if (service === 'REG') service = 'REGULER';
+                    
+                    const rawFlight = row['FLIGHT'] || '-';
+                    let cleanFlight = rawFlight.toUpperCase();
+                    if (service === 'REGULER') cleanFlight = rawFlight.replace(/[\s-]/g, '').toUpperCase();
+                    
+                    const tglTerima = parseDate(tglTerimaStr);
+                    const tglOrigin = parseDate(row['Tanggal']); 
+                    
+                    if (tglTerima && tglOrigin) {
+                        const diff = tglTerima - tglOrigin;
+                        const sla = Math.ceil(diff / (1000 * 60 * 60 * 24));
+                        if (tglOrigin > tglTerima) {
+                            validationErrors.push(`File: ${files[i].name} (Baris ${rowIndex}) | SMU: ${row['SMU'] || '-'} | Error: Tgl Berangkat (${row['Tanggal']}) > Tgl Terima (${tglTerimaStr})`);
+                        } else if (sla > 20) {
+                            validationErrors.push(`File: ${files[i].name} (Baris ${rowIndex}) | SMU: ${row['SMU'] || '-'} | Error: SLA > 20 hari (${sla} hari)`);
+                        }
+                    }
+                    
+                    if (!tglTerima) {
+                        newRejectedData.push({
+                            _id: id,
+                            _tglPA: tglOrigin,
+                            _origin: origin,
+                            _vendor: vendor,
+                            _dest: destClean,
+                            _smu: row['SMU'] || '-',
+                            _flight: cleanFlight,
+                            _batch: batch,
+                            _pcs: window.parseNum(row['Kuantitas Paket (Awb)']),
+                            _weight: window.parseNum(row['Berat Total (kg)']),
+                            _note: row['Note'] || row['CATATAN'] || '-',
+                            _keterangan: tglTerimaStr || 'Kosong/Tidak Valid',
+                            _mb: row['No Bagseals'] || '-',
+                            _service: service
+                        });
+                    } else {
+                        let sla = 0;
+                        if (tglOrigin) {
+                            const diff = tglTerima - tglOrigin;
+                            sla = Math.ceil(diff / (1000 * 60 * 60 * 24));
+                        }
+                        newValidData.push({
+                            ...row,
+                            _id: id,
+                            _date: tglTerima,
+                            _dateOrigin: tglOrigin,
+                            _weight: window.parseNum(row['Berat Total (kg)']),
+                            _pcs: window.parseNum(row['Kuantitas Paket (Awb)']), 
+                            _vendor: vendor,
+                            _origin: origin,
+                            _dest: destClean,
+                            _service: service,
+                            _batch: batch,
+                            _jam: formatTimeHHMM(row['JAM']), 
+                            _smu: row['SMU'] || '-',
+                            _flight: cleanFlight,
+                            _tglFlight: row['TANGGAL FLIGHT'] || '-',
+                            _mb: row['No Bagseals'] || '-',
+                            _note: row['Note'] || row['CATATAN'] || '',
+                            _sla: sla
+                        });
+                    }
+                }
+            }
+
+            if (validationErrors.length > 0) {
+                window.showLoading(false);
+                document.getElementById('csvFile').value = '';
+                window.showErrorModal(validationErrors);
+                return;
+            }
+
+            window.showLoading(false);
+            document.getElementById('csvFile').value = '';
+            
+            const totalNew = newValidData.length + newRejectedData.length;
+            
+            if (totalNew > 0) {
+                window.rawData = [...(window.rawData || []), ...newValidData];
+                window.rejectedData = [...(window.rejectedData || []), ...newRejectedData];
+                window.filteredRejectedData = window.rejectedData;
                 
-                if(window.processRawDataWrapper) {
-                    window.processRawDataWrapper(docs);
-                    document.getElementById('initialState').classList.add('hidden');
-                    document.getElementById('dashboardContent').classList.remove('hidden');
+                window.populateFilters();
+                
+                if (!window.filteredData || window.filteredData.length === 0) {
+                    const endDate = new Date();
+                    const startDate = new Date();
+                    startDate.setDate(endDate.getDate() - 90); 
+                    document.getElementById('filterStartDate').value = formatInputDate(startDate);
+                    document.getElementById('filterEndDate').value = formatInputDate(endDate);
                 }
                 
-                if(statusText) statusText.textContent = 'Connected (Supabase)';
-                if(connectionStatus) connectionStatus.className = "w-1.5 h-1.5 rounded-full bg-emerald-500";
-            } catch (e) {
-                if (window.isArchiveMode) return;
-                console.error("Supabase Error: ", e);
-                const statusText = document.getElementById('statusText');
-                const connectionStatus = document.getElementById('connectionStatus');
-                if(statusText) statusText.textContent = 'Koneksi Gagal';
-                if(connectionStatus) connectionStatus.className = "w-1.5 h-1.5 rounded-full bg-rose-500";
+                window.applyFilters();
                 
-                let errorMsg = "Gagal memuat data dari Supabase.";
-                if (e.message) {
-                    errorMsg += " " + e.message;
-                }
-                window.showToast(errorMsg, "error");
+                document.getElementById('initialState').classList.add('hidden');
+                document.getElementById('dashboardContent').classList.remove('hidden');
+                
+                window.openSuccessModal(totalNew);
+            } else {
+                window.showToast("Tidak ada data baru. Semua duplikat atau kosong.", "info");
             }
         };
 
-        window.executeDelete = async function(params) {
-            if(window.showLoading) window.showLoading(true, "Menghapus Data...");
-            const { mode, date, month, dest } = params;
+        document.getElementById('csvFile').addEventListener('change', function(e) {
+            if(e.target.files.length > 0) {
+                window.processMultipleCSVs(e.target.files);
+            }
+        });
 
+        window.executeDelete = function(params) {
+            const { mode, date, month, dest } = params;
             let targetDate = null;
             let targetYear = null;
             let targetMonth = null;
@@ -2533,9 +2096,8 @@
                 targetMonth = parseInt(m) - 1;
             }
 
-            const toDelete = window.rawData.filter(d => {
+            const isTarget = (d) => {
                 if (!d._date || !(d._date instanceof Date) || isNaN(d._date)) return false;
-                
                 let matchTime = true;
                 if (mode === 'DATE') {
                     const dDate = new Date(d._date); 
@@ -2544,227 +2106,51 @@
                 } else if (mode === 'MONTH') {
                     matchTime = d._date.getFullYear() === targetYear && d._date.getMonth() === targetMonth;
                 }
-
                 const matchDest = dest === 'ALL' || d._dest === dest;
                 return matchTime && matchDest;
-            });
+            };
 
-            if(toDelete.length === 0) {
-                if(window.showLoading) window.showLoading(false);
+            const initialLength = window.rawData.length;
+            window.rawData = window.rawData.filter(d => !isTarget(d));
+            const deletedCount = initialLength - window.rawData.length;
+
+            if(deletedCount === 0) {
                 window.showToast("Tidak ada data yang cocok untuk dihapus", "info");
                 return;
             }
 
-            const idsToDelete = toDelete.map(d => d._firestoreId).filter(id => id);
-
-            if(idsToDelete.length === 0) {
-                if(window.showLoading) window.showLoading(false);
-                window.showToast("Terjadi kesalahan, ID data tidak ditemukan", "error");
-                return;
-            }
-
-            try {
-                const CHUNK_SIZE = 1000;
-                for (let i = 0; i < idsToDelete.length; i += CHUNK_SIZE) {
-                    const chunk = idsToDelete.slice(i, i + CHUNK_SIZE);
-                    const { error } = await supabase.from('inbound_data').delete().in('id', chunk);
-                    if (error) throw error;
-                }
-                
-                if(window.showLoading) window.showLoading(false);
-                window.showToast(`Berhasil menghapus ${idsToDelete.length} data`, "success");
-                
-                document.getElementById('initialState').classList.remove('hidden');
-                document.getElementById('dashboardContent').classList.add('hidden');
-                document.getElementById('initialStateTitle').textContent = "Menyegarkan Data...";
-                
-                window.loadDataFromFirestore(); 
-            } catch(e) {
-                console.error(e);
-                window.showLoading(false);
-                window.showToast("Gagal menghapus data di Supabase", "error");
-            }
-        };
-
-        window.deleteAllData = async function() {
-            if(window.showLoading) window.showLoading(true, "Mereset Database...", "fetch");
-
-            const allIds = [];
-            if(window.rawData) window.rawData.forEach(d => { if(d._firestoreId) allIds.push(d._firestoreId); });
-            if(window.rejectedData) window.rejectedData.forEach(d => { if(d._firestoreId) allIds.push(d._firestoreId); });
-
-            if(allIds.length === 0) {
-                if(window.showLoading) window.showLoading(false);
-                window.showToast("Database sudah kosong", "info");
-                return;
-            }
-
-            try {
-                const CHUNK_SIZE = 1000;
-                for (let i = 0; i < allIds.length; i += CHUNK_SIZE) {
-                    const chunk = allIds.slice(i, i + CHUNK_SIZE);
-                    if(window.showLoading) document.getElementById('loadingText').textContent = `Menghapus Batch ${Math.ceil(i/CHUNK_SIZE)+1}...`;
-                    const { error } = await supabase.from('inbound_data').delete().in('id', chunk);
-                    if (error) throw error;
-                }
-                
-                if(window.showLoading) window.showLoading(false);
-                window.showToast("Database berhasil direset (Dikosongkan)", "success");
-                
-                document.getElementById('initialState').classList.remove('hidden');
-                document.getElementById('dashboardContent').classList.add('hidden');
-                document.getElementById('initialStateTitle').textContent = "Menyegarkan Data...";
-
-                window.loadDataFromFirestore(); 
-            } catch(e) {
-                console.error(e);
-                window.showLoading(false);
-                window.showToast("Gagal mereset database", "error");
-            }
-        };
-
-        window.uploadCSVToFirestore = function(file) {
-            window.showLoading(true, "Uploading...", "upload");
-            Papa.parse(file, {
-                header: true, skipEmptyLines: true,
-                complete: async function(results) {
-                    const data = results.data;
-                    const UPLOAD_LIMIT = 50000; 
-                    
-                    const existingIds = new Set();
-                    if(window.rawData) {
-                        window.rawData.forEach(d => { if(d._firestoreId) existingIds.add(String(d._firestoreId)); });
-                    }
-                    if(window.rejectedData) {
-                        window.rejectedData.forEach(d => { if(d._firestoreId) existingIds.add(String(d._firestoreId)); });
-                    }
-                    
-                    window.pendingUploadData = [];
-                    let duplicateCount = 0;
-
-                    for (const row of data) {
-                        const bagseal = String(row['No Bagseals'] || '').trim();
-                        const smu = (row['SMU']||'').replace(/\s/g, '');
-                        const dest = (row['Destinasi']||'').replace(/\s/g, '');
-                        
-                        const dateStrRaw = String(row['Tanggal Diterima'] || row['Tanggal DIterima'] || '');
-                        const date = dateStrRaw.replace(/[\/\s,]/g, ''); 
-                        
-                        const fallbackId = `${smu}_${dest}_${date}`.substring(0, 100);
-                        let id = bagseal || fallbackId;
-
-                        if (id) id = String(id).replace(/\//g, '_');
-                        if (!id) continue; 
-
-                        if (existingIds.has(id)) {
-                            duplicateCount++;
-                            continue; 
-                        }
-                        
-                        if (window.pendingUploadData.length >= UPLOAD_LIMIT) {
-                            window.showToast(`Dibatasi! Maksimal ${UPLOAD_LIMIT} data diproses sekaligus agar Browser tidak macet.`, "warning");
-                            break;
-                        }
-                        
-                        existingIds.add(id);
-                        window.pendingUploadData.push(row);
-                    }
-                    
-                    if(window.showLoading) window.showLoading(false);
-                    document.getElementById('csvFile').value = '';
-                    
-                    window.currentUploadMode = 'inbound';
-                    window.openPreviewModal(window.pendingUploadData.length, duplicateCount);
-                }
-            });
-        };
-
-        window.confirmUpload = async function() {
-            window.closePreviewModal();
-
-            if (window.pendingUploadData.length === 0) {
-                window.showToast("Tidak ada data baru untuk diunggah", "info");
-                return;
-            }
-
-            if(window.showLoading) window.showLoading(true, "Menyiapkan Data...", "fetch");
+            window.showToast(`Berhasil menghapus ${deletedCount} data dari memori`, "success");
             
-            const CHUNK_SIZE = 5000; 
-            let successCountInbound = 0;
-            const totalToUpload = window.pendingUploadData.length;
-
-            const pbBar = document.getElementById('fetchProgressBar');
-            const pbText = document.getElementById('fetchProgressDetail');
-            const pbPct = document.getElementById('fetchProgressPct');
-
-            try {
-                for (let i = 0; i < window.pendingUploadData.length; i += CHUNK_SIZE) {
-                    const chunk = window.pendingUploadData.slice(i, i + CHUNK_SIZE);
-                    
-                    let pct = Math.min(Math.round((i / totalToUpload) * 100), 100);
-                    if (pbBar) pbBar.style.width = `${pct}%`;
-                    if (pbText) pbText.textContent = `${i.toLocaleString('id-ID')} / ${totalToUpload.toLocaleString('id-ID')} Baris`;
-                    if (pbPct) pbPct.textContent = `${pct}%`;
-                    if(window.showLoading) document.getElementById('loadingText').textContent = `Mengunggah Batch ${Math.ceil(i/CHUNK_SIZE)+1}...`;
-                    
-                    const upsertPayload = chunk.map(row => {
-                        const bagseal = String(row['No Bagseals'] || '').trim();
-                        const smu = (row['SMU']||'').replace(/\s/g, '');
-                        const dest = (row['Destinasi']||'').replace(/\s/g, '');
-                        
-                        const dateStrRaw = String(row['Tanggal Diterima'] || row['Tanggal DIterima'] || '');
-                        const date = dateStrRaw.replace(/[\/\s,]/g, ''); 
-                        
-                        let rawId = bagseal || `${smu}_${dest}_${date}`.substring(0, 100); 
-                        let id = rawId ? String(rawId).replace(/\//g, '_') : 'ID_' + Date.now() + Math.random().toString(36).substr(2, 9);
-
-                        return { id: id, data: row };
-                    });
-
-                    const { error } = await supabase.from('inbound_data').upsert(upsertPayload, { onConflict: 'id' });
-                    if (error) {
-                        if (error.code === 'PGRST205') {
-                            throw new Error('Tabel "inbound_data" belum dibuat di Supabase.');
-                        }
-                        throw error;
-                    }
-                    
-                    successCountInbound += chunk.length;
-                }
-
-                if (pbBar) pbBar.style.width = `100%`;
-                if (pbText) pbText.textContent = `${successCountInbound.toLocaleString('id-ID')} / ${totalToUpload.toLocaleString('id-ID')} Baris`;
-                if (pbPct) pbPct.textContent = `100%`;
-                if(window.showLoading) document.getElementById('loadingText').textContent = `Menyelesaikan...`;
-                await new Promise(r => setTimeout(r, 400)); 
-
-                if(window.showLoading) window.showLoading(false);
-                window.pendingUploadData = []; 
-                window.openSuccessModal(successCountInbound);
-                
+            if (window.rawData.length === 0) {
                 document.getElementById('initialState').classList.remove('hidden');
                 document.getElementById('dashboardContent').classList.add('hidden');
-                document.getElementById('initialStateTitle').textContent = "Menyegarkan Data...";
-
-                window.loadDataFromFirestore(); 
-            } catch (e) {
-                console.error(e);
-                if(window.showLoading) window.showLoading(false);
-                let errorMsg = "Upload Gagal: ";
-                if (e.message) {
-                    errorMsg += e.message;
-                } else {
-                    errorMsg += "Terjadi kesalahan yang tidak diketahui.";
-                }
-                window.showToast(errorMsg, "error");
+            } else {
+                window.populateFilters();
+                window.applyFilters();
             }
         };
 
-        document.getElementById('csvFile').addEventListener('change', function(e) {
-            if(e.target.files.length > 0) window.uploadCSVToFirestore(e.target.files[0]);
-        });
+        window.deleteAllData = function() {
+            window.rawData = [];
+            window.rejectedData = [];
+            window.filteredData = [];
+            window.filteredRejectedData = [];
+            window.aggregatedData = [];
+            
+            document.getElementById('initialState').classList.remove('hidden');
+            document.getElementById('dashboardContent').classList.add('hidden');
+            window.showToast("Database lokal berhasil direset sepenuhnya", "success");
+        };
 
-        window.loadDataFromFirestore();
+        window.initializeOfflineMode = function() {
+            const statusText = document.getElementById('statusText');
+            const connectionStatus = document.getElementById('connectionStatus');
+            if(statusText) statusText.textContent = 'Mode Offline';
+            if(connectionStatus) connectionStatus.className = "w-1.5 h-1.5 rounded-full bg-blue-500";
+        };
+
+        // Mulai aplikasi dalam mode offline
+        window.initializeOfflineMode();
 
     </script>
 </body>
